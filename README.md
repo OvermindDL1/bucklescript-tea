@@ -45,7 +45,7 @@ _If you install it via any other method make sure that `bucklescript-tea` is a d
 
 ### Example project
 
-Once you have your Bucklescript project set up and the dependencies configured as above then lets make a new TEA module, the Counter, as is traditional in Elm tutorials, this file will be named `Counter.ml` in your `src` directory for this example. Code is described via inline comments:
+Once you have your Bucklescript project set up and the dependencies configured as above then lets make a new TEA module, the Counter, as is traditional in Elm tutorials, this file will be named `counter.ml` in your `src` directory for this example. Code is described via inline comments:
 
 ```ocaml
 (* This line opens the Tea.App modules into the current scope for Program access functions and types *)
