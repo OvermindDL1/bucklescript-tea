@@ -1,0 +1,24 @@
+{
+  "name": "bucklescript-tea",
+  "version": "0.1.0",
+  "bsc-flags": [
+    "-w",
+    "-40",
+    "-bs-sort-imports",
+    "-bin-annot",
+    "-bs-cross-module-opt"
+  ],
+  "package-specs": [
+    "commonjs"
+  ],
+  "sources": [
+    {
+      "dir": "src"
+    },
+    {
+      "dir": "test",
+      "type": "dev"
+    },
+  ],
+  "generate-merlin": true
+}

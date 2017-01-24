@@ -1,0 +1,29 @@
+{
+  "name": "bucklescript-tea",
+  "version": "1.0.0",
+  "description": "TEA for Bucklescript",
+  "main": "index.js",
+  "scripts": {
+    "build": "bsb",
+    "watch": "bsb -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/overminddl1/bucklescript-tea.git"
+  },
+  "keywords": [
+    "TEA",
+    "Bucklescript",
+    "OCaml"
+  ],
+  "author": "OvermindDL1",
+  "license": "LGPLv3",
+  "bugs": {
+    "url": "https://github.com/overminddl1/bucklescript-tea/issues"
+  },
+  "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
+  "dependencies": {
+    "bs-platform": "^1.4.1"
+  }
+}
