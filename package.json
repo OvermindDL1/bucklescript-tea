@@ -23,7 +23,7 @@
     "url": "https://github.com/overminddl1/bucklescript-tea/issues"
   },
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
-  "dependencies": {
-    "bs-platform": "^1.4.1"
+  "peerDependencies": {
+    "bs-platform": "^1.4.2"
   }
 }
