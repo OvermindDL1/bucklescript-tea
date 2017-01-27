@@ -1,6 +1,6 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "bsc-flags": [
     "-w",
     "-40",
@@ -17,7 +17,7 @@
     {
       "dir": "test",
       "type": "dev"
-    },
+    }
   ],
   "generate-merlin": true
 }
