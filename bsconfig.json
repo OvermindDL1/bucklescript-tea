@@ -1,11 +1,9 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "bsc-flags": [
     "-w",
     "-40",
-    "-bs-sort-imports",
-    "-bin-annot",
     "-bs-cross-module-opt"
   ],
   "package-specs": [
@@ -13,7 +11,8 @@
   ],
   "sources": [
     {
-      "dir": "src"
+      "dir": "src",
+      "public" : "all"
     },
     {
       "dir": "test",
