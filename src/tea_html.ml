@@ -42,6 +42,18 @@ let footer ?(key="") ?(unique="") props nodes = fullnode "" "footer" key unique 
 
 let h1 ?(key="") ?(unique="") props nodes = fullnode "" "h1" key unique props nodes
 
+let h2 ?(key="") ?(unique="") props nodes = fullnode "" "h2" key unique props nodes
+
+let h3 ?(key="") ?(unique="") props nodes = fullnode "" "h3" key unique props nodes
+
+let h4 ?(key="") ?(unique="") props nodes = fullnode "" "h4" key unique props nodes
+
+let h5 ?(key="") ?(unique="") props nodes = fullnode "" "h5" key unique props nodes
+
+let h6 ?(key="") ?(unique="") props nodes = fullnode "" "h6" key unique props nodes
+
+let i ?(key="") ?(unique="") props nodes = fullnode "" "i" key unique props nodes
+
 let strong ?(key="") ?(unique="") props nodes = fullnode "" "strong" key unique props nodes
 
 let button ?(key="") ?(unique="") props nodes = fullnode "" "button" key unique props nodes
