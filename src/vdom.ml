@@ -7,18 +7,32 @@ type 'msg applicationCallbacks = {
   enqueue : 'msg -> unit;
 }
 
+(*
+type 'msg userkey =
+  | UserkeyString of string
+  | UserkeyMsg of 'msg
+*)
 
 (* Attributes are not properties *)
 (* https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes *)
 
+type 'msg eventHandler =
+  | EventHandlerCallback of string * (Web.Node.event -> 'msg option)
+  | EventHandlerMsg of 'msg
+
+type 'msg eventCache =
+  { handler : Web.Node.event_cb
+  ; cb : (Web.Node.event -> 'msg option) ref
+  }
+
 type 'msg property =
   | NoProp
   | RawProp of string * string (* TODO:  This last string needs to be made something more generic, maybe a function... *)
-  (* Attribute is (namespace, key, value) *)
+  (* Attribute (namespace, key, value) *)
   | Attribute of string * string * string
   | Data of string * string
-  (* Event is (type, userkey, callback) *)
-  | Event of string * string * (Web.Node.event -> 'msg option)
+  (* Event (name, userkey, callback) *)
+  | Event of string * 'msg eventHandler * 'msg eventCache option ref
   (* | Event of string * (Web.Event.t -> 'msg) *)
   | Style of (string * string) list
 
@@ -74,11 +88,9 @@ let noProp = NoProp
 
 let prop key value = RawProp (key, value)
 
-(* `on` sets no key, so it will not be updated on the DOM unless its position changes *)
-(* let on name cb = Event (name, "", cb) *)
-(* let on name ?(key="") cb = Event (name, key, cb) *)
-(* let on name cb = Event (name, cb) *)
-let on name key cb = Event (name, key, cb)
+let onCB name key cb = Event (name, EventHandlerCallback (key, cb), ref None)
+
+let onMsg name msg =  Event (name, EventHandlerMsg msg, ref None)
 
 let attribute namespace key value = Attribute (namespace, key, value)
 
@@ -101,7 +113,7 @@ let rec renderToHtmlString = function
       | RawProp (k, v) -> String.concat "" [" "; k; "=\""; v; "\""]
       | Attribute (_namespace, k, v) -> String.concat "" [" "; k; "=\""; v; "\""]
       | Data (k, v) -> String.concat "" [" data-"; k; "=\""; v; "\""]
-      | Event (typ, _key, v) -> String.concat "" [" "; typ; "=\"js:"; Js.typeof v; "\""]
+      | Event (_, _, _) -> ""
       | Style s -> String.concat "" [" style=\""; String.concat ";" (List.map (fun (k, v) -> String.concat "" [k;":";v;";"]) s); "\""]
     in
     String.concat ""
@@ -121,144 +133,82 @@ let rec renderToHtmlString = function
     renderToHtmlString vdom
   | Tagger (_tagger, vdom) -> renderToHtmlString vdom
 
-  (* | KeyedNode (elemType, props, vdoms) -> String.concat ":" ["UNIMPLEMENTED"; elemType] *)
-
-
-(* Patch elements *)
-
-
-
-(* let applyProperties callbacks elem curProperties =
-  List.fold_left
-    (fun elem -> function
-       | NoProp -> elem
-       | RawProp (k, v) -> elem
-       | Attribute (namespace, k, v) -> elem
-       | Data (k, v) -> elem
-       | Event (typ, _key, v) ->
-         (* let () = Js.log [|"Event:"; typ|] in *)
-         let cb : Web.Node.event_cb =
-           fun [@bs] ev ->
-             match v ev with
-             | None -> ()
-             | Some msg -> !callbacks.enqueue msg in
-         let () = Web_node.addEventListener elem typ cb false in
-         elem
-       | Style s -> List.fold_left (fun elem (k, v) -> let () = Web.Node.setStyleProperty elem k (Js.Null.return v) in elem) elem s
-       (* | Style s -> List.fold_left (fun (k, v) elem -> let _ = elem##style##set k v in elem) elem s *)
-    ) elem curProperties
-
-
-(* Creating actual DOM elements *)
-(* let doc = Web.document *)
-
-let createElementFromVNode_addProps callbacks properties elem =
-  applyProperties callbacks elem properties
-
-
-let rec createElementFromVNode_addChildren callbacks children elem =
-  children |> List.fold_left (fun n child -> let _childelem = Web.Node.appendChild n (createElementFromVNode callbacks child) in n) elem
-    and createElementFromVNode callbacks = function
-  | CommentNode s -> Web.Document.createComment s
-  | Text text -> Web.Document.createTextNode text
-  | Node (namespace, _key_unused, tagName, properties, children) -> (* let () = Js.log (callbacks, namespace, _key_unused, tagName, properties, children) in *)
-    let child = Web.Document.createElementNsOptional namespace tagName in
-    (* let () = Js.log ("Blooop", child) in *)
-    child
-    |> createElementFromVNode_addProps callbacks properties
-    |> createElementFromVNode_addChildren callbacks children
-    (* Web.Document.createElementNsOptional namespace tagName
-    |> createElementFromVNode_addProps callbacks properties
-    |> createElementFromVNode_addChildren callbacks children *)
-
-
-let createVNodesIntoElement callbacks vnodes elem =
-  vnodes |> List.fold_left (fun n vnode -> let _childelem = Web.Node.appendChild n (createElementFromVNode callbacks vnode) in n) elem
-
-let createVNodeIntoElement callbacks vnode elem =
-  createVNodesIntoElement callbacks [vnode] elem *)
-
 
 
 (* Diffing/Patching *)
-(* Very naive right now, but it worksish *)
 
-(* let rec patchVNodesOnElems_DeleteRest elem elems idx =
-  if Js.Array.length elems >= idx then -1 else
-    let child = elems.(idx) in
-    let _removedChild = Web.Node.removeChild elem child in
-    patchVNodesOnElems_DeleteRest elem elems idx *)
+let emptyEventHandler : Web.Node.event_cb = fun [@bs] _ev -> ()
+let emptyEventCB = fun _ev -> None
 
-(* let rec patchVNodesOnElems_Empty callbacks elem elems idx = function
-  | [] -> -1
-  | NoVNode s :: newVNodes ->
-    let child = Web.Document.createComment s in
-    let _newChild = Web.Node.appendChild elem child in
-    patchVNodesOnElems_Empty callbacks elem elems (idx+1) newVNodes
-  | Text text :: newVNodes ->
-    let child = Web.Document.createTextNode text in
-    let _newChild = Web.Node.appendChild elem child in
-    patchVNodesOnElems_Empty callbacks elem elems (idx+1) newVNodes
-  | vnode :: newVNodes ->
-    let child = createElementFromVNode callbacks vnode in
-    let _newChild = Web.Node.appendChild elem child in
-    patchVNodesOnElems_Empty callbacks elem elems (idx+1) newVNodes
-    (* let child = elems.(idx) in *)
-    (* let _child = Web.Node.removeChild elem child in *)
-    (* patchVNodesOnElems_Empty callbacks elem elems idx newVNodes (* Not incrementing idx since we just removed something *) *) *)
+let eventHandler callbacks cb : Web.Node.event_cb =
+  fun [@bs] ev ->
+    match !cb ev with
+    | None -> () (* User ignored, do nothing *)
+    | Some msg -> !callbacks.enqueue msg
 
 
-let _handlerName idx typ =
-  "_handler_" ^ (string_of_int idx) ^ typ
+let eventHandler_GetCB = function
+  | EventHandlerCallback (_, cb) -> cb
+  | EventHandlerMsg msg -> fun _ev -> Some msg
 
-let _usercb callbacks f =
-  fun ev ->
-    match f ev with
-    | None -> () (*Js.log "Nothing"*)
-    | Some msg -> (*let () = Js.log ("Handling msg", msg) in*) !callbacks.enqueue msg
+let compareEventHandlerTypes left = function
+  | EventHandlerCallback (cb, _) ->
+    (match left with
+     | EventHandlerCallback (lcb, _) when cb = lcb -> true
+     | _ -> false
+    )
+  | EventHandlerMsg msg ->
+    (match left with
+     | EventHandlerMsg lmsg when msg = lmsg -> true
+     | _ -> false
+    )
+
+
+let eventHandler_Register callbacks elem name handlerType =
+  let cb = ref (eventHandler_GetCB handlerType) in
+  let handler = eventHandler callbacks cb in
+  let () = Web.Node.addEventListener elem name handler false in
+  Some { handler; cb }
+
+let eventHandler_Unregister elem name = function
+  | None -> None
+  | Some cache ->
+    let () = Web.Node.removeEventListener elem name cache.handler false in
+    None
+
+let eventHandler_Mutate callbacks elem (oldName : string) (newName : string) oldHandlerType newHandlerType oldCache newCache =
+  let namesMatch = oldName = newName in
+  match !oldCache with
+  | None -> newCache := eventHandler_Register callbacks elem newName newHandlerType
+  | Some oldcache ->
+    if oldName = newName then
+      let () = newCache := !oldCache in
+      if compareEventHandlerTypes oldHandlerType newHandlerType then ()
+      else
+        let cb = eventHandler_GetCB newHandlerType in
+        let () = oldcache.cb := cb in
+        ()
+    else
+      let () = oldCache := eventHandler_Unregister elem oldName !oldCache in
+      let () = newCache := eventHandler_Register callbacks elem newName newHandlerType in
+      ()
+
 
 let patchVNodesOnElems_PropertiesApply_Add callbacks elem idx = function
   | NoProp -> ()
   | RawProp (k, v) -> Web.Node.setProp elem k v
   | Attribute (namespace, k, v) -> Web.Node.setAttributeNsOptional elem namespace k v
   | Data (k, v) -> Js.log ("TODO:  Add Data Unhandled", k, v); failwith "TODO:  Add Data Unhandled"
-  | Event (t, _k, f) ->
-    (* let () = Js.log ("Adding event", elem, t, k, f) in *)
-    (* let cb : Web.Node.event_cb =
-      fun [@bs] ev ->
-        (* let () = Js.log ("ON-EVENT", elem, idx, ev) in *)
-        match f ev with
-        | None -> () (*Js.log "Nothing"*)
-        | Some msg -> (*let () = Js.log ("Handling msg", msg) in*) !callbacks.enqueue msg in
-        (* let msg = f ev in
-           !callbacks.enqueue msg in *) *)
-    let cb = _usercb callbacks f in
-    let handler : Web.Node.event_cb =
-      fun [@bs] ev -> match Js.Undefined.to_opt ev##target with
-        | None -> failwith "Element Event called without being attached to an element?!  Report this with minimal test case!"
-        | Some _target ->
-          (* let () = Js.log ("ON-EVENT", elem, idx, ev) in *)
-          let userCB = Web.Node.getProp elem (_handlerName idx "cb") in
-          userCB ev [@bs] in
-    let () = Web.Node.setProp elem (_handlerName idx "cb") (Js.Undefined.return cb) in
-    let () = Web.Node.setProp_asEventListener elem (_handlerName idx "") (Js.Undefined.return handler) in
-    Web.Node.addEventListener elem t handler false
-  | Style s ->
-    List.fold_left (fun () (k, v) -> Web.Node.setStyleProperty elem k (Js.Null.return v)) () s
+  | Event (name, handlerType, cache) -> cache := eventHandler_Register callbacks elem name handlerType
+  | Style s -> List.fold_left (fun () (k, v) -> Web.Node.setStyleProperty elem k (Js.Null.return v)) () s
+
 
 let patchVNodesOnElems_PropertiesApply_Remove _callbacks elem idx = function
   | NoProp -> ()
   | RawProp (k, _v) -> Web.Node.setProp elem k Js.Undefined.empty
   | Attribute (namespace, k, _v) -> Web.Node.removeAttributeNsOptional elem namespace k
   | Data (k, v) -> Js.log ("TODO:  Remove Data Unhandled", k, v); failwith "TODO:  Remove Data Unhandled"
-  | Event (t, _k, _f) ->
-    (* let () = Js.log ("Removing Event", elem, t, k, f) in *)
-    let () = match Js.Undefined.to_opt (Web.Node.getProp_asEventListener elem (_handlerName idx)) with
-      | None -> failwith "Something else has messed with the DOM, inconsistent state!"
-      | Some cb -> Web.Node.removeEventListener elem t cb false in
-    let () = Web.Node.setProp elem (_handlerName idx "cb") Js.Undefined.empty in
-    let () = Web.Node.setProp_asEventListener elem (_handlerName idx "") Js.Undefined.empty in
-    ()
+  | Event (name, _, cache) -> cache := eventHandler_Unregister elem name !cache
   | Style s -> List.fold_left (fun () (k, _v) -> Web.Node.setStyleProperty elem k Js.Null.empty) () s
 
 let patchVNodesOnElems_PropertiesApply_RemoveAdd callbacks elem idx oldProp newProp =
@@ -274,19 +224,8 @@ let patchVNodesOnElems_PropertiesApply_Mutate callbacks elem idx oldProp = funct
   | Attribute (namespace, k, v) as _newProp ->
     (* let () = Js.log ("Mutating Attribute", namespace, k, v, elem) in *)
     Web.Node.setAttributeNsOptional elem namespace k v
-  | Data  (k, v) as _newProp -> Js.log ("TODO:  Mutate Data Unhandled", k, v)
-  (* Wow but adding and removing event handlers is slow on the DOM, lets do this to see if it is faster... *)
-  (* Initial profiling tests reveal a fairly substantial speed improvement in event handlers switching now! *)
-  | Event (t, _k, f) as newProp ->
-    (* let () = Js.log ("Mutating event", elem, oldProp, newProp) in *)
-    let oldT = match [@ocaml.warning "-4"] oldProp with
-      | Event (oldT, _oldK, _oldF) -> oldT
-      | _ -> failwith "This should never be called as all entries to mutate are gated to the same types" in
-    if oldT = t then
-      let cb = _usercb callbacks f in
-      let () = Web.Node.setProp elem (_handlerName idx "cb") (Js.Undefined.return cb) in
-      ()
-    else patchVNodesOnElems_PropertiesApply_RemoveAdd callbacks elem idx oldProp newProp
+  | Data  (k, v) as _newProp -> Js.log ("TODO:  Mutate Data Unhandled", k, v); failwith "TODO:  Mutate Data Unhandled"
+  | Event (newName, newHandlerType, newCache) as newProp -> failwith "This will never be called because it is gated"
   | Style s as _newProp ->
     (* let () = Js.log ("Mutating Style", elem, oldProp, _newProp) in *)
     match [@ocaml.warning "-4"] oldProp with
@@ -334,13 +273,8 @@ let rec patchVNodesOnElems_PropertiesApply callbacks elem idx oldProperties newP
   (* Event *)
   (* | Event (oldTyp, oldKey, oldCbev) :: oldRest, Event (newTyp, newKey, newCbev) :: newRest ->
      let () = if oldTyp = newTyp && oldKey = newKey then () else *)
-  | (Event (oldTyp, oldKey, _oldCbev) as oldProp) :: oldRest, (Event (newTyp, newKey, _newCbev) as newProp) :: newRest ->
-    (* let () = Js.log ("Event Test", elem, idx, oldProp, newProp, oldTyp = newTyp && oldKey = newKey, oldRest, newRest) in *)
-    (* TODO:  This is such a *BAD* way of doing this, but event removal needs to be passed in the same func as what was
-       registered.  So we enforce a string key, which is more than what some virtualdoms allow for at least since with
-       a key you can have multiple events of the same type registered without issue... *)
-    let () = if oldTyp = newTyp && oldKey = newKey then () else
-      patchVNodesOnElems_PropertiesApply_Mutate callbacks elem idx oldProp newProp in
+  | (Event (oldName, oldHandlerType, oldCache) as oldProp) :: oldRest, (Event (newName, newHandlerType, newCache) as newProp) :: newRest ->
+    let () = eventHandler_Mutate callbacks elem oldName newName oldHandlerType newHandlerType oldCache newCache in
     patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) oldRest newRest
   (* Style *)
   | (Style oldS as oldProp) :: oldRest, (Style newS as newProp) :: newRest ->
@@ -361,33 +295,6 @@ let patchVNodesOnElems_Properties callbacks elem oldProperties newProperties =
     ()
   else *)
     patchVNodesOnElems_PropertiesApply callbacks elem 0 oldProperties newProperties
-
-     (* | NoProp -> elem
-     | RawProp (k, v) -> elem
-     | Attribute (namespace, k, v) -> elem
-     | Data (k, v) -> elem
-     | Event (typ, v) ->
-       (* let () = Js.log [|"Event:"; typ|] in *)
-       let cb : Web.Event.cb =
-         fun [@bs] ev ->
-           let msg = v ev in
-           !callbacks.enqueue msg in
-       let () = Web_node.addEventListener elem typ cb false in
-       elem
-     | Style s -> List.fold_left (fun elem (k, v) -> let () = Web.Node.setStyleProperty elem k v in elem) elem s *)
-
-
-(* let patchVNodesOnElems_ReplaceVnodeAt callbacks elem elems idx vnode =
-  let child = elems.(idx) in
-  let _removedChild = Web.Node.removeChild elem child in
-  let newChild = createElementFromVNode callbacks vnode in
-  let _attachedChild = Web.Node.appendChild elem newChild in
-  () *)
-
-(* let patchVNodesOnElems_createElement callbacks namespace tagName properties =
-    let child = Web.Document.createElementNsOptional namespace tagName in
-    let () = patchVNodesOnElems_Properties callbacks child [] properties in
-    child *)
 
 
 let rec patchVNodesOnElems_ReplaceNode callbacks elem elems idx = function [@ocaml.warning "-4"]

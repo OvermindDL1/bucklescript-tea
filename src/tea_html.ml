@@ -127,12 +127,12 @@ let target t = prop "target" t
 
 (* Events *)
 
-let onKeyed typ key cb = on typ key cb
+let onCB eventName key cb = onCB eventName key cb
 
-let on typ ?(key="") cb = on typ key cb
+let onMsg eventName msg = onMsg eventName msg
 
 let onInputOpt ?(key="") msg =
-  onKeyed "input" key
+  onCB "input" key
     (fun ev ->
        match Js.Undefined.to_opt ev##target with
        | None -> None
@@ -140,27 +140,23 @@ let onInputOpt ?(key="") msg =
          | None -> None
          | Some value -> msg value
     )
-    (* (fun ev -> match _eventGetTargetValue ev with
-       | None -> failwith "onInput is not attached to something with a target.value on its event"
-       | Some value -> msg value
-       ) *)
 
 let onInput ?(key="") msg = onInputOpt ~key:key (fun ev -> Some (msg ev))
 
-let onClick ?(key="") msg =
-  onKeyed "click" key (fun _ev -> Some msg)
+let onClick msg =
+  onMsg "click" msg
 
-let onDoubleClick ?(key="") msg =
-  onKeyed "dblclick" key (fun _ev -> Some msg)
+let onDoubleClick msg =
+  onMsg "dblclick" msg
 
-let onBlur ?(key="") msg =
-  onKeyed "blur" key (fun _ev -> Some msg)
+let onBlur msg =
+  onMsg "blur" msg
 
-let onFocus ?(key="") msg =
-  onKeyed "focus" key (fun _ev -> Some msg)
+let onFocus msg =
+  onMsg "focus" msg
 
 let onCheckOpt ?(key="") msg =
-  onKeyed "change" key
+  onCB "change" key
     (fun ev ->
        match Js.Undefined.to_opt ev##target with
        | None -> None

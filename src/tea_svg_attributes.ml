@@ -2,1160 +2,1160 @@ open Vdom
 
 (* Regular attributes *)
 
-let accentHeight = attribute "" "accent-height"
+let accentHeight v = attribute "" "accent-height" v
 
-let accelerate  = attribute "" "accelerate"
+let accelerate  v = attribute "" "accelerate" v
 
 
 
-let accumulate =
-  attribute "" "accumulate"
+let accumulate v =
+  attribute "" "accumulate" v
 
 
 
 
-let additive =
-  attribute "" "additive"
+let additive v =
+  attribute "" "additive" v
 
 
 
 
-let alphabetic =
-  attribute "" "alphabetic"
+let alphabetic v =
+  attribute "" "alphabetic" v
 
 
 
 
-let allowReorder =
-  attribute "" "allowReorder"
+let allowReorder v =
+  attribute "" "allowReorder" v
 
 
 
 
-let amplitude =
-  attribute "" "amplitude"
+let amplitude v =
+  attribute "" "amplitude" v
 
 
 
 
-let arabicForm =
-  attribute "" "arabic-form"
+let arabicForm v =
+  attribute "" "arabic-form" v
 
 
 
 
-let ascent =
-  attribute "" "ascent"
+let ascent v =
+  attribute "" "ascent" v
 
 
 
 
-let attributeName =
-  attribute "" "attributeName"
+let attributeName v =
+  attribute "" "attributeName" v
 
 
 
 
-let attributeType =
-  attribute "" "attributeType"
+let attributeType v =
+  attribute "" "attributeType" v
 
 
 
 
-let autoReverse =
-  attribute "" "autoReverse"
+let autoReverse v =
+  attribute "" "autoReverse" v
 
 
 
 
-let azimuth =
-  attribute "" "azimuth"
+let azimuth v =
+  attribute "" "azimuth" v
 
 
 
 
-let baseFrequency =
-  attribute "" "baseFrequency"
+let baseFrequency v =
+  attribute "" "baseFrequency" v
 
 
 
 
-let baseProfile =
-  attribute "" "baseProfile"
+let baseProfile v =
+  attribute "" "baseProfile" v
 
 
 
 
-let bbox =
-  attribute "" "bbox"
+let bbox v =
+  attribute "" "bbox" v
 
 
 
 
-let begin' =
-  attribute "" "begin"
+let begin' v =
+  attribute "" "begin" v
 
 
 
 
-let bias =
-  attribute "" "bias"
+let bias v =
+  attribute "" "bias" v
 
 
 
 
-let by =
-  attribute "" "by"
+let by v =
+  attribute "" "by" v
 
 
 
 
-let calcMode =
-  attribute "" "calcMode"
+let calcMode v =
+  attribute "" "calcMode" v
 
 
 
 
-let capHeight =
-  attribute "" "cap-height"
+let capHeight v =
+  attribute "" "cap-height" v
 
 
 
 
-let class' =
-  attribute "" "class"
+let class' v =
+  attribute "" "class" v
 
 
 
 
-let clipPathUnits =
-  attribute "" "clipPathUnits"
+let clipPathUnits v =
+  attribute "" "clipPathUnits" v
 
 
 
 
-let contentScriptType =
-  attribute "" "contentScriptType"
+let contentScriptType v =
+  attribute "" "contentScriptType" v
 
 
 
 
-let contentStyleType =
-  attribute "" "contentStyleType"
+let contentStyleType v =
+  attribute "" "contentStyleType" v
 
 
 
 
-let cx =
-  attribute "" "cx"
+let cx v =
+  attribute "" "cx" v
 
 
 
 
-let cy =
-  attribute "" "cy"
+let cy v =
+  attribute "" "cy" v
 
 
 
 
-let d =
-  attribute "" "d"
+let d v =
+  attribute "" "d" v
 
 
 
 
-let decelerate =
-  attribute "" "decelerate"
+let decelerate v =
+  attribute "" "decelerate" v
 
 
 
 
-let descent =
-  attribute "" "descent"
+let descent v =
+  attribute "" "descent" v
 
 
 
 
-let diffuseConstant =
-  attribute "" "diffuseConstant"
+let diffuseConstant v =
+  attribute "" "diffuseConstant" v
 
 
 
 
-let divisor =
-  attribute "" "divisor"
+let divisor v =
+  attribute "" "divisor" v
 
 
 
 
-let dur =
-  attribute "" "dur"
+let dur v =
+  attribute "" "dur" v
 
 
 
 
-let dx =
-  attribute "" "dx"
+let dx v =
+  attribute "" "dx" v
 
 
 
 
-let dy =
-  attribute "" "dy"
+let dy v =
+  attribute "" "dy" v
 
 
 
 
-let edgeMode =
-  attribute "" "edgeMode"
+let edgeMode v =
+  attribute "" "edgeMode" v
 
 
 
 
-let elevation =
-  attribute "" "elevation"
+let elevation v =
+  attribute "" "elevation" v
 
 
 
 
-let end' =
-  attribute "" "end"
+let end' v =
+  attribute "" "end" v
 
 
 
 
-let exponent =
-  attribute "" "exponent"
+let exponent v =
+  attribute "" "exponent" v
 
 
 
 
-let externalResourcesRequired =
-  attribute "" "externalResourcesRequired"
+let externalResourcesRequired v =
+  attribute "" "externalResourcesRequired" v
 
 
 
 
-let filterRes =
-  attribute "" "filterRes"
+let filterRes v =
+  attribute "" "filterRes" v
 
 
 
 
-let filterUnits =
-  attribute "" "filterUnits"
+let filterUnits v =
+  attribute "" "filterUnits" v
 
 
 
 
-let format =
-  attribute "" "format"
+let format v =
+  attribute "" "format" v
 
 
 
 
-let from =
-  attribute "" "from"
+let from v =
+  attribute "" "from" v
 
 
 
 
-let fx =
-  attribute "" "fx"
+let fx v =
+  attribute "" "fx" v
 
 
 
 
-let fy =
-  attribute "" "fy"
+let fy v =
+  attribute "" "fy" v
 
 
 
 
-let g1 =
-  attribute "" "g1"
+let g1 v =
+  attribute "" "g1" v
 
 
 
 
-let g2 =
-  attribute "" "g2"
+let g2 v =
+  attribute "" "g2" v
 
 
 
 
-let glyphName =
-  attribute "" "glyph-name"
+let glyphName v =
+  attribute "" "glyph-name" v
 
 
 
 
-let glyphRef =
-  attribute "" "glyphRef"
+let glyphRef v =
+  attribute "" "glyphRef" v
 
 
 
 
-let gradientTransform =
-  attribute "" "gradientTransform"
+let gradientTransform v =
+  attribute "" "gradientTransform" v
 
 
 
 
-let gradientUnits =
-  attribute "" "gradientUnits"
+let gradientUnits v =
+  attribute "" "gradientUnits" v
 
 
 
 
-let hanging =
-  attribute "" "hanging"
+let hanging v =
+  attribute "" "hanging" v
 
 
 
 
-let height =
-  attribute "" "height"
+let height v =
+  attribute "" "height" v
 
 
 
 
-let horizAdvX =
-  attribute "" "horiz-adv-x"
+let horizAdvX v =
+  attribute "" "horiz-adv-x" v
 
 
 
 
-let horizOriginX =
-  attribute "" "horiz-origin-x"
+let horizOriginX v =
+  attribute "" "horiz-origin-x" v
 
 
 
 
-let horizOriginY =
-  attribute "" "horiz-origin-y"
+let horizOriginY v =
+  attribute "" "horiz-origin-y" v
 
 
 
 
-let id =
-  attribute "" "id"
+let id v =
+  attribute "" "id" v
 
 
 
 
-let ideographic =
-  attribute "" "ideographic"
+let ideographic v =
+  attribute "" "ideographic" v
 
 
 
 
-let in' =
-  attribute "" "in"
+let in' v =
+  attribute "" "in" v
 
 
 
 
-let in2 =
-  attribute "" "in2"
+let in2 v =
+  attribute "" "in2" v
 
 
 
 
-let intercept =
-  attribute "" "intercept"
+let intercept v =
+  attribute "" "intercept" v
 
 
 
 
-let k =
-  attribute "" "k"
+let k v =
+  attribute "" "k" v
 
 
 
 
-let k1 =
-  attribute "" "k1"
+let k1 v =
+  attribute "" "k1" v
 
 
 
 
-let k2 =
-  attribute "" "k2"
+let k2 v =
+  attribute "" "k2" v
 
 
 
 
-let k3 =
-  attribute "" "k3"
+let k3 v =
+  attribute "" "k3" v
 
 
 
 
-let k4 =
-  attribute "" "k4"
+let k4 v =
+  attribute "" "k4" v
 
 
 
 
-let kernelMatrix =
-  attribute "" "kernelMatrix"
+let kernelMatrix v =
+  attribute "" "kernelMatrix" v
 
 
 
 
-let kernelUnitLength =
-  attribute "" "kernelUnitLength"
+let kernelUnitLength v =
+  attribute "" "kernelUnitLength" v
 
 
 
 
-let keyPoints =
-  attribute "" "keyPoints"
+let keyPoints v =
+  attribute "" "keyPoints" v
 
 
 
 
-let keySplines =
-  attribute "" "keySplines"
+let keySplines v =
+  attribute "" "keySplines" v
 
 
 
 
-let keyTimes =
-  attribute "" "keyTimes"
+let keyTimes v =
+  attribute "" "keyTimes" v
 
 
 
 
-let lang =
-  attribute "" "lang"
+let lang v =
+  attribute "" "lang" v
 
 
 
 
-let lengthAdjust =
-  attribute "" "lengthAdjust"
+let lengthAdjust v =
+  attribute "" "lengthAdjust" v
 
 
 
 
-let limitingConeAngle =
-  attribute "" "limitingConeAngle"
+let limitingConeAngle v =
+  attribute "" "limitingConeAngle" v
 
 
 
 
-let local =
-  attribute "" "local"
+let local v =
+  attribute "" "local" v
 
 
 
 
-let markerHeight =
-  attribute "" "markerHeight"
+let markerHeight v =
+  attribute "" "markerHeight" v
 
 
 
 
-let markerUnits =
-  attribute "" "markerUnits"
+let markerUnits v =
+  attribute "" "markerUnits" v
 
 
 
 
-let markerWidth =
-  attribute "" "markerWidth"
+let markerWidth v =
+  attribute "" "markerWidth" v
 
 
 
 
-let maskContentUnits =
-  attribute "" "maskContentUnits"
+let maskContentUnits v =
+  attribute "" "maskContentUnits" v
 
 
 
 
-let maskUnits =
-  attribute "" "maskUnits"
+let maskUnits v =
+  attribute "" "maskUnits" v
 
 
 
 
-let mathematical =
-  attribute "" "mathematical"
+let mathematical v =
+  attribute "" "mathematical" v
 
 
 
 
-let max =
-  attribute "" "max"
+let max v =
+  attribute "" "max" v
 
 
 
 
-let media =
-  attribute "" "media"
+let media v =
+  attribute "" "media" v
 
 
 
 
-let method' =
-  attribute "" "method"
+let method' v =
+  attribute "" "method" v
 
 
 
 
-let min =
-  attribute "" "min"
+let min v =
+  attribute "" "min" v
 
 
 
 
-let mode =
-  attribute "" "mode"
+let mode v =
+  attribute "" "mode" v
 
 
 
 
-let name =
-  attribute "" "name"
+let name v =
+  attribute "" "name" v
 
 
 
 
-let numOctaves =
-  attribute "" "numOctaves"
+let numOctaves v =
+  attribute "" "numOctaves" v
 
 
 
 
-let offset =
-  attribute "" "offset"
+let offset v =
+  attribute "" "offset" v
 
 
 
 
-let operator =
-  attribute "" "operator"
+let operator v =
+  attribute "" "operator" v
 
 
 
 
-let order =
-  attribute "" "order"
+let order v =
+  attribute "" "order" v
 
 
 
 
-let orient =
-  attribute "" "orient"
+let orient v =
+  attribute "" "orient" v
 
 
 
 
-let orientation =
-  attribute "" "orientation"
+let orientation v =
+  attribute "" "orientation" v
 
 
 
 
-let origin =
-  attribute "" "origin"
+let origin v =
+  attribute "" "origin" v
 
 
 
 
-let overlinePosition =
-  attribute "" "overline-position"
+let overlinePosition v =
+  attribute "" "overline-position" v
 
 
 
 
-let overlineThickness =
-  attribute "" "overline-thickness"
+let overlineThickness v =
+  attribute "" "overline-thickness" v
 
 
 
 
-let panose1 =
-  attribute "" "panose-1"
+let panose1 v =
+  attribute "" "panose-1" v
 
 
 
 
-let path =
-  attribute "" "path"
+let path v =
+  attribute "" "path" v
 
 
 
 
-let pathLength =
-  attribute "" "pathLength"
+let pathLength v =
+  attribute "" "pathLength" v
 
 
 
 
-let patternContentUnits =
-  attribute "" "patternContentUnits"
+let patternContentUnits v =
+  attribute "" "patternContentUnits" v
 
 
 
 
-let patternTransform =
-  attribute "" "patternTransform"
+let patternTransform v =
+  attribute "" "patternTransform" v
 
 
 
 
-let patternUnits =
-  attribute "" "patternUnits"
+let patternUnits v =
+  attribute "" "patternUnits" v
 
 
 
 
-let pointOrder =
-  attribute "" "point-order"
+let pointOrder v =
+  attribute "" "point-order" v
 
 
 
 
-let points =
-  attribute "" "points"
+let points v =
+  attribute "" "points" v
 
 
 
 
-let pointsAtX =
-  attribute "" "pointsAtX"
+let pointsAtX v =
+  attribute "" "pointsAtX" v
 
 
 
 
-let pointsAtY =
-  attribute "" "pointsAtY"
+let pointsAtY v =
+  attribute "" "pointsAtY" v
 
 
 
 
-let pointsAtZ =
-  attribute "" "pointsAtZ"
+let pointsAtZ v =
+  attribute "" "pointsAtZ" v
 
 
 
 
-let preserveAlpha =
-  attribute "" "preserveAlpha"
+let preserveAlpha v =
+  attribute "" "preserveAlpha" v
 
 
 
 
-let preserveAspectRatio =
-  attribute "" "preserveAspectRatio"
+let preserveAspectRatio v =
+  attribute "" "preserveAspectRatio" v
 
 
 
 
-let primitiveUnits =
-  attribute "" "primitiveUnits"
+let primitiveUnits v =
+  attribute "" "primitiveUnits" v
 
 
 
 
-let r =
-  attribute "" "r"
+let r v =
+  attribute "" "r" v
 
 
 
 
-let radius =
-  attribute "" "radius"
+let radius v =
+  attribute "" "radius" v
 
 
 
 
-let refX =
-  attribute "" "refX"
+let refX v =
+  attribute "" "refX" v
 
 
 
 
-let refY =
-  attribute "" "refY"
+let refY v =
+  attribute "" "refY" v
 
 
 
 
-let renderingIntent =
-  attribute "" "rendering-intent"
+let renderingIntent v =
+  attribute "" "rendering-intent" v
 
 
 
 
-let repeatCount =
-  attribute "" "repeatCount"
+let repeatCount v =
+  attribute "" "repeatCount" v
 
 
 
 
-let repeatDur =
-  attribute "" "repeatDur"
+let repeatDur v =
+  attribute "" "repeatDur" v
 
 
 
 
-let requiredExtensions =
-  attribute "" "requiredExtensions"
+let requiredExtensions v =
+  attribute "" "requiredExtensions" v
 
 
 
 
-let requiredFeatures =
-  attribute "" "requiredFeatures"
+let requiredFeatures v =
+  attribute "" "requiredFeatures" v
 
 
 
 
-let restart =
-  attribute "" "restart"
+let restart v =
+  attribute "" "restart" v
 
 
 
 
-let result =
-  attribute "" "result"
+let result v =
+  attribute "" "result" v
 
 
 
 
-let rotate =
-  attribute "" "rotate"
+let rotate v =
+  attribute "" "rotate" v
 
 
 
 
-let rx =
-  attribute "" "rx"
+let rx v =
+  attribute "" "rx" v
 
 
 
 
-let ry =
-  attribute "" "ry"
+let ry v =
+  attribute "" "ry" v
 
 
 
 
-let scale =
-  attribute "" "scale"
+let scale v =
+  attribute "" "scale" v
 
 
 
 
-let seed =
-  attribute "" "seed"
+let seed v =
+  attribute "" "seed" v
 
 
 
 
-let slope =
-  attribute "" "slope"
+let slope v =
+  attribute "" "slope" v
 
 
 
 
-let spacing =
-  attribute "" "spacing"
+let spacing v =
+  attribute "" "spacing" v
 
 
 
 
-let specularConstant =
-  attribute "" "specularConstant"
+let specularConstant v =
+  attribute "" "specularConstant" v
 
 
 
 
-let specularExponent =
-  attribute "" "specularExponent"
+let specularExponent v =
+  attribute "" "specularExponent" v
 
 
 
 
-let speed =
-  attribute "" "speed"
+let speed v =
+  attribute "" "speed" v
 
 
 
 
-let spreadMethod =
-  attribute "" "spreadMethod"
+let spreadMethod v =
+  attribute "" "spreadMethod" v
 
 
 
 
-let startOffset =
-  attribute "" "startOffset"
+let startOffset v =
+  attribute "" "startOffset" v
 
 
 
 
-let stdDeviation =
-  attribute "" "stdDeviation"
+let stdDeviation v =
+  attribute "" "stdDeviation" v
 
 
 
 
-let stemh =
-  attribute "" "stemh"
+let stemh v =
+  attribute "" "stemh" v
 
 
 
 
-let stemv =
-  attribute "" "stemv"
+let stemv v =
+  attribute "" "stemv" v
 
 
 
 
-let stitchTiles =
-  attribute "" "stitchTiles"
+let stitchTiles v =
+  attribute "" "stitchTiles" v
 
 
 
 
-let strikethroughPosition =
-  attribute "" "strikethrough-position"
+let strikethroughPosition v =
+  attribute "" "strikethrough-position" v
 
 
 
 
-let strikethroughThickness =
-  attribute "" "strikethrough-thickness"
+let strikethroughThickness v =
+  attribute "" "strikethrough-thickness" v
 
 
 
 
-let string =
-  attribute "" "string"
+let string v =
+  attribute "" "string" v
 
 
 
 
-let style =
-  attribute "" "style"
+let style v =
+  attribute "" "style" v
 
 
 
 
-let surfaceScale =
-  attribute "" "surfaceScale"
+let surfaceScale v =
+  attribute "" "surfaceScale" v
 
 
 
 
-let systemLanguage =
-  attribute "" "systemLanguage"
+let systemLanguage v =
+  attribute "" "systemLanguage" v
 
 
 
 
-let tableValues =
-  attribute "" "tableValues"
+let tableValues v =
+  attribute "" "tableValues" v
 
 
 
 
-let target =
-  attribute "" "target"
+let target v =
+  attribute "" "target" v
 
 
 
 
-let targetX =
-  attribute "" "targetX"
+let targetX v =
+  attribute "" "targetX" v
 
 
 
 
-let targetY =
-  attribute "" "targetY"
+let targetY v =
+  attribute "" "targetY" v
 
 
 
 
-let textLength =
-  attribute "" "textLength"
+let textLength v =
+  attribute "" "textLength" v
 
 
 
 
-let title =
-  attribute "" "title"
+let title v =
+  attribute "" "title" v
 
 
 
 
-let to' =
-  attribute "" "to"
+let to' v =
+  attribute "" "to" v
 
 
 
 
-let transform =
-  attribute "" "transform"
+let transform v =
+  attribute "" "transform" v
 
 
 
 
-let type' =
-  attribute "" "type"
+let type' v =
+  attribute "" "type" v
 
 
 
 
-let u1 =
-  attribute "" "u1"
+let u1 v =
+  attribute "" "u1" v
 
 
 
 
-let u2 =
-  attribute "" "u2"
+let u2 v =
+  attribute "" "u2" v
 
 
 
 
-let underlinePosition =
-  attribute "" "underline-position"
+let underlinePosition v =
+  attribute "" "underline-position" v
 
 
 
 
-let underlineThickness =
-  attribute "" "underline-thickness"
+let underlineThickness v =
+  attribute "" "underline-thickness" v
 
 
 
 
-let unicode =
-  attribute "" "unicode"
+let unicode v =
+  attribute "" "unicode" v
 
 
 
 
-let unicodeRange =
-  attribute "" "unicode-range"
+let unicodeRange v =
+  attribute "" "unicode-range" v
 
 
 
 
-let unitsPerEm =
-  attribute "" "units-per-em"
+let unitsPerEm v =
+  attribute "" "units-per-em" v
 
 
 
 
-let vAlphabetic =
-  attribute "" "v-alphabetic"
+let vAlphabetic v =
+  attribute "" "v-alphabetic" v
 
 
 
 
-let vHanging =
-  attribute "" "v-hanging"
+let vHanging v =
+  attribute "" "v-hanging" v
 
 
 
 
-let vIdeographic =
-  attribute "" "v-ideographic"
+let vIdeographic v =
+  attribute "" "v-ideographic" v
 
 
 
 
-let vMathematical =
-  attribute "" "v-mathematical"
+let vMathematical v =
+  attribute "" "v-mathematical" v
 
 
 
 
-let values =
-  attribute "" "values"
+let values v =
+  attribute "" "values" v
 
 
 
 
-let version =
-  attribute "" "version"
+let version v =
+  attribute "" "version" v
 
 
 
 
-let vertAdvY =
-  attribute "" "vert-adv-y"
+let vertAdvY v =
+  attribute "" "vert-adv-y" v
 
 
 
 
-let vertOriginX =
-  attribute "" "vert-origin-x"
+let vertOriginX v =
+  attribute "" "vert-origin-x" v
 
 
 
 
-let vertOriginY =
-  attribute "" "vert-origin-y"
+let vertOriginY v =
+  attribute "" "vert-origin-y" v
 
 
 
 
-let viewBox =
-  attribute "" "viewBox"
+let viewBox v =
+  attribute "" "viewBox" v
 
 
 
 
-let viewTarget =
-  attribute "" "viewTarget"
+let viewTarget v =
+  attribute "" "viewTarget" v
 
 
 
 
-let width =
-  attribute "" "width"
+let width v =
+  attribute "" "width" v
 
 
 
 
-let widths =
-  attribute "" "widths"
+let widths v =
+  attribute "" "widths" v
 
 
 
 
-let x =
-  attribute "" "x"
+let x v =
+  attribute "" "x" v
 
 
 
 
-let xHeight =
-  attribute "" "x-height"
+let xHeight v =
+  attribute "" "x-height" v
 
 
 
 
-let x1 =
-  attribute "" "x1"
+let x1 v =
+  attribute "" "x1" v
 
 
 
 
-let x2 =
-  attribute "" "x2"
+let x2 v =
+  attribute "" "x2" v
 
 
 
 
-let xChannelSelector =
-  attribute "" "xChannelSelector"
+let xChannelSelector v =
+  attribute "" "xChannelSelector" v
 
 
 
 
-let xlinkActuate =
-  attribute "http://www.w3.org/1999/xlink" "xlink:actuate"
+let xlinkActuate v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:actuate" v
 
 
 
 
-let xlinkArcrole =
-  attribute "http://www.w3.org/1999/xlink" "xlink:arcrole"
+let xlinkArcrole v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:arcrole" v
 
 
 
 
-let xlinkHref =
-  attribute "http://www.w3.org/1999/xlink" "xlink:href"
+let xlinkHref v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:href" v
 
 
 
 
-let xlinkRole =
-  attribute "http://www.w3.org/1999/xlink" "xlink:role"
+let xlinkRole v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:role" v
 
 
 
 
-let xlinkShow =
-  attribute "http://www.w3.org/1999/xlink" "xlink:show"
+let xlinkShow v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:show" v
 
 
 
 
-let xlinkTitle =
-  attribute "http://www.w3.org/1999/xlink" "xlink:title"
+let xlinkTitle v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:title" v
 
 
 
 
-let xlinkType =
-  attribute "http://www.w3.org/1999/xlink" "xlink:type"
+let xlinkType v =
+  attribute "http://www.w3.org/1999/xlink" "xlink:type" v
 
 
 
 
-let xmlBase =
-  attribute "http://www.w3.org/XML/1998/namespace" "xml:base"
+let xmlBase v =
+  attribute "http://www.w3.org/XML/1998/namespace" "xml:base" v
 
 
 
 
-let xmlLang =
-  attribute "http://www.w3.org/XML/1998/namespace" "xml:lang"
+let xmlLang v =
+  attribute "http://www.w3.org/XML/1998/namespace" "xml:lang" v
 
 
 
 
-let xmlSpace =
-  attribute "http://www.w3.org/XML/1998/namespace" "xml:space"
+let xmlSpace v =
+  attribute "http://www.w3.org/XML/1998/namespace" "xml:space" v
 
 
 
 
-let y =
-  attribute "" "y"
+let y v =
+  attribute "" "y" v
 
 
 
 
-let y1 =
-  attribute "" "y1"
+let y1 v =
+  attribute "" "y1" v
 
 
 
 
-let y2 =
-  attribute "" "y2"
+let y2 v =
+  attribute "" "y2" v
 
 
 
 
-let yChannelSelector =
-  attribute "" "yChannelSelector"
+let yChannelSelector v =
+  attribute "" "yChannelSelector" v
 
 
 
 
-let z =
-  attribute "" "z"
+let z v =
+  attribute "" "z" v
 
 
 
 
-let zoomAndPan =
-  attribute "" "zoomAndPan"
+let zoomAndPan v =
+  attribute "" "zoomAndPan" v
 
 
 
@@ -1163,353 +1163,353 @@ let zoomAndPan =
 
 
 
-let alignmentBaseline =
-  attribute "" "alignment-baseline"
+let alignmentBaseline v =
+  attribute "" "alignment-baseline" v
 
 
 
 
-let baselineShift =
-  attribute "" "baseline-shift"
+let baselineShift v =
+  attribute "" "baseline-shift" v
 
 
 
 
-let clipPath =
-  attribute "" "clip-path"
+let clipPath v =
+  attribute "" "clip-path" v
 
 
 
 
-let clipRule =
-  attribute "" "clip-rule"
+let clipRule v =
+  attribute "" "clip-rule" v
 
 
 
 
-let clip =
-  attribute "" "clip"
+let clip v =
+  attribute "" "clip" v
 
 
 
 
-let colorInterpolationFilters =
-  attribute "" "color-interpolation-filters"
+let colorInterpolationFilters v =
+  attribute "" "color-interpolation-filters" v
 
 
 
 
-let colorInterpolation =
-  attribute "" "color-interpolation"
+let colorInterpolation v =
+  attribute "" "color-interpolation" v
 
 
 
 
-let colorProfile =
-  attribute "" "color-profile"
+let colorProfile v =
+  attribute "" "color-profile" v
 
 
 
 
-let colorRendering =
-  attribute "" "color-rendering"
+let colorRendering v =
+  attribute "" "color-rendering" v
 
 
 
 
-let color =
-  attribute "" "color"
+let color v =
+  attribute "" "color" v
 
 
 
 
-let cursor =
-  attribute "" "cursor"
+let cursor v =
+  attribute "" "cursor" v
 
 
 
 
-let direction =
-  attribute "" "direction"
+let direction v =
+  attribute "" "direction" v
 
 
 
 
-let display =
-  attribute "" "display"
+let display v =
+  attribute "" "display" v
 
 
 
 
-let dominantBaseline =
-  attribute "" "dominant-baseline"
+let dominantBaseline v =
+  attribute "" "dominant-baseline" v
 
 
 
 
-let enableBackground =
-  attribute "" "enable-background"
+let enableBackground v =
+  attribute "" "enable-background" v
 
 
 
 
-let fillOpacity =
-  attribute "" "fill-opacity"
+let fillOpacity v =
+  attribute "" "fill-opacity" v
 
 
 
 
-let fillRule =
-  attribute "" "fill-rule"
+let fillRule v =
+  attribute "" "fill-rule" v
 
 
 
 
-let fill =
-  attribute "" "fill"
+let fill v =
+  attribute "" "fill" v
 
 
 
 
-let filter =
-  attribute "" "filter"
+let filter v =
+  attribute "" "filter" v
 
 
 
 
-let floodColor =
-  attribute "" "flood-color"
+let floodColor v =
+  attribute "" "flood-color" v
 
 
 
 
-let floodOpacity =
-  attribute "" "flood-opacity"
+let floodOpacity v =
+  attribute "" "flood-opacity" v
 
 
 
 
-let fontFamily =
-  attribute "" "font-family"
+let fontFamily v =
+  attribute "" "font-family" v
 
 
 
 
-let fontSizeAdjust =
-  attribute "" "font-size-adjust"
+let fontSizeAdjust v =
+  attribute "" "font-size-adjust" v
 
 
 
 
-let fontSize =
-  attribute "" "font-size"
+let fontSize v =
+  attribute "" "font-size" v
 
 
 
 
-let fontStretch =
-  attribute "" "font-stretch"
+let fontStretch v =
+  attribute "" "font-stretch" v
 
 
 
 
-let fontStyle =
-  attribute "" "font-style"
+let fontStyle v =
+  attribute "" "font-style" v
 
 
 
 
-let fontVariant =
-  attribute "" "font-variant"
+let fontVariant v =
+  attribute "" "font-variant" v
 
 
 
 
-let fontWeight =
-  attribute "" "font-weight"
+let fontWeight v =
+  attribute "" "font-weight" v
 
 
 
 
-let glyphOrientationHorizontal =
-  attribute "" "glyph-orientation-horizontal"
+let glyphOrientationHorizontal v =
+  attribute "" "glyph-orientation-horizontal" v
 
 
 
 
-let glyphOrientationVertical =
-  attribute "" "glyph-orientation-vertical"
+let glyphOrientationVertical v =
+  attribute "" "glyph-orientation-vertical" v
 
 
 
 
-let imageRendering =
-  attribute "" "image-rendering"
+let imageRendering v =
+  attribute "" "image-rendering" v
 
 
 
 
-let kerning =
-  attribute "" "kerning"
+let kerning v =
+  attribute "" "kerning" v
 
 
 
 
-let letterSpacing =
-  attribute "" "letter-spacing"
+let letterSpacing v =
+  attribute "" "letter-spacing" v
 
 
 
 
-let lightingColor =
-  attribute "" "lighting-color"
+let lightingColor v =
+  attribute "" "lighting-color" v
 
 
 
 
-let markerEnd =
-  attribute "" "marker-end"
+let markerEnd v =
+  attribute "" "marker-end" v
 
 
 
 
-let markerMid =
-  attribute "" "marker-mid"
+let markerMid v =
+  attribute "" "marker-mid" v
 
 
 
 
-let markerStart =
-  attribute "" "marker-start"
+let markerStart v =
+  attribute "" "marker-start" v
 
 
 
 
-let mask =
-  attribute "" "mask"
+let mask v =
+  attribute "" "mask" v
 
 
 
 
-let opacity =
-  attribute "" "opacity"
+let opacity v =
+  attribute "" "opacity" v
 
 
 
 
-let overflow =
-  attribute "" "overflow"
+let overflow v =
+  attribute "" "overflow" v
 
 
 
 
-let pointerEvents =
-  attribute "" "pointer-events"
+let pointerEvents v =
+  attribute "" "pointer-events" v
 
 
 
 
-let shapeRendering =
-  attribute "" "shape-rendering"
+let shapeRendering v =
+  attribute "" "shape-rendering" v
 
 
 
 
-let stopColor =
-  attribute "" "stop-color"
+let stopColor v =
+  attribute "" "stop-color" v
 
 
 
 
-let stopOpacity =
-  attribute "" "stop-opacity"
+let stopOpacity v =
+  attribute "" "stop-opacity" v
 
 
 
 
-let strokeDasharray =
-  attribute "" "stroke-dasharray"
+let strokeDasharray v =
+  attribute "" "stroke-dasharray" v
 
 
 
 
-let strokeDashoffset =
-  attribute "" "stroke-dashoffset"
+let strokeDashoffset v =
+  attribute "" "stroke-dashoffset" v
 
 
 
 
-let strokeLinecap =
-  attribute "" "stroke-linecap"
+let strokeLinecap v =
+  attribute "" "stroke-linecap" v
 
 
 
 
-let strokeLinejoin =
-  attribute "" "stroke-linejoin"
+let strokeLinejoin v =
+  attribute "" "stroke-linejoin" v
 
 
 
 
-let strokeMiterlimit =
-  attribute "" "stroke-miterlimit"
+let strokeMiterlimit v =
+  attribute "" "stroke-miterlimit" v
 
 
 
 
-let strokeOpacity =
-  attribute "" "stroke-opacity"
+let strokeOpacity v =
+  attribute "" "stroke-opacity" v
 
 
 
 
-let strokeWidth =
-  attribute "" "stroke-width"
+let strokeWidth v =
+  attribute "" "stroke-width" v
 
 
 
 
-let stroke =
-  attribute "" "stroke"
+let stroke v =
+  attribute "" "stroke" v
 
 
 
 
-let textAnchor =
-  attribute "" "text-anchor"
+let textAnchor v =
+  attribute "" "text-anchor" v
 
 
 
 
-let textDecoration =
-  attribute "" "text-decoration"
+let textDecoration v =
+  attribute "" "text-decoration" v
 
 
 
 
-let textRendering =
-  attribute "" "text-rendering"
+let textRendering v =
+  attribute "" "text-rendering" v
 
 
 
 
-let unicodeBidi =
-  attribute "" "unicode-bidi"
+let unicodeBidi v =
+  attribute "" "unicode-bidi" v
 
 
 
 
-let visibility =
-  attribute "" "visibility"
+let visibility v =
+  attribute "" "visibility" v
 
 
 
 
-let wordSpacing =
-  attribute "" "word-spacing"
+let wordSpacing v =
+  attribute "" "word-spacing" v
 
 
 
 
-let writingMode =
-  attribute "" "writing-mode"
+let writingMode v =
+  attribute "" "writing-mode" v
