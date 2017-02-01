@@ -10,14 +10,10 @@
     "commonjs"
   ],
   "sources": [
-    {
-      "dir": "src",
-      "public" : "all"
-    },
+    "src",     
     {
       "dir": "test",
       "type": "dev"
     }
-  ],
-  "generate-merlin": true
+  ]
 }
