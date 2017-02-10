@@ -86,12 +86,20 @@ let td ?(key="") ?(unique="") props nodes = fullnode "" "td" key unique props no
 
 let progress ?(key="") ?(unique="") props nodes = fullnode "" "progress" key unique props nodes
 
+let img ?(key="") ?(unique="") props nodes = fullnode "" "img" key unique props nodes
+
+let select ?(key="") ?(unique="") props nodes = fullnode "" "select" key unique props nodes
+
+let option' ?(key="") ?(unique="") props nodes = fullnode "" "option" key unique props nodes
+
 
 (* Properties *)
 
 let id str = prop "id" str
 
 let href str = prop "href" str
+
+let src str = prop "src" str
 
 let class' name = prop "className" name
 
@@ -143,6 +151,18 @@ let onInputOpt ?(key="") msg =
 
 let onInput ?(key="") msg = onInputOpt ~key:key (fun ev -> Some (msg ev))
 
+let onChangeOpt ?(key="") msg =
+  onCB "change" key
+  (fun ev ->
+       match Js.Undefined.to_opt ev##target with
+       | None -> None
+       | Some target -> match Js.Undefined.to_opt target##value with
+         | None -> None
+         | Some value -> msg value
+    )
+
+let onChange ?(key="") msg = onChangeOpt ~key:key (fun ev -> Some (msg ev))
+
 let onClick msg =
   onMsg "click" msg
 
@@ -177,5 +197,7 @@ module Attributes = struct
   let step value = attribute "" "step" value
 
   let disabled b = if b then attribute "" "disabled" "true" else noProp
+
+  let selected b = if b then attribute "" "selected" "true" else noProp
 
 end
