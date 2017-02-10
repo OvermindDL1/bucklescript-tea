@@ -1,6 +1,6 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "bsc-flags": [
     "-w",
     "-40",
@@ -10,7 +10,7 @@
     "commonjs"
   ],
   "sources": [
-    "src",     
+    "src",
     {
       "dir": "test",
       "type": "dev"
