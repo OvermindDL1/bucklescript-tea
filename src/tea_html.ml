@@ -151,6 +151,18 @@ let onInputOpt ?(key="") msg =
 
 let onInput ?(key="") msg = onInputOpt ~key:key (fun ev -> Some (msg ev))
 
+let onChangeOpt ?(key="") msg =
+  onCB "change" key
+  (fun ev ->
+       match Js.Undefined.to_opt ev##target with
+       | None -> None
+       | Some target -> match Js.Undefined.to_opt target##value with
+         | None -> None
+         | Some value -> msg value
+    )
+
+let onChange ?(key="") msg = onChangeOpt ~key:key (fun ev -> Some (msg ev))
+
 let onClick msg =
   onMsg "click" msg
 
