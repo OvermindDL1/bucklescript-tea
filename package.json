@@ -1,10 +1,13 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "TEA for Bucklescript",
   "main": "index.js",
   "scripts": {
+    "clean": "bsb clean",
+    "clean:all": "bsb -clean-world",
     "build": "bsb",
+    "build:all": "bsb -make-world",
     "watch": "bsb -w",
     "build:test:client": "browserify --standalone=Test_client --outfile=lib/js/test/app_test_client.js lib/js/test/test_client.js",
     "watch:test:client": "watchify --standalone=Test_client --outfile=lib/js/test/app_test_client.js lib/js/test/test_client.js",
@@ -33,6 +36,7 @@
     "bs-platform": "^1.4.2"
   },
   "devDependencies": {
-    "browserify": "^14.0.0"
+    "browserify": "^14.0.0",
+    "bs-platform": "^1.4.2"
   }
 }
