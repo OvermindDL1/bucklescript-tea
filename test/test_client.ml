@@ -1,1 +1,2 @@
 let counter = let open Test_client_counter in main
+let btn_update_span = let open Test_client_btn_update_span in main

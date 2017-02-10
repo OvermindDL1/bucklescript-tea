@@ -177,7 +177,6 @@ let eventHandler_Unregister elem name = function
     None
 
 let eventHandler_Mutate callbacks elem (oldName : string) (newName : string) oldHandlerType newHandlerType oldCache newCache =
-  let namesMatch = oldName = newName in
   match !oldCache with
   | None -> newCache := eventHandler_Register callbacks elem newName newHandlerType
   | Some oldcache ->
@@ -225,7 +224,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate callbacks elem idx oldProp = funct
     (* let () = Js.log ("Mutating Attribute", namespace, k, v, elem) in *)
     Web.Node.setAttributeNsOptional elem namespace k v
   | Data  (k, v) as _newProp -> Js.log ("TODO:  Mutate Data Unhandled", k, v); failwith "TODO:  Mutate Data Unhandled"
-  | Event (newName, newHandlerType, newCache) as newProp -> failwith "This will never be called because it is gated"
+  | Event (_newName, _newHandlerType, _newCache) as _newProp -> failwith "This will never be called because it is gated"
   | Style s as _newProp ->
     (* let () = Js.log ("Mutating Style", elem, oldProp, _newProp) in *)
     match [@ocaml.warning "-4"] oldProp with
@@ -273,7 +272,7 @@ let rec patchVNodesOnElems_PropertiesApply callbacks elem idx oldProperties newP
   (* Event *)
   (* | Event (oldTyp, oldKey, oldCbev) :: oldRest, Event (newTyp, newKey, newCbev) :: newRest ->
      let () = if oldTyp = newTyp && oldKey = newKey then () else *)
-  | (Event (oldName, oldHandlerType, oldCache) as oldProp) :: oldRest, (Event (newName, newHandlerType, newCache) as newProp) :: newRest ->
+  | (Event (oldName, oldHandlerType, oldCache) as _oldProp) :: oldRest, (Event (newName, newHandlerType, newCache) as _newProp) :: newRest ->
     let () = eventHandler_Mutate callbacks elem oldName newName oldHandlerType newHandlerType oldCache newCache in
     patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) oldRest newRest
   (* Style *)
@@ -326,6 +325,23 @@ and patchVNodesOnElems_CreateElement callbacks = function
   | Tagger (tagger, vdom) ->
     (* let () = Js.log ("Tagger", "creating", tagger, vdom) in *)
     patchVNodesOnElems_CreateElement (tagger callbacks) vdom
+
+and patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode =
+  match (oldNode, newNode) with
+  | ((Node (oldNamespace, oldTagName, _oldKey, oldUnique, oldProperties, oldChildren) as _oldNode),
+     (Node (newNamespace, newTagName, _newKey, newUnique, newProperties, newChildren) as newNode)) ->
+    (* We are being ordered to mutate the node, the key's are already handled *)
+    if oldUnique <> newUnique || oldTagName <> newTagName then
+      (* let () = Js.log ("Node test", "unique swap", elem, elems.(idx), newNode) in *)
+      patchVNodesOnElems_ReplaceNode callbacks elem elems idx newNode
+    else (* Same node type, just mutate things *)
+      (* let () = Js.log ("Node test", "non-unique mutate", elem, elems.(idx), newNode) in *)
+      let child = elems.(idx) in
+      let childChildren = Web.Node.childNodes child in
+      let () = patchVNodesOnElems_Properties callbacks child oldProperties newProperties in
+      patchVNodesOnElems callbacks child childChildren 0 oldChildren newChildren
+  | _ -> failwith "Non-node passed to patchVNodesOnElems_MutateNode"
+
 
 and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
   (* let () = Js.log ("patchVNodesOnElems", elem, elems, idx, oldVNodes, newVNodes) in *)
@@ -390,22 +406,13 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
           let () = newCache := newVdom in (* Don't forget to pass the cache along... *)
           patchVNodesOnElems callbacks elem elems idx (oldVdom :: oldRest) (newVdom :: newRest)
       )
-  | Node (oldNamespace, oldTagName, oldKey, oldUnique, oldProperties, oldChildren) :: oldRest,
+  | (Node (oldNamespace, oldTagName, oldKey, oldUnique, oldProperties, oldChildren) as oldNode) :: oldRest,
     (Node (newNamespace, newTagName, newKey, newUnique, newProperties, newChildren) as newNode) :: newRest ->
-    if newKey = "" || oldKey = "" then
-      if oldUnique = newUnique then
-        (* let () = Js.log ("Node test", "parse", elem, elems.(idx), newNode) in *)
-        let child = elems.(idx) in
-        let childChildren = Web.Node.childNodes child in
-        let () = patchVNodesOnElems_Properties callbacks child oldProperties newProperties in
-        let () = patchVNodesOnElems callbacks child childChildren 0 oldChildren newChildren in
-        patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
-      else
-        (* let () = Js.log ("Node test", "unique swap", elem, elems.(idx), newNode) in *)
-        let () = patchVNodesOnElems_ReplaceNode callbacks elem elems idx newNode in
-        patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
-    else if oldKey = newKey then
+    if oldKey = newKey && oldKey <> "" then (* Do nothing, they are keyed identically *)
       (* let () = Js.log ("Node test", "match", elem, elems.(idx), newNode) in *)
+      patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
+    else if oldKey = "" || newKey = "" then
+      let () = patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode in
       patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
     else (* Keys do not match but do exist *)
       ( match oldRest, newRest with
@@ -434,17 +441,8 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
           let _attachedChild = Web.Node.insertBefore elem newChild oldChild in
           patchVNodesOnElems callbacks elem elems (idx+1) oldVNodes newRest
         | _ ->
-          if oldUnique = newUnique then
-            (* let () = Js.log ("Node test", "non-older non-newer keyed parse", elem, elems.(idx), newNode) in *)
-            let child = elems.(idx) in
-            let childChildren = Web.Node.childNodes child in
-            let () = patchVNodesOnElems_Properties callbacks child oldProperties newProperties in
-            let () = patchVNodesOnElems callbacks child childChildren 0 oldChildren newChildren in
-            patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
-          else
-            (* let () = Js.log ("Node test", "non-older keyed unique swap", elem, elems.(idx), newNode) in *)
-            let () = patchVNodesOnElems_ReplaceNode callbacks elem elems idx newNode in
-            patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
+          let () = patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode in
+          patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
       )
   | _oldVnode :: oldRest, newNode :: newRest ->
     let oldChild = elems.(idx) in
