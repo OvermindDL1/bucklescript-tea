@@ -2,8 +2,6 @@
   "name": "bucklescript-tea",
   "version": "0.2.2",
   "bsc-flags": [
-    "-w",
-    "-40",
     "-bs-cross-module-opt"
   ],
   "package-specs": [
