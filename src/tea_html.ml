@@ -92,6 +92,7 @@ let select ?(key="") ?(unique="") props nodes = fullnode "" "select" key unique 
 
 let option' ?(key="") ?(unique="") props nodes = fullnode "" "option" key unique props nodes
 
+let form ?(key="") ?(unique="") props nodes = fullnode "" "form" key unique props nodes
 
 (* Properties *)
 
@@ -134,6 +135,9 @@ let hidden b = if b then prop "hidden" "hidden" else noProp
 
 let target t = prop "target" t
 
+let action a = prop "action" a
+
+let method' m = prop "method" m
 
 (* Events *)
 
@@ -201,5 +205,7 @@ module Attributes = struct
   let disabled b = if b then attribute "" "disabled" "true" else noProp
 
   let selected b = if b then attribute "" "selected" "true" else noProp
+
+  let acceptCharset c = attribute "" "accept-charset" c
 
 end
