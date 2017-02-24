@@ -1,6 +1,6 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "TEA for Bucklescript",
   "main": "index.js",
   "scripts": {
@@ -37,6 +37,8 @@
   },
   "devDependencies": {
     "browserify": "^14.0.0",
-    "bs-platform": "^1.4.2"
+    "bs-platform": "^1.4.2",
+    "npm-run-all": "4.0.2",
+    "watchify": "3.9.0"
   }
 }

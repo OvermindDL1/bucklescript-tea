@@ -244,13 +244,17 @@ let patchVNodesOnElems_PropertiesApply_Mutate callbacks elem idx oldProp = funct
 let rec patchVNodesOnElems_PropertiesApply callbacks elem idx oldProperties newProperties =
   (* let () = Js.log ("PROPERTY-APPLY", elem, idx, oldProperties, newProperties) in *)
   match [@ocaml.warning "-4"] oldProperties, newProperties with
-  | [], [] -> ()
+  | [], [] -> true
   | [], newProp :: newRest ->
-    let () = patchVNodesOnElems_PropertiesApply_Add callbacks elem idx newProp in
-    patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) [] newRest
+    (* Well this is wrong, the lengths should never differ, recreate node *)
+    false
+    (* let () = patchVNodesOnElems_PropertiesApply_Add callbacks elem idx newProp in
+    patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) [] newRest *)
   | oldProp :: oldRest, [] ->
-    let () = patchVNodesOnElems_PropertiesApply_Remove callbacks elem idx oldProp in
-    patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) [] oldRest
+    (* Well this is wrong, the lengths should never differ, recreate node *)
+    false
+    (* let () = patchVNodesOnElems_PropertiesApply_Remove callbacks elem idx oldProp in
+    patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) [] oldRest *)
   (* NoProp *)
   | NoProp :: oldRest, NoProp :: newRest -> patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) oldRest newRest
   (* RawProp *)
@@ -296,11 +300,20 @@ let patchVNodesOnElems_Properties callbacks elem oldProperties newProperties =
     patchVNodesOnElems_PropertiesApply callbacks elem 0 oldProperties newProperties
 
 
+let genEmptyProps length =
+  let rec aux lst = function
+    | 0 -> lst
+    | len -> aux (noProp :: lst) (len - 1)
+  in aux [] length
+
+let mapEmptyProps props = List.map (fun _ -> noProp) props
+
+
 let rec patchVNodesOnElems_ReplaceNode callbacks elem elems idx = function [@ocaml.warning "-4"]
   | (Node (newNamespace, newTagName, _newKey, _newUnique, newProperties, newChildren)) ->
     let oldChild = elems.(idx) in
     let newChild = Web.Document.createElementNsOptional newNamespace newTagName in
-    let () = patchVNodesOnElems_Properties callbacks newChild [] newProperties in
+    let [@ocaml.warning "-8"] true = patchVNodesOnElems_Properties callbacks newChild (mapEmptyProps newProperties) newProperties in
     let childChildren = Web.Node.childNodes newChild in
     let () = patchVNodesOnElems callbacks newChild childChildren 0 [] newChildren in
     let _attachedChild = Web.Node.insertBefore elem newChild oldChild in
@@ -314,7 +327,7 @@ and patchVNodesOnElems_CreateElement callbacks = function
   | Text text -> Web.Document.createTextNode text
   | Node (newNamespace, newTagName, _newKey, _unique, newProperties, newChildren) ->
     let newChild = Web.Document.createElementNsOptional newNamespace newTagName in
-    let () = patchVNodesOnElems_Properties callbacks newChild [] newProperties in
+    let [@ocaml.warning "-8"] true = patchVNodesOnElems_Properties callbacks newChild (mapEmptyProps newProperties) newProperties in
     let childChildren = Web.Node.childNodes newChild in
     let () = patchVNodesOnElems callbacks newChild childChildren 0 [] newChildren in
     newChild
@@ -338,8 +351,11 @@ and patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode =
       (* let () = Js.log ("Node test", "non-unique mutate", elem, elems.(idx), newNode) in *)
       let child = elems.(idx) in
       let childChildren = Web.Node.childNodes child in
-      let () = patchVNodesOnElems_Properties callbacks child oldProperties newProperties in
-      patchVNodesOnElems callbacks child childChildren 0 oldChildren newChildren
+      let () = if patchVNodesOnElems_Properties callbacks child oldProperties newProperties then () else
+          (* Properties mutation failed, full swap and log *)
+          let () = Js.log "VDom:  Failed swapping properties because the property list length changed, use `noProp` to swap properties instead, not by altering the list structure.  This is a massive inefficiency until this issue is resolved." in
+          patchVNodesOnElems_ReplaceNode callbacks elem elems idx newNode
+      in patchVNodesOnElems callbacks child childChildren 0 oldChildren newChildren
   | _ -> failwith "Non-node passed to patchVNodesOnElems_MutateNode"
 
 

@@ -95,6 +95,8 @@ let option' ?(key="") ?(unique="") props nodes = fullnode "" "option" key unique
 
 (* Properties *)
 
+let noProp = Vdom.noProp
+
 let id str = prop "id" str
 
 let href str = prop "href" str
