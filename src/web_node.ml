@@ -1,7 +1,7 @@
 
 type style = <
    setProperty : Web_json.t Js.undefined [@bs.get]; (* TODO:  Revamp this and the next line... *)
-   setProperty_ : string -> string Js.null -> string Js.null -> unit [@bs.meth];
+   setProperty__ : string -> string Js.null -> string Js.null -> unit [@bs.meth];
    > Js.t
 
 external getStyle : style -> string -> string Js.null = "" [@@bs.get_index]
@@ -52,7 +52,7 @@ let setStyleProperty n ?(priority=false) key value =
   let style = n##style in
   match Js.Undefined.to_opt style##setProperty with
   | None -> setStyle n key value (* TODO:  Change this to setAttribute sometime, maybe... *)
-  | Some _valid -> style##setProperty_ key value (if priority then (Js.Null.return "important") else Js.Null.empty)
+  | Some _valid -> style##setProperty__ key value (if priority then (Js.Null.return "important") else Js.Null.empty)
 
 let childNodes n = n##childNodes
 
