@@ -115,7 +115,7 @@ module Decoder = struct
           | Object, o ->
             ( let keys = Js.Dict.keys o in
               let parse k l =
-                ( match Js.Dict.get o k |> Js.Undefined.to_opt with
+                ( match Js.Dict.get o k with
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
                     match decoder v with
@@ -136,7 +136,7 @@ module Decoder = struct
           | Object, o ->
             ( let keys = Js.Dict.keys o in
               let parse k d =
-                ( match Js.Dict.get o k |> Js.Undefined.to_opt with
+                ( match Js.Dict.get o k with
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
                     match decoder v with
@@ -156,7 +156,7 @@ module Decoder = struct
           let open Web.Json in
           match reify_type value with
           | Object, o ->
-            ( match Js.Dict.get o key |> Js.Undefined.to_opt with
+            ( match Js.Dict.get o key with
               | None -> raise (ParseFail ("Field Value is undefined: " ^ key))
               | Some v -> decoder v
             )
