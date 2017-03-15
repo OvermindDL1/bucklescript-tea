@@ -17,7 +17,7 @@ class type _xmlhttprequest = object
   method abort : unit -> unit
   method getAllResponseHeaders : unit -> string Js.null
   method getResponseHeader : string -> string Js.null
-  method open_ : string -> string -> bool -> string -> string -> unit
+  method _open : string -> string -> bool -> string -> string -> unit
   method overrideMimeType : string -> unit
   method send : unit -> unit
   method send_string : string Js.null -> unit
@@ -107,7 +107,7 @@ let getAllResponseHeadersAsDict x =
 let getResponseHeader key x = Js.Null.to_opt (x##getResponse key)
 
 let open_ method' url ?(async=true) ?(user="") ?(password="") x =
-  x##open_ method' url async user password
+  x##_open method' url async user password
 
 let overrideMimeType mimetype x = x##overrideMimeType mimetype
 
