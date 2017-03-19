@@ -20,7 +20,7 @@ class type _xmlhttprequest = object
   method _open : string -> string -> bool -> string -> string -> unit
   method overrideMimeType : string -> unit
   method send : unit -> unit
-  method send_string : string Js.null -> unit
+  method send__string : string Js.null -> unit
   method send_formdata : Web_formdata.t -> unit
   method send_document : Web_document.t -> unit
   (* method send_blob : Web_blob.t -> unit *)
@@ -114,8 +114,8 @@ let overrideMimeType mimetype x = x##overrideMimeType mimetype
 let send body x =
   match body with
   | EmptyBody -> x##send ()
-  | EmptyStringBody -> x##send_string Js.Null.empty
-  | StringBody s -> x##send_string (Js.Null.return s)
+  | EmptyStringBody -> x##send__string Js.Null.empty
+  | StringBody s -> x##send__string (Js.Null.return s)
   | FormDataBody f -> x##send_formdata f
   | FormListBody l ->
     let form =
