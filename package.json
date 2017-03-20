@@ -1,6 +1,6 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "TEA for Bucklescript",
   "main": "index.js",
   "scripts": {
