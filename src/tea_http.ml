@@ -153,6 +153,16 @@ let send resultToMessage (Request (request, maybeEvents)) =
       ()
     )
 
+external encodeURIComponent : string -> string = "" [@@bs.val]
+
+let encodeUri str =
+    encodeURIComponent str
+
+external decodeURIComponent : string -> string = "" [@@bs.val]
+
+let decodeUri str =
+    try Some (decodeURIComponent str)
+        with _ -> None
 
 module Progress = struct
 
