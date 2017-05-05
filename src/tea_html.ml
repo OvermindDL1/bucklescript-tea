@@ -193,6 +193,24 @@ let onCheckOpt ?(key="") msg =
 
 let onCheck ?(key="") msg = onCheckOpt ~key:key (fun ev -> Some (msg ev))
 
+let onMouseDown msg =
+  onMsg "mousedown" msg
+
+let onMouseUp msg =
+  onMsg "mouseup" msg
+
+let onMouseEnter msg =
+  onMsg "mouseenter" msg
+
+let onMouseLeave msg =
+  onMsg "mouseleave" msg
+
+let onMouseOver msg =
+  onMsg "mouseover" msg
+
+let onMouseOut msg =
+  onMsg "mouseout" msg
+
 
 module Attributes = struct
 
