@@ -14,6 +14,7 @@ module LocalStorage = struct
 
   let setItem key value =
     nativeBinding (fun cb ->
-        Web.Window.LocalStorage.setItem Web.Window.window key value
+        let () = Web.Window.LocalStorage.setItem Web.Window.window key value in
+        cb (Ok ())
       )
 end
