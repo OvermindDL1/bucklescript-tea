@@ -129,6 +129,8 @@ let name str = prop "name" str
 
 let checked b = if b then prop "checked" "checked" else noProp
 
+let draggable b = if b then prop "draggable" "draggable" else noProp
+
 let for' str = prop "htmlFor" str
 
 let hidden b = if b then prop "hidden" "hidden" else noProp
