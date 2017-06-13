@@ -96,6 +96,8 @@ let form ?(key="") ?(unique="") props nodes = fullnode "" "form" key unique prop
 
 let nav ?(key="") ?(unique="") props nodes = fullnode "" "nav" key unique props nodes
 
+let main ?(key="") ?(unique="") props nodes = fullnode "" "main" key unique props nodes
+
 (* Properties *)
 
 let noProp = Vdom.noProp
