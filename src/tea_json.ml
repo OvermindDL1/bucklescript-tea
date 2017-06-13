@@ -27,7 +27,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | String, s -> Tea_result.Ok s
           | _, _ -> Tea_result.Error "Non-string value"
       )
@@ -36,7 +36,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Number, n ->
             if n > (float_of_int min_int) && n < (float_of_int max_int)
             then Tea_result.Ok (int_of_float n)
@@ -48,7 +48,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Number, n -> Tea_result.Ok n
           | _, _ -> Tea_result.Error "Non-float-value"
       )
@@ -57,7 +57,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Boolean, b -> Tea_result.Ok (Js.to_bool b)
           | _, _ -> Tea_result.Error "Non-boolean value"
       )
@@ -66,7 +66,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Null, _ -> Tea_result.Ok v
           | _, _ -> Tea_result.Error "Non-null value"
       )
@@ -77,7 +77,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Array, a ->
             ( let parse v =
                 ( match decoder v with
@@ -94,7 +94,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Array, a ->
             ( let parse v =
                 ( match decoder v with
@@ -111,7 +111,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Object, o ->
             ( let keys = Js.Dict.keys o in
               let parse k l =
@@ -132,7 +132,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Object, o ->
             ( let keys = Js.Dict.keys o in
               let parse k d =
@@ -154,7 +154,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Object, o ->
             ( match Js.Dict.get o key with
               | None -> raise (ParseFail ("Field Value is undefined: " ^ key))
@@ -170,7 +170,7 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reify_type value with
+          match reifyType value with
           | Array, a ->
             if idx < 0 || idx > (Array.length a)
             then Tea_result.Error ("Array index out of range: " ^ (string_of_int idx))
