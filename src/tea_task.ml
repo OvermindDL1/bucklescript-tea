@@ -13,13 +13,16 @@ let nothing () = ()
 (* Resolvers *)
 
 
-let performOpt (toOptionalMessage : 'value -> 'msg) (Task task : ('msg, never) t) =
+let performOpt (toOptionalMessage : 'value -> 'msg) (Task task : ('value, never) t) =
   Tea_cmd.call (fun callbacks ->
       let open Tea_result in
       let open Vdom in
       let cb = function
         | Error _e -> failwith "ERROR:  Task perfom returned error of never! Should not happen!"
-        | Ok v -> !callbacks.enqueue (toOptionalMessage v)
+        | Ok v ->
+          match toOptionalMessage v with
+          | None -> ()
+          | Some result -> !callbacks.enqueue result
       in task cb
     )
 
@@ -30,8 +33,11 @@ let perform toMessage task =
 let attemptOpt resultToOptionalMessage (Task task) =
   Tea_cmd.call (fun callbacks ->
       let open Vdom in
-      let cb value = !callbacks.enqueue (resultToOptionalMessage value) in
-      task cb
+      let cb value =
+        match resultToOptionalMessage value with
+        | None -> ()
+        | Some result -> !callbacks.enqueue result
+      in task cb
     )
 
 let attempt resultToMessage task =
@@ -177,6 +183,6 @@ let testing () =
   let () = doTest (Error "3.14") n1 in
   let n2 = sequence [ mapError string_of_int (succeed 1); mapError string_of_float (succeed 2)] in
   let () = doTest (Ok [1;2]) n2 in
-  let _c0 = performOpt (fun _ -> 42) (succeed 18) in
+  let _c0 = perform (fun _ -> 42) (succeed 18) in
   (* (\* Should not compile *\) let _c1 = perform (fun _ -> 42) (fail 18) in *)
   ()

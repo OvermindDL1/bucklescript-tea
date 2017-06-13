@@ -3,10 +3,12 @@
 
 module History = Web_window_history
 
+module LocalStorage = Web_window_localstorage
+
 type timeoutHandlerID = int
 
 type t = <
-  history : History.t [@bs.get];
+  history : History.t Js.Undefined.t [@bs.get];
   location : Web_location.t [@bs.get];
   clearTimeout : timeoutHandlerID -> unit [@bs.meth];
   requestAnimationFrame : (float -> unit) -> int [@bs.meth];
@@ -15,12 +17,15 @@ type t = <
   setTimeout : (unit -> unit) -> float -> timeoutHandlerID [@bs.meth];
   addEventListener : string -> Web_node.t Web_event.cb -> Web_event.options -> unit [@bs.meth];
   removeEventListener : string -> Web_node.t Web_event.cb -> Web_event.options -> unit [@bs.meth];
+  localStorage : LocalStorage.t Js.Undefined.t [@bs.get];
 > Js.t
 
 external window : t = "window" [@@bs.val]
 
 
 let history () = window##history
+
+let localStorage () = window##localStorage
 
 let location () = window##location
 
