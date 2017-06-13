@@ -15,3 +15,8 @@ In alphabetical order in their requisite sections.
 - @IwanKaramazow: Bug finder extraordinaire, thanks for catching all those corner cases! Also helping flesh out the API.
 
 - @jackalcooper: Bug finder extraordinaire, thanks for catching those Bucklescript issues! Also helped flesh out the API.
+
+- @jordwest: Adding further to the API.
+
+- @tcoopman: Adding further to the API.
+
