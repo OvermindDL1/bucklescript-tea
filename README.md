@@ -27,7 +27,9 @@ With the above any PR's are welcome to clean up code, flesh out functionality, a
 
 ### NPM
 
-Install via npm by:
+First verify you have `bs-platform` installed, whether globally or just in your project.
+
+Then install via npm by:
 
 ```sh
 npm install --save bucklescript-tea
