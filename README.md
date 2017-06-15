@@ -3,6 +3,7 @@
 [![NPM](https://nodei.co/npm/bucklescript-tea.png?compact=true)](https://nodei.co/npm/bucklescript-tea/)
 
 [![Build Status](https://travis-ci.org/OvermindDL1/bucklescript-tea.svg?branch=master)](https://travis-ci.org/OvermindDL1/bucklescript-tea)
+
 ## Reason to Use
 
 - Entirely event driven, this is like React/Flow but type-safe and significantly faster.
