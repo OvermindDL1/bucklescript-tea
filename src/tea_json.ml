@@ -27,48 +27,49 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | String, s -> Tea_result.Ok s
-          | _, _ -> Tea_result.Error "Non-string value"
+          match classify value with
+          | JSONString s -> Tea_result.Ok s
+          | _ -> Tea_result.Error "Non-string value"
       )
 
   let int =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Number, n ->
+          match classify value with
+          | JSONNumber n ->
             if n > (float_of_int min_int) && n < (float_of_int max_int)
             then Tea_result.Ok (int_of_float n)
             else Tea_result.Error "number out of int range"
-          | _, _ -> Tea_result.Error "Non-int value"
+          | _ -> Tea_result.Error "Non-int value"
       )
 
   let float =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Number, n -> Tea_result.Ok n
-          | _, _ -> Tea_result.Error "Non-float-value"
+          match classify value with
+          | JSONNumber n -> Tea_result.Ok n
+          | _ -> Tea_result.Error "Non-float-value"
       )
 
   let bool =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Boolean, b -> Tea_result.Ok (Js.to_bool b)
-          | _, _ -> Tea_result.Error "Non-boolean value"
+          match classify value with
+          | JSONTrue -> Tea_result.Ok true
+          | JSONFalse -> Tea_result.Ok false
+          | _ -> Tea_result.Error "Non-boolean value"
       )
 
   let null v =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Null, _ -> Tea_result.Ok v
-          | _, _ -> Tea_result.Error "Non-null value"
+          match classify value with
+          | JSONNull -> Tea_result.Ok v
+          | _ -> Tea_result.Error "Non-null value"
       )
 
   (* Compound types *)
@@ -77,8 +78,8 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Array, a ->
+          match classify value with
+          | JSONArray a ->
             ( let parse v =
                 ( match decoder v with
                   | Tea_result.Ok r -> r
@@ -87,15 +88,15 @@ module Decoder = struct
               try Tea_result.Ok (Array.to_list a |> List.map parse)
               with ParseFail e -> Tea_result.Error ("Invalid list parsing: " ^ e)
             )
-          | _, _ -> Tea_result.Error "Non-list value"
+          | _ -> Tea_result.Error "Non-list value"
       )
 
   let array (Decoder decoder) =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Array, a ->
+          match classify value with
+          | JSONArray a ->
             ( let parse v =
                 ( match decoder v with
                   | Tea_result.Ok r -> r
@@ -104,15 +105,15 @@ module Decoder = struct
               try Tea_result.Ok (Array.map parse a)
               with ParseFail e -> Tea_result.Error ("Invalid array parsing: " ^ e)
             )
-          | _, _ -> Tea_result.Error "Non-array value"
+          | _ -> Tea_result.Error "Non-array value"
       )
 
   let keyValuePairs (Decoder decoder) =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Object, o ->
+          match classify value with
+          | JSONObject o ->
             ( let keys = Js.Dict.keys o in
               let parse k l =
                 ( match Js.Dict.get o k with
@@ -125,15 +126,15 @@ module Decoder = struct
               try Tea_result.Ok (Array.fold_right parse keys [])
               with ParseFail e -> Tea_result.Error ("Invalid keyValuePair parsing: " ^ e)
             )
-          | _, _ -> Tea_result.Error "Non-keyValuePair value"
+          | _ -> Tea_result.Error "Non-keyValuePair value"
       )
 
   let dict (Decoder decoder) =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Object, o ->
+          match classify value with
+          | JSONObject o ->
             ( let keys = Js.Dict.keys o in
               let parse k d =
                 ( match Js.Dict.get o k with
@@ -147,20 +148,20 @@ module Decoder = struct
               try Tea_result.Ok (Array.fold_right parse keys emptyDict)
               with ParseFail e -> Tea_result.Error ("Invalid dict parsing: " ^ e)
             )
-          | _, _ -> Tea_result.Error "Non-dict value"
+          | _ -> Tea_result.Error "Non-dict value"
       )
 
   let field key (Decoder decoder) =
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Object, o ->
+          match classify value with
+          | JSONObject o ->
             ( match Js.Dict.get o key with
               | None -> raise (ParseFail ("Field Value is undefined: " ^ key))
               | Some v -> decoder v
             )
-          | _, _ -> Tea_result.Error "Non-fieldable value"
+          | _ -> Tea_result.Error "Non-fieldable value"
       )
 
   let at fields dec =
@@ -170,12 +171,12 @@ module Decoder = struct
     Decoder
       ( fun value ->
           let open Web.Json in
-          match reifyType value with
-          | Array, a ->
+          match classify value with
+          | JSONArray a ->
             if idx < 0 || idx > (Array.length a)
             then Tea_result.Error ("Array index out of range: " ^ (string_of_int idx))
             else decoder a.(idx)
-          | _, _ -> Tea_result.Error "Non-array value"
+          | _ -> Tea_result.Error "Non-array value"
       )
 
   let maybe (Decoder decoder) =
@@ -428,7 +429,7 @@ module Decoder = struct
 
   let decodeString decoder string =
     try
-      let value = Web.Json.parse string in
+      let value = Web.Json.parseExn string in
       decodeValue decoder value
     with
     (* | JsException e -> Tea_result.Error ("Given an invalid JSON: " ^ e) *)

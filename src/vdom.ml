@@ -193,7 +193,7 @@ let eventHandler_Mutate callbacks elem (oldName : string) (newName : string) old
       ()
 
 
-let patchVNodesOnElems_PropertiesApply_Add callbacks elem idx = function
+let patchVNodesOnElems_PropertiesApply_Add callbacks elem _idx = function
   | NoProp -> ()
   | RawProp (k, v) -> Web.Node.setProp elem k v
   | Attribute (namespace, k, v) -> Web.Node.setAttributeNsOptional elem namespace k v
@@ -202,7 +202,7 @@ let patchVNodesOnElems_PropertiesApply_Add callbacks elem idx = function
   | Style s -> List.fold_left (fun () (k, v) -> Web.Node.setStyleProperty elem k (Js.Null.return v)) () s
 
 
-let patchVNodesOnElems_PropertiesApply_Remove _callbacks elem idx = function
+let patchVNodesOnElems_PropertiesApply_Remove _callbacks elem _idx = function
   | NoProp -> ()
   | RawProp (k, _v) -> Web.Node.setProp elem k Js.Undefined.empty
   | Attribute (namespace, k, _v) -> Web.Node.removeAttributeNsOptional elem namespace k
@@ -215,7 +215,7 @@ let patchVNodesOnElems_PropertiesApply_RemoveAdd callbacks elem idx oldProp newP
   let () = patchVNodesOnElems_PropertiesApply_Add callbacks elem idx newProp in
   ()
 
-let patchVNodesOnElems_PropertiesApply_Mutate callbacks elem idx oldProp = function
+let patchVNodesOnElems_PropertiesApply_Mutate _callbacks elem _idx oldProp = function
   | NoProp as _newProp -> failwith "This should never be called as all entries through NoProp are gated."
   | RawProp (k, v) as _newProp ->
     (* let () = Js.log ("Mutating RawProp", elem, oldProp, _newProp) in *)
@@ -245,12 +245,12 @@ let rec patchVNodesOnElems_PropertiesApply callbacks elem idx oldProperties newP
   (* let () = Js.log ("PROPERTY-APPLY", elem, idx, oldProperties, newProperties) in *)
   match [@ocaml.warning "-4"] oldProperties, newProperties with
   | [], [] -> true
-  | [], newProp :: newRest ->
+  | [], _newProp :: _newRest ->
     (* Well this is wrong, the lengths should never differ, recreate node *)
     false
     (* let () = patchVNodesOnElems_PropertiesApply_Add callbacks elem idx newProp in
     patchVNodesOnElems_PropertiesApply callbacks elem (idx+1) [] newRest *)
-  | oldProp :: oldRest, [] ->
+  | _oldProp :: _oldRest, [] ->
     (* Well this is wrong, the lengths should never differ, recreate node *)
     false
     (* let () = patchVNodesOnElems_PropertiesApply_Remove callbacks elem idx oldProp in
@@ -341,8 +341,8 @@ and patchVNodesOnElems_CreateElement callbacks = function
 
 and patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode =
   match (oldNode, newNode) with
-  | ((Node (oldNamespace, oldTagName, _oldKey, oldUnique, oldProperties, oldChildren) as _oldNode),
-     (Node (newNamespace, newTagName, _newKey, newUnique, newProperties, newChildren) as newNode)) ->
+  | ((Node (_oldNamespace, oldTagName, _oldKey, oldUnique, oldProperties, oldChildren) as _oldNode),
+     (Node (_newNamespace, newTagName, _newKey, newUnique, newProperties, newChildren) as newNode)) ->
     (* We are being ordered to mutate the node, the key's are already handled *)
     if oldUnique <> newUnique || oldTagName <> newTagName then
       (* let () = Js.log ("Node test", "unique swap", elem, elems.(idx), newNode) in *)
@@ -422,8 +422,8 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
           let () = newCache := newVdom in (* Don't forget to pass the cache along... *)
           patchVNodesOnElems callbacks elem elems idx (oldVdom :: oldRest) (newVdom :: newRest)
       )
-  | (Node (oldNamespace, oldTagName, oldKey, oldUnique, oldProperties, oldChildren) as oldNode) :: oldRest,
-    (Node (newNamespace, newTagName, newKey, newUnique, newProperties, newChildren) as newNode) :: newRest ->
+  | (Node (oldNamespace, oldTagName, oldKey, _oldUnique, _oldProperties, _oldChildren) as oldNode) :: oldRest,
+    (Node (newNamespace, newTagName, newKey, _newUnique, _newProperties, _newChildren) as newNode) :: newRest ->
     if oldKey = newKey && oldKey <> "" then (* Do nothing, they are keyed identically *)
       (* let () = Js.log ("Node test", "match", elem, elems.(idx), newNode) in *)
       patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
