@@ -3,6 +3,7 @@
 [![NPM](https://nodei.co/npm/bucklescript-tea.png?compact=true)](https://nodei.co/npm/bucklescript-tea/)
 
 [![Build Status](https://travis-ci.org/OvermindDL1/bucklescript-tea.svg?branch=master)](https://travis-ci.org/OvermindDL1/bucklescript-tea)
+
 ## Reason to Use
 
 - Entirely event driven, this is like React/Flow but type-safe and significantly faster.
@@ -35,7 +36,7 @@ First verify you have `bs-platform` installed, whether globally or just in your 
 Then install via npm by:
 
 ```sh
-npm install --save bucklescript-tea
+npm install --save-dev bucklescript-tea
 ```
 
 Then in your current Bucklescript project just use this as a dependency add this to your bsconfig.json file:
@@ -44,7 +45,7 @@ Then in your current Bucklescript project just use this as a dependency add this
   "bs-dependencies" : ["bucklescript-tea"]
 ```
 
-_If you install it via any other method make sure that `bucklescript-tea` is a dependency in your npm's package.json file as `bsb uses that for lookup._
+_If you install it via any other method make sure that `bucklescript-tea` is a dependency in your npm's package.json file as `bsb` uses that for lookup._
 
 ## Usage
 
