@@ -39,12 +39,12 @@ let subscribe tagger =
 
 
 let replaceState url =
-  let _ = Web.Window.History.replaceState Web.Window.window (Js.Json.parse "{}") "" url in
+  let _ = Web.Window.History.replaceState Web.Window.window (Js.Json.parseExn "{}") "" url in
   ()
 
 
 let pushState url =
-  let _ = Web.Window.History.pushState Web.Window.window (Js.Json.parse "{}") "" url in
+  let _ = Web.Window.History.pushState Web.Window.window (Js.Json.parseExn "{}") "" url in
   ()
 
 

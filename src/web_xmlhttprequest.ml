@@ -86,7 +86,7 @@ let getAllResponseHeadersAsList x =
   | Ok s -> Ok
     ( s
       |> Js.String.split "\r\n"
-      |> Array.map (Js.String.splitLimited ": " 2)
+      |> Array.map (Js.String.splitAtMost ": " ~limit:2)
       |> Array.to_list
       |> List.filter (fun a -> Array.length a == 2)
       |> List.map
