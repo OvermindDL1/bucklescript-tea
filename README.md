@@ -132,4 +132,5 @@ For further examples see the [bucklescript-testing](https://github.com/OvermindD
 
 ### Starter-Kit
 
-The example project is available in a [starter kit](https://github.com/tcoopman/bucklescript-tea-starter-kit)
+There is a fantastic starter kit made by tcoopman that supports rollup combining of the files and a built-in server for testing, see and get it at: [tcoopman's starter kit](https://github.com/tcoopman/bucklescript-tea-starter-kit)
+
