@@ -193,9 +193,11 @@ module Decoder = struct
           let rec parse v = function
             | [] -> Tea_result.Error "No one-of's matched"
             | ((Decoder decoder) :: rest) ->
-              match decoder v with
-              | Tea_result.Ok _ as ok -> ok
-              | Tea_result.Error _ -> parse v rest
+              try
+                match decoder v with
+                | Tea_result.Ok _ as ok -> ok
+                | Tea_result.Error _ -> parse v rest
+              with _ -> parse v rest
           in parse value decoders
       )
 
