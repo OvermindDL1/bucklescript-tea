@@ -1,6 +1,6 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "bsc-flags": [
     "-bs-cross-module-opt"
   ],
