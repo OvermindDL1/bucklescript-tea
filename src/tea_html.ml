@@ -230,4 +230,5 @@ module Attributes = struct
 
   let acceptCharset c = attribute "" "accept-charset" c
 
+  let rel value = attribute "" "rel" value
 end
