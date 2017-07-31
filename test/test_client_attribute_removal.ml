@@ -29,7 +29,7 @@ let lang l is_selected =
     [ onClick (Select l)
     ; style "color" "blue"
     ; if is_selected then style "border" "1px solid black" else noProp
-    ; if is_selected then Vdom.prop "lang" l else noProp
+    ; if is_selected then Vdom.attribute "" "lang" l else noProp
     ]
     [ text l ]
 
