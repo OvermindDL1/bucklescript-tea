@@ -104,9 +104,11 @@ let noProp = Vdom.noProp
 
 let id str = prop "id" str
 
-let href str = prop "href" str
+(* `href` is actually an attribute, not a property, but need it here for Elm compat... *)
+let href str = attribute "" "href" str
 
-let src str = prop "src" str
+(* `src` is actually an attribute, not a property, but need it here for Elm compat... *)
+let src str = attribute "" "src" str
 
 let class' name = prop "className" name
 
