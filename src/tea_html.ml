@@ -98,6 +98,22 @@ let nav ?(key="") ?(unique="") props nodes = fullnode "" "nav" key unique props 
 
 let main ?(key="") ?(unique="") props nodes = fullnode "" "main" key unique props nodes
 
+let aside ?(key="") ?(unique="") props nodes = fullnode "" "aside" key unique props nodes
+
+let article ?(key="") ?(unique="") props nodes = fullnode "" "article" key unique props nodes
+
+let details ?(key="") ?(unique="") props nodes = fullnode "" "details" key unique props nodes
+
+let figcaption ?(key="") ?(unique="") props nodes = fullnode "" "figcaption" key unique props nodes
+
+let figure ?(key="") ?(unique="") props nodes = fullnode "" "figure" key unique props nodes
+
+let mark ?(key="") ?(unique="") props nodes = fullnode "" "mark" key unique props nodes
+
+let summary ?(key="") ?(unique="") props nodes = fullnode "" "summary" key unique props nodes
+
+let time ?(key="") ?(unique="") props nodes = fullnode "" "time" key unique props nodes
+
 (* Properties *)
 
 let noProp = Vdom.noProp
