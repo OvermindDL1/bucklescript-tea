@@ -103,7 +103,8 @@ let styles s = Style s
 
 (* Accessors *)
 
-(* Inefficient, but purely for debugging *)
+
+(* TODO:  Need to properly escape and so forth *)
 let rec renderToHtmlString = function
   | CommentNode s -> "<!-- " ^ s ^ " -->"
   | Text s -> s
@@ -133,6 +134,8 @@ let rec renderToHtmlString = function
     renderToHtmlString vdom
   | Tagger (_tagger, vdom) -> renderToHtmlString vdom
 
+
+(* TODO:  Make a vdom 'patcher' that binds into the actual DOM for hot-loading into an existing template *)
 
 
 (* Diffing/Patching *)

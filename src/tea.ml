@@ -30,6 +30,8 @@ module Random = Tea_random
 
 module AnimationFrame = Tea_animationframe
 
+module Mouse = Tea_mouse
+
 module Http = Tea_http
 
 

@@ -29,6 +29,8 @@ type t = <
   nodeValue : string [@bs.set] [@bs.get {null}];
 > Js.t
 
+external document_node : t = "document" [@@bs.val]
+
 type event = t Web_event.t
 
 type event_cb = t Web_event.cb

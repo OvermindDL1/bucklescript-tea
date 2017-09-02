@@ -429,6 +429,12 @@ module Decoder = struct
     | ParseFail e -> Tea_result.Error e
     | _ -> Tea_result.Error "Unknown JSON parsing error"
 
+  let decodeEvent (Decoder decoder) (value : Web_node.event) =
+    try decoder (Obj.magic value)
+    with
+    | ParseFail e -> Tea_result.Error e
+    | _ -> Tea_result.Error "Unknown JSON parsing error"
+
   let decodeString decoder string =
     try
       let value = Web.Json.parseExn string in

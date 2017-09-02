@@ -129,3 +129,8 @@ To use this from javascript (with your bundler of choice) you can just do:
 And if you need to shut it down or pass it a message or so then you can do so via the `app` variable, or feel free to not assign it to a variable as well.
 
 For further examples see the [bucklescript-testing](https://github.com/OvermindDL1/bucklescript-testing) project for now until a full example set up is built.
+
+### Starter-Kit
+
+There is a fantastic starter kit made by tcoopman that supports rollup combining of the files and a built-in server for testing, see and get it at: [tcoopman's starter kit](https://github.com/tcoopman/bucklescript-tea-starter-kit)
+

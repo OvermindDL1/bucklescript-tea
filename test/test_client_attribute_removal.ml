@@ -18,19 +18,20 @@ let render_selected = function
       ; div [onClick Delete] [text "delete selection"]]
   | None -> div [] [text "Nothing selected"]
 
-let lang l is_selected =
-  let baseProps = [onClick (Select l); style "color" "blue"] in
-  let props = if is_selected == true then (style "border" "1px solid black")::baseProps else baseProps
-  in
-  li props [text l]
-
 (* let lang l is_selected =
+ *   let baseProps = [onClick (Select l); style "color" "blue"] in
+ *   let props = if is_selected == true then (style "border" "1px solid black")::baseProps else baseProps
+ *   in
+ *   li props [text l] *)
+
+let lang l is_selected =
   li
     [ onClick (Select l)
     ; style "color" "blue"
     ; if is_selected then style "border" "1px solid black" else noProp
+    ; if is_selected then Vdom.attribute "" "lang" l else noProp
     ]
-    [ text l ] *)
+    [ text l ]
 
 let render_languages selected languages =
   let is_selected selected language =

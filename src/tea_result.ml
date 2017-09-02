@@ -4,3 +4,7 @@
 type ('a, 'b) t (* result *) =
   | Ok of 'a
   | Error of 'b
+
+let result_to_option = function
+  | Ok a -> Some a
+  | Error _ -> None

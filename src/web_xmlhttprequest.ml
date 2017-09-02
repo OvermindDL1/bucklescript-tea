@@ -21,8 +21,8 @@ class type _xmlhttprequest = object
   method overrideMimeType : string -> unit
   method send : unit -> unit
   method send__string : string Js.null -> unit
-  method send_formdata : Web_formdata.t -> unit
-  method send_document : Web_document.t -> unit
+  method send__formdata : Web_formdata.t -> unit
+  method send__document : Web_document.t -> unit
   (* method send_blob : Web_blob.t -> unit *)
   (* method send_arrayBufferView : Web_arraybuffer_view.t -> unit *)
   method setRequestHeader : string -> string -> unit
@@ -116,15 +116,15 @@ let send body x =
   | EmptyBody -> x##send ()
   | EmptyStringBody -> x##send__string Js.Null.empty
   | StringBody s -> x##send__string (Js.Null.return s)
-  | FormDataBody f -> x##send_formdata f
+  | FormDataBody f -> x##send__formdata f
   | FormListBody l ->
     let form =
       List.fold_left
         (fun f (key, value) -> let () = Web_formdata.append key value f in f)
         (Web_formdata.create ())
         l in
-    x##send_formdata form
-  | DocumentBody d -> x##send_document d
+    x##send__formdata form
+  | DocumentBody d -> x##send__document d
   (* | BlobBody b -> x##send_blob b *)
   (* | ArrayBufferViewBody a -> x##send_arrayBufferView a *)
 

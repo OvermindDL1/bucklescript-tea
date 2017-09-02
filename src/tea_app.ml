@@ -54,6 +54,7 @@ type ('model, 'msg) beginnerProgram = {
 
 type ('model, 'msg) pumpInterface = {
   startup : unit -> unit;
+  render_string : 'model -> string;
   handleMsg : 'model -> 'msg -> 'model;
   shutdown : 'msg Tea_cmd.t -> unit;
 }
@@ -63,7 +64,11 @@ type 'msg programInterface = <
   pushMsg : 'msg -> unit;
 > Js.t
 
-external makeProgramInterface : pushMsg:('msg -> unit) -> shutdown:(unit -> unit) -> 'msg programInterface = "" [@@bs.obj]
+external makeProgramInterface :
+  pushMsg:('msg -> unit) ->
+  shutdown:(unit -> unit) ->
+  getHtmlString:(unit -> string) ->
+  'msg programInterface = "" [@@bs.obj]
 
 
 
@@ -117,10 +122,14 @@ let programStateWrapper initModel pump shutdown =
     let cmd = shutdown !model in
     let () = pumperInterface.shutdown cmd in
     () in
+  let render_string () =
+    let rendered = pumperInterface.render_string !model in
+    rendered in
   let () = pumperInterface.startup () in
   makeProgramInterface
     ~pushMsg:handler
     ~shutdown:pi_requestShutdown
+    ~getHtmlString:render_string
 
 
 let programLoop update view subscriptions initModel initCmd = function
@@ -135,6 +144,12 @@ let programLoop update view subscriptions initModel initCmd = function
             let () = Tea_cmd.run callbacks initCmd in
             let () = handleSubscriptionChange initModel in
             ()
+        )
+    ; render_string =
+        ( fun model ->
+            let vdom = view model in
+            let rendered = Vdom.renderToHtmlString vdom in
+            rendered
         )
     ; handleMsg =
         ( fun model msg ->
@@ -199,6 +214,10 @@ let programLoop update view subscriptions initModel initCmd = function
       let () = nextFrameID := Some (-1) in
       let () = doRender 16 in
       () in
+    let render_string model =
+      let vdom = view model in
+      let rendered = Vdom.renderToHtmlString vdom in
+      rendered in
     let handler model msg =
       let newModel, cmd = update model msg in
       let () = latestModel := newModel in
@@ -227,6 +246,7 @@ let programLoop update view subscriptions initModel initCmd = function
       let () = clearPnode () in
       () in
     { startup = handlerStartup
+    ; render_string = render_string
     ; handleMsg = handler
     ; shutdown = handlerShutdown
     }
