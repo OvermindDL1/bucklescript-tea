@@ -61,7 +61,10 @@ let update model = function
     in
     { model with drag }, Cmd.none
   | DragEnd _pos ->
-    let moveItem _fromPos _offset arr = arr
+    let moveItem fromPos offset list =
+      let offset = match offset with | 0 -> 0 | offset -> if offset > 0 then offset + 1 else offset -1 in
+      list |> List.mapi (fun index item -> if index == fromPos then (index + offset, item) else (index, item) )
+      |> List.sort (fun (index1, _item) (index2, _item) -> index1 - index2) |> List.map ( fun (_index, item) -> item)
     in
     (
       match model.drag with
