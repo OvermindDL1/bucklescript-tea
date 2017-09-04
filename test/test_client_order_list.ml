@@ -146,7 +146,7 @@ let view model =
       | None ->
         []
     in
-    li ~unique:item [ styles (List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle]) ]
+    li [ styles (List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle]) ]
       [ div [ styles Drag_styles.itemText ] [ text item ]
       ; button
           [ styles buttonStyle
@@ -166,6 +166,11 @@ let view model =
     button [ onClick ToggleReorder ] [ text buttonTxt ]
   in
   let dragBody =
+    let unique =
+      match model.drag with
+      | Some drag -> string_of_int drag.currentY
+      | None -> (String.concat "" model.data)
+    in
     div
       [ styles Drag_styles.pageContainer ]
       [ div
@@ -174,7 +179,7 @@ let view model =
               [ styles Drag_styles.headerTitle ]
               [ text "Sortable favorite movies" ]
           ; toggleButton model ]
-      ; ul ~unique:(String.concat "" model.data)
+      ; ul ~unique:unique
           [ styles Drag_styles.listContainer ]
           (List.mapi (itemView model) model.data)
       ]
