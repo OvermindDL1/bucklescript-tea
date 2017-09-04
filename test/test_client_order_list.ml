@@ -146,7 +146,7 @@ let view model =
       | None ->
         []
     in
-    li [ styles (List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle]) ]
+    li ~unique:item [ styles (List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle]) ]
       [ div [ styles Drag_styles.itemText ] [ text item ]
       ; button
           [ styles buttonStyle
@@ -168,8 +168,13 @@ let view model =
   let dragBody =
     div
       [ styles Drag_styles.pageContainer ]
-      [ toggleButton model
-      ; ul
+      [ div
+          [ styles Drag_styles.listHeader ]
+          [ h3
+              [ styles Drag_styles.headerTitle ]
+              [ text "Sortable favorite movies" ]
+          ; toggleButton model ]
+      ; ul ~unique:(String.concat "" model.data)
           [ styles Drag_styles.listContainer ]
           (List.mapi (itemView model) model.data)
       ]
