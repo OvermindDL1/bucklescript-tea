@@ -168,7 +168,9 @@ let view model =
   let dragBody =
     let unique =
       match model.drag with
-      | Some drag -> string_of_int drag.currentY
+      | Some {currentY} ->
+      (String.concat "" model.data)
+      (* string_of_int currentY *)
       | None -> (String.concat "" model.data)
     in
     div
