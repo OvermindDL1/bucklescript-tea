@@ -8,6 +8,7 @@ type msg =
   | DragStart of (int * position)
   | DragAt of position
   | DragEnd of position
+  | Reverse
 [@@bs.deriving {accessors}]
 
 
@@ -44,6 +45,7 @@ let update model = function
   | ToggleReorder ->
     let model = if model.isReordering then { model with data = initialList } else model in
     { model with isReordering = not model.isReordering }, Cmd.none
+  | Reverse -> { model with data = List.rev model.data }, Cmd.none
   | DragStart (itemIndex, pos) ->
     { model with drag = Some { itemIndex
                              ; startY = pos.y
@@ -180,7 +182,7 @@ let view model =
           [ h3
               [ styles Drag_styles.headerTitle ]
               [ text "Sortable favorite movies" ]
-          ; toggleButton model ]
+          ; toggleButton model ; button [onClick Reverse] [] ]
       ; ul ~unique:unique
           [ styles Drag_styles.listContainer ]
           (List.mapi (itemView model) model.data)
