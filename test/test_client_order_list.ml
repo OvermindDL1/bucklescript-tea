@@ -182,7 +182,7 @@ let view model =
           [ h3
               [ styles Drag_styles.headerTitle ]
               [ text "Sortable favorite movies" ]
-          ; toggleButton model ; button [onClick Reverse] [] ]
+          ; toggleButton model ; button [onClick Reverse] [text {js|Reverse|js}] ]
       ; ul ~unique:unique
           [ styles Drag_styles.listContainer ]
           (List.mapi (itemView model) model.data)
