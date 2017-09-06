@@ -4,7 +4,7 @@ open Tea.Html
 open Tea.Mouse
 
 type msg =
-  | ToggleReorder
+  | Reset
   | DragStart of (int * position)
   | DragAt of position
   | DragEnd of position
@@ -20,8 +20,7 @@ type drag =
   }
 
 type model =
-  { isReordering : bool
-  ; data : string list
+  { data : string list
   ; drag : drag option
   }
 
@@ -39,12 +38,11 @@ let initialList =
   ]
 
 let init () =
-  ( {isReordering = false ;  data = initialList ; drag = None}, Cmd.none )
+  ( {data = initialList ; drag = None}, Cmd.none )
 
 let update model = function
-  | ToggleReorder ->
-    let model = if model.isReordering then { model with data = initialList } else model in
-    { model with isReordering = not model.isReordering }, Cmd.none
+  | Reset ->
+    { model with data = initialList }, Cmd.none
   | Reverse -> { model with data = List.rev model.data }, Cmd.none
   | DragStart (itemIndex, pos) ->
     { model with drag = Some { itemIndex
@@ -71,20 +69,19 @@ let update model = function
     (
       match model.drag with
       | Some { itemIndex; startY; currentY } ->
-        { model
-          with data =
-                 moveItem
-                   itemIndex
-                   ((currentY - startY
-                     + if currentY < startY then
-                       -20
-                     else
-                       20
-                    )
-                    / 50
-                   )
-                   model.data
-             ; drag = None
+        { data =
+            moveItem
+              itemIndex
+              ((currentY - startY
+                + if currentY < startY then
+                  -20
+                else
+                  20
+               )
+               / 50
+              )
+              model.data
+        ; drag = None
         }
       | None -> { model with drag = None }
     ), Cmd.none
@@ -110,13 +107,6 @@ let onMouseDown mapper =
 
 let view model =
   let itemView model idx item =
-    let
-      buttonStyle =
-      if model.isReordering then
-        [ ( "display", "inline-block" ) ]
-      else
-        [ ( "display", "none" ) ]
-    in
     let moveStyle =
       match model.drag with
         Some { itemIndex; startY; currentY } ->
@@ -126,9 +116,15 @@ let view model =
           ; ( "willChange", "transform" )
           ]
         else
-          []
+          [ ( "transform", "" )
+          ; ( "box-shadow", "" )
+          ; ( "willChange", "" )
+          ]
       | None ->
-        []
+        [ ( "transform", "" )
+        ; ( "box-shadow", "" )
+        ; ( "willChange", "" )
+        ]
     in
     let makingWayStyle =
       match model.drag with
@@ -142,39 +138,25 @@ let view model =
           ; ( "transition", "transform 200ms ease-in-out" )
           ]
         else if idx != itemIndex then
-          [ ( "transition", "transform 200ms ease-in-out" ) ]
+          [ ( "transform", "" )
+          ; ( "transition", "transform 200ms ease-in-out" ) ]
         else
-          []
+          [ ( "transform", "" )
+          ; ( "transition", "" ) ]
       | None ->
-        []
+        [ ( "transform", "" )
+        ; ( "transition", "" ) ]
     in
-    li [ styles (List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle]) ]
+    let styleList = List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle ; Drag_styles.unselectable] in
+    li
+      [ styles styleList ; onMouseDown (fun x -> dragStart (idx, x))]
       [ div [ styles Drag_styles.itemText ] [ text item ]
-      ; button
-          [ styles buttonStyle
-          ; onMouseDown (fun x -> dragStart (idx, x))
-          ]
-          [ text "drag" ]
       ]
   in
-  let toggleButton model =
-    let
-      buttonTxt =
-      if model.isReordering then
-        {js|reset|js}
-      else
-        {js|order|js}
-    in
-    button [ onClick ToggleReorder ] [ text buttonTxt ]
+  let toggleButton _model =
+    button [ onClick Reset ] [ text {js|reset|js} ]
   in
   let dragBody =
-    let unique =
-      match model.drag with
-      | Some {currentY} ->
-      (String.concat "" model.data)
-      (* string_of_int currentY *)
-      | None -> (String.concat "" model.data)
-    in
     div
       [ styles Drag_styles.pageContainer ]
       [ div
@@ -183,7 +165,7 @@ let view model =
               [ styles Drag_styles.headerTitle ]
               [ text "Sortable favorite movies" ]
           ; toggleButton model ; button [onClick Reverse] [text {js|Reverse|js}] ]
-      ; ul ~unique:unique
+      ; ul
           [ styles Drag_styles.listContainer ]
           (List.mapi (itemView model) model.data)
       ]
