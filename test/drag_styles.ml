@@ -48,4 +48,5 @@ let unselectable =
   ; ("-moz-user-select", "none")
   ; ("-khtml-user-select", "none")
   ; ("-webkit-user-select", "none")
-  ; ("-webkit-touch-callout", "none") ]
+  ; ("-webkit-touch-callout", "none")
+  ; ("cursor", "pointer") ]

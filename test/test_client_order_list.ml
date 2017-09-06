@@ -150,7 +150,7 @@ let view model =
     let styleList = List.concat [Drag_styles.listItem ; moveStyle ; makingWayStyle ; Drag_styles.unselectable] in
     li
       [ styles styleList ; onMouseDown (fun x -> dragStart (idx, x))]
-      [ div [ styles Drag_styles.itemText ] [ text item ]
+      [ div [ styles (List.concat [Drag_styles.itemText ; Drag_styles.unselectable]) ] [ text item ]
       ]
   in
   let toggleButton _model =
