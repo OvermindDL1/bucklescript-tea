@@ -41,3 +41,11 @@ let itemText =
   [ ("flex","1 0 auto")
   ; ("display","inline-block")
   ]
+
+let unselectable =
+  [ ("user-select", "none")
+  ; ("-ms-user-select", "none")
+  ; ("-moz-user-select", "none")
+  ; ("-khtml-user-select", "none")
+  ; ("-webkit-user-select", "none")
+  ; ("-webkit-touch-callout", "none") ]
