@@ -159,7 +159,10 @@ module Decoder = struct
           | JSONObject o ->
             ( match Js.Dict.get o key with
               | None -> Tea_result.Error ("Field Value is undefined: " ^ key)
-              | Some v -> decoder v
+              | Some v ->
+                match decoder v with
+                | Ok _ as o -> o
+                | Error e -> Error ("field `" ^ key ^ "` " ^ e)
             )
           | _ -> Tea_result.Error "Non-fieldable value"
       )
