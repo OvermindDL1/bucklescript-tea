@@ -227,7 +227,7 @@ module Decoder = struct
         | Ok v1,
           Ok v2 -> Ok (mapper v1 v2)
         | e1, e2 ->
-          match Tea_result.error_of_any [e1; e2] with
+          match Tea_result.error_of_first e1 e2 with
           | None -> failwith "Impossible case"
           | Some e -> Error ("map2 -> " ^ e)
     )
@@ -248,9 +248,14 @@ module Decoder = struct
           Ok v2,
           Ok v3 -> Ok (mapper v1 v2 v3)
         | e1, e2, e3 ->
-          match Tea_result.error_of_any [e1; e2; e3] with
-          | None -> failwith "Impossible case"
-          | Some e -> Error ("map3 -> " ^ e)
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map3 -> " ^ e)
     )
 
   let map4 mapper
@@ -272,9 +277,15 @@ module Decoder = struct
           Ok v3,
           Ok v4 -> Ok (mapper v1 v2 v3 v4)
         | e1, e2, e3, e4 ->
-          match Tea_result.error_of_any [e1; e2; e3; e4] with
-          | None -> failwith "Impossible case"
-          | Some e -> Error ("map4 -> " ^ e)
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map4 -> " ^ e)
     )
 
   let map5 mapper
@@ -299,9 +310,16 @@ module Decoder = struct
           Ok v4,
           Ok v5 -> Ok (mapper v1 v2 v3 v4 v5)
         | e1, e2, e3, e4, e5 ->
-          match Tea_result.error_of_any [e1; e2; e3; e4; e5] with
-          | None -> failwith "Impossible case"
-          | Some e -> Error ("map5 -> " ^ e)
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map5 -> " ^ e)
     )
 
   let map6 mapper
@@ -329,9 +347,17 @@ module Decoder = struct
           Ok v5,
           Ok v6 -> Ok (mapper v1 v2 v3 v4 v5 v6)
         | e1, e2, e3, e4, e5, e6 ->
-          match Tea_result.error_of_any [e1; e2; e3; e4; e5; e6] with
-          | None -> failwith "Impossible case"
-          | Some e -> Error ("map6 -> " ^ e)
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+            |> first e6
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map6 -> " ^ e)
     )
 
   let map7 mapper
@@ -362,9 +388,18 @@ module Decoder = struct
           Ok v6,
           Ok v7 -> Ok (mapper v1 v2 v3 v4 v5 v6 v7)
         | e1, e2, e3, e4, e5, e6, e7 ->
-          match Tea_result.error_of_any [e1; e2; e3; e4; e5; e6; e7] with
-          | None -> failwith "Impossible case"
-          | Some e -> Error ("map7 -> " ^ e)
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+            |> first e6
+            |> first e7
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map7 -> " ^ e)
     )
 
   let map8 mapper
@@ -398,9 +433,19 @@ module Decoder = struct
           Ok v7,
           Ok v8 -> Ok (mapper v1 v2 v3 v4 v5 v6 v7 v8)
         | e1, e2, e3, e4, e5, e6, e7, e8 ->
-          match Tea_result.error_of_any [e1; e2; e3; e4; e5; e6; e7; e8] with
-          | None -> failwith "Impossible case"
-          | Some e -> Error ("map8 " ^ e)
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+            |> first e6
+            |> first e7
+            |> first e8
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map8 -> " ^ e)
     )
 
 

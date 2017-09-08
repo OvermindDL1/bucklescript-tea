@@ -54,3 +54,7 @@ let rec error_of_any = function
     match hd with
     | Error e -> Some e
     | Ok _ -> error_of_any tl
+
+let rec error_of_first fst = function
+  | Error e -> Some e
+  | Ok _ -> error fst
