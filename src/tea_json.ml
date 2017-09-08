@@ -86,7 +86,7 @@ module Decoder = struct
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
               try Tea_result.Ok (Array.to_list a |> List.map parse)
-              with ParseFail e -> Tea_result.Error ("Invalid list parsing: " ^ e)
+              with ParseFail e -> Tea_result.Error ("list -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-list value"
       )
@@ -103,7 +103,7 @@ module Decoder = struct
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
               try Tea_result.Ok (Array.map parse a)
-              with ParseFail e -> Tea_result.Error ("Invalid array parsing: " ^ e)
+              with ParseFail e -> Tea_result.Error ("array -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-array value"
       )
@@ -162,7 +162,7 @@ module Decoder = struct
               | Some v ->
                 match decoder v with
                 | Ok _ as o -> o
-                | Error e -> Error ("field `" ^ key ^ "` " ^ e)
+                | Error e -> Error ("field `" ^ key ^ "` -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-fieldable value"
       )
@@ -229,7 +229,7 @@ module Decoder = struct
         | e1, e2 ->
           match Tea_result.error_of_any [e1; e2] with
           | None -> failwith "Impossible case"
-          | Some e -> Error ("map2 " ^ e)
+          | Some e -> Error ("map2 -> " ^ e)
     )
 
   let map3 mapper
@@ -250,7 +250,7 @@ module Decoder = struct
         | e1, e2, e3 ->
           match Tea_result.error_of_any [e1; e2; e3] with
           | None -> failwith "Impossible case"
-          | Some e -> Error ("map3 " ^ e)
+          | Some e -> Error ("map3 -> " ^ e)
     )
 
   let map4 mapper
@@ -274,7 +274,7 @@ module Decoder = struct
         | e1, e2, e3, e4 ->
           match Tea_result.error_of_any [e1; e2; e3; e4] with
           | None -> failwith "Impossible case"
-          | Some e -> Error ("map4 " ^ e)
+          | Some e -> Error ("map4 -> " ^ e)
     )
 
   let map5 mapper
@@ -301,7 +301,7 @@ module Decoder = struct
         | e1, e2, e3, e4, e5 ->
           match Tea_result.error_of_any [e1; e2; e3; e4; e5] with
           | None -> failwith "Impossible case"
-          | Some e -> Error ("map5 " ^ e)
+          | Some e -> Error ("map5 -> " ^ e)
     )
 
   let map6 mapper
@@ -331,7 +331,7 @@ module Decoder = struct
         | e1, e2, e3, e4, e5, e6 ->
           match Tea_result.error_of_any [e1; e2; e3; e4; e5; e6] with
           | None -> failwith "Impossible case"
-          | Some e -> Error ("map6 " ^ e)
+          | Some e -> Error ("map6 -> " ^ e)
     )
 
   let map7 mapper
@@ -364,7 +364,7 @@ module Decoder = struct
         | e1, e2, e3, e4, e5, e6, e7 ->
           match Tea_result.error_of_any [e1; e2; e3; e4; e5; e6; e7] with
           | None -> failwith "Impossible case"
-          | Some e -> Error ("map7 " ^ e)
+          | Some e -> Error ("map7 -> " ^ e)
     )
 
   let map8 mapper
