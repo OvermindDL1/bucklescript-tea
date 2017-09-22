@@ -86,7 +86,7 @@ module Decoder = struct
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
               try Tea_result.Ok (Array.to_list a |> List.map parse)
-              with ParseFail e -> Tea_result.Error ("Invalid list parsing: " ^ e)
+              with ParseFail e -> Tea_result.Error ("list -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-list value"
       )
@@ -103,7 +103,7 @@ module Decoder = struct
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
               try Tea_result.Ok (Array.map parse a)
-              with ParseFail e -> Tea_result.Error ("Invalid array parsing: " ^ e)
+              with ParseFail e -> Tea_result.Error ("array -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-array value"
       )
@@ -158,8 +158,11 @@ module Decoder = struct
           match classify value with
           | JSONObject o ->
             ( match Js.Dict.get o key with
-              | None -> raise (ParseFail ("Field Value is undefined: " ^ key))
-              | Some v -> decoder v
+              | None -> Tea_result.Error ("Field Value is undefined: " ^ key)
+              | Some v ->
+                match decoder v with
+                | Ok _ as o -> o
+                | Error e -> Error ("field `" ^ key ^ "` -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-fieldable value"
       )
@@ -208,7 +211,7 @@ module Decoder = struct
           let open Tea_result in
           match decoder1 value with
           | Ok v1 -> Ok (mapper v1)
-          | _ -> Error "map failed"
+          | Error e -> Error ("map " ^ e)
       )
 
   let map2 mapper
@@ -223,7 +226,10 @@ module Decoder = struct
         with
         | Ok v1,
           Ok v2 -> Ok (mapper v1 v2)
-        | _ -> Error "map2 failed"
+        | e1, e2 ->
+          match Tea_result.error_of_first e1 e2 with
+          | None -> failwith "Impossible case"
+          | Some e -> Error ("map2 -> " ^ e)
     )
 
   let map3 mapper
@@ -241,7 +247,15 @@ module Decoder = struct
         | Ok v1,
           Ok v2,
           Ok v3 -> Ok (mapper v1 v2 v3)
-        | _ -> Error "map3 failed"
+        | e1, e2, e3 ->
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map3 -> " ^ e)
     )
 
   let map4 mapper
@@ -262,7 +276,16 @@ module Decoder = struct
           Ok v2,
           Ok v3,
           Ok v4 -> Ok (mapper v1 v2 v3 v4)
-        | _ -> Error "map4 failed"
+        | e1, e2, e3, e4 ->
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map4 -> " ^ e)
     )
 
   let map5 mapper
@@ -286,7 +309,17 @@ module Decoder = struct
           Ok v3,
           Ok v4,
           Ok v5 -> Ok (mapper v1 v2 v3 v4 v5)
-        | _ -> Error "map5 failed"
+        | e1, e2, e3, e4, e5 ->
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map5 -> " ^ e)
     )
 
   let map6 mapper
@@ -313,7 +346,18 @@ module Decoder = struct
           Ok v4,
           Ok v5,
           Ok v6 -> Ok (mapper v1 v2 v3 v4 v5 v6)
-        | _ -> Error "map6 failed"
+        | e1, e2, e3, e4, e5, e6 ->
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+            |> first e6
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map6 -> " ^ e)
     )
 
   let map7 mapper
@@ -343,7 +387,19 @@ module Decoder = struct
           Ok v5,
           Ok v6,
           Ok v7 -> Ok (mapper v1 v2 v3 v4 v5 v6 v7)
-        | _ -> Error "map7 failed"
+        | e1, e2, e3, e4, e5, e6, e7 ->
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+            |> first e6
+            |> first e7
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map7 -> " ^ e)
     )
 
   let map8 mapper
@@ -376,7 +432,20 @@ module Decoder = struct
           Ok v6,
           Ok v7,
           Ok v8 -> Ok (mapper v1 v2 v3 v4 v5 v6 v7 v8)
-        | _ -> Error "map8 failed"
+        | e1, e2, e3, e4, e5, e6, e7, e8 ->
+          let open! Tea_result in
+          match
+            e1
+            |> first e2
+            |> first e3
+            |> first e4
+            |> first e5
+            |> first e6
+            |> first e7
+            |> first e8
+          with
+          | Ok _ -> failwith "Impossible case"
+          | Error e -> Error ("map8 -> " ^ e)
     )
 
 
