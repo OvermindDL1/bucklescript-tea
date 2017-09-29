@@ -17,6 +17,8 @@
 
 This is a library for OCaml-via-Bucklescript (though in the future to support native compilation for back-end template generation) that follows TEA/[The Elm Architecture](https://guide.elm-lang.org/architecture/) as I see it in various incarnations.
 
+You can read more about it [here](http://blog.overminddl1.com/tags/bucklescript-tea/).
+
 Currently included and planned forms are:
 
 - [X] Elm API: Following the Elm API as closely as OCaml allows. Converting code back and forth between Elm and OCaml should be made as easy as possible (mostly organizing functions correctly and adding a few `let`'s around, a conversion utility to go back and forth is a 'nice-to-have' someday, but not currently in-dev, PR's welcome). It may be good to 'version' the API, break it out from the latest Elm API to follow different versions of the Elm API behind versioned modules that can be easily opened. This is not done yet but is a 'nice-to-have' goal before hitting version 1.0.0 to ensure even better API stability. Currently the `update` callback passes the `model` first instead of second as it makes matching on the message in a far more expected way, comments on reversing this back to Elm's way?
