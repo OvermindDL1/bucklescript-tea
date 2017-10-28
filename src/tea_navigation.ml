@@ -1,13 +1,3 @@
-
-type ('flags, 'model, 'msg) navigationProgram =
-  { init : 'flags -> Web.Location.location -> 'model * 'msg Tea_cmd.t
-  ; update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t
-  ; view : 'model -> 'msg Vdom.t
-  ; subscriptions : 'model -> 'msg Tea_sub.t
-  ; shutdown : 'model -> 'msg Tea_cmd.t
-  }
-
-
 let getLocation () =
   Web.Location.asRecord (Web.Document.location ())
 
@@ -63,22 +53,34 @@ let newUrl url =
       ()
     )
 
+module type NavigationProgram = sig
+  type flags
+  type model
+  type msg
+  val init : flags -> Web.Location.location -> model * msg Tea_cmd.t
+  val update : model -> msg -> model * msg Tea_cmd.t
+  val view : model -> msg Vdom.t
+  val subscriptions : model -> msg Tea_sub.t
+  val shutdown : model -> msg Tea_cmd.t
+  val locationHandler : Web.Location.location -> msg
+end
 
-let navigationProgram locationToMessage stuff =
-    let init flag =
-      stuff.init flag (getLocation ()) in
+module ToProgram (M : NavigationProgram) : Tea.App.Program = struct
+  type msg = M.msg
+  type model = M.model
+  type flags = M.flags
+  let subscriptions model = Tea_sub.batch
+        [ subscribe M.locationHandler
+        ; M.subscriptions model
+        ]
 
-    let subscriptions model =
-      Tea_sub.batch
-        [ subscribe locationToMessage
-        ; stuff.subscriptions model
-        ] in
+  let init flags =
+    M.init flags (getLocation ())
 
-    let open! Tea_app in
-    program
-      { init = init
-      ; update = stuff.update
-      ; view = stuff.view
-      ; subscriptions = subscriptions
-      ; shutdown = stuff.shutdown
-      }
+  let update = M.update
+  let view = M.view
+  let shutdown = M.shutdown
+end
+
+module MakeNavigationProgram( M: NavigationProgram ) =
+  Tea.App.Make(ToProgram(M))
