@@ -65,7 +65,7 @@ module type NavigationProgram = sig
   val locationHandler : Web.Location.location -> msg
 end
 
-module ToProgram (M : NavigationProgram) : Tea.App.Program = struct
+module ToProgram (M : NavigationProgram) : Tea_app.Program = struct
   type msg = M.msg
   type model = M.model
   type flags = M.flags
@@ -83,4 +83,4 @@ module ToProgram (M : NavigationProgram) : Tea.App.Program = struct
 end
 
 module MakeNavigationProgram( M: NavigationProgram ) =
-  Tea.App.Make(ToProgram(M))
+  Tea_app.Make(ToProgram(M))
