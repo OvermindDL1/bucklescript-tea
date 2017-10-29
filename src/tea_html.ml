@@ -1,4 +1,11 @@
+type 'msg t = 'msg Vdom.t
+type 'msg prop = 'msg Vdom.property
+
+type 'msg createNode = ?key:string -> ?unique:string ->
+  'msg prop list -> 'msg t list -> 'msg t
+
 open Vdom
+
 
 module Cmds = Tea_html_cmds
 
