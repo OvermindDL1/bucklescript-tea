@@ -68,7 +68,7 @@ let removeChild n child = n##removeChild child
 
 let insertBefore n child refNode = n##insertBefore child refNode
 
-let remove n () = n##remove ()
+let remove n = n##remove ()
 
 let setAttributeNS n namespace key value = n##setAttributeNS namespace key value
 
@@ -92,7 +92,7 @@ let addEventListener n typ listener options = n##addEventListener typ listener o
 
 let removeEventListener n typ listener options = n##removeEventListener typ listener options
 
-let focus n () = n##focus ()
+let focus n = n##focus ()
 
 (* Text Nodes only *)
 

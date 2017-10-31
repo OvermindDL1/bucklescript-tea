@@ -38,7 +38,7 @@ val firstChild: t -> t Js.Null.t
 val appendChild: t -> t -> t
 val removeChild: t -> t -> t
 val insertBefore: t -> t -> t -> t
-val remove: t -> unit -> unit
+val remove: t -> unit
 
 val setAttributeNS : t -> string -> string -> string -> unit
 val setAttribute : t -> string -> string -> unit
@@ -53,7 +53,7 @@ val addEventListener : t -> string -> t Web_event.cb ->
 val removeEventListener : t -> string -> t Web_event.cb ->
   Web_event.options -> unit
 
-val focus : t -> unit -> unit
+val focus : t -> unit
 
 (* Text Nodes only *)
 
