@@ -199,3 +199,5 @@ let script ?(key="") ?(unique="") props nodes = fullnode svgNamespace "script" k
 let style ?(key="") ?(unique="") props nodes = fullnode svgNamespace "style" key unique props nodes
 
 let view ?(key="") ?(unique="") props nodes = fullnode svgNamespace "view" key unique props nodes
+
+let image ?(key="") ?(unique="") props nodes = fullnode svgNamespace "g" key unique props nodes
