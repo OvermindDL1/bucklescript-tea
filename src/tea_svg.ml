@@ -200,4 +200,4 @@ let style ?(key="") ?(unique="") props nodes = fullnode svgNamespace "style" key
 
 let view ?(key="") ?(unique="") props nodes = fullnode svgNamespace "view" key unique props nodes
 
-let image ?(key="") ?(unique="") props nodes = fullnode svgNamespace "g" key unique props nodes
+let image ?(key="") ?(unique="") props nodes = fullnode svgNamespace "image" key unique props nodes
