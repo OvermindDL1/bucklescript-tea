@@ -55,6 +55,6 @@ let rec error_of_any = function
     | Error e -> Some e
     | Ok _ -> error_of_any tl
 
-let rec error_of_first fst = function
+let error_of_first fst = function
   | Error e -> Some e
   | Ok _ -> error fst
