@@ -1,6 +1,6 @@
 {
   "name": "bucklescript-tea",
-  "version": "0.6.11",
+  "version": "0.7.0",
   "description": "TEA for Bucklescript",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
   "peerDependencies": {
-    "bs-platform": "^1.7.5"
+    "bs-platform": "^2.1.0"
   },
   "devDependencies": {
     "browserify": "^14.0.0",
