@@ -67,7 +67,7 @@ type msg =
   | Increment  (* This will be our message to increment the counter *)
   | Decrement  (* This will be our message to decrement the counter *)
   | Reset      (* This will be our message to reset the counter to 0 *)
-  | Set of int (* This will be out message to set the counter to a specific value *)
+  | Set of int (* This will be our message to set the counter to a specific value *)
   [@@bs.deriving {accessors}] (* This is a nice quality-of-life addon from Bucklescript, it will generate function names for each constructor name, optional, but nice to cut down on code, this is unused in this example but good to have regardless *)
 
 (* This is optional for such a simple example, but it is good to have an `init` function to define your initial model default values, the model for Counter is just an integer *)
