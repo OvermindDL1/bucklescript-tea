@@ -114,6 +114,100 @@ let summary ?(key="") ?(unique="") props nodes = fullnode "" "summary" key uniqu
 
 let time ?(key="") ?(unique="") props nodes = fullnode "" "time" key unique props nodes
 
+let hr ?(key="") ?(unique="") props nodes = fullnode "" "hr" key unique props nodes
+
+let blockquote ?(key="") ?(unique="") props nodes = fullnode "" "blockquote" key unique props nodes
+
+let code ?(key="") ?(unique="") props nodes = fullnode "" "code" key unique props nodes
+
+let em ?(key="") ?(unique="") props nodes = fullnode "" "em" key unique props nodes
+
+let b ?(key="") ?(unique="") props nodes = fullnode "" "b" key unique props nodes
+
+let u ?(key="") ?(unique="") props nodes = fullnode "" "u" key unique props nodes
+
+let sub ?(key="") ?(unique="") props nodes = fullnode "" "sub" key unique props nodes
+
+let sup ?(key="") ?(unique="") props nodes = fullnode "" "sup" key unique props nodes
+
+let dl ?(key="") ?(unique="") props nodes = fullnode "" "dl" key unique props nodes
+
+let dt ?(key="") ?(unique="") props nodes = fullnode "" "dt" key unique props nodes
+
+let dd ?(key="") ?(unique="") props nodes = fullnode "" "dd" key unique props nodes
+
+let iframe ?(key="") ?(unique="") props nodes = fullnode "" "iframe" key unique props nodes
+
+let canvas ?(key="") ?(unique="") props nodes = fullnode "" "canvas" key unique props nodes
+
+let address ?(key="") ?(unique="") props nodes = fullnode "" "address" key unique props nodes
+
+let caption ?(key="") ?(unique="") props nodes = fullnode "" "caption" key unique props nodes
+
+let colgroup ?(key="") ?(unique="") props nodes = fullnode "" "colgroup" key unique props nodes
+
+let col ?(key="") ?(unique="") props nodes = fullnode "" "col" key unique props nodes
+
+let fieldset ?(key="") ?(unique="") props nodes = fullnode "" "fieldset" key unique props nodes
+
+let legend ?(key="") ?(unique="") props nodes = fullnode "" "legend" key unique props nodes
+
+let datalist ?(key="") ?(unique="") props nodes = fullnode "" "datalist" key unique props nodes
+
+let optgroup ?(key="") ?(unique="") props nodes = fullnode "" "optgroup" key unique props nodes
+
+let output ?(key="") ?(unique="") props nodes = fullnode "" "output" key unique props nodes
+
+let meter ?(key="") ?(unique="") props nodes = fullnode "" "meter" key unique props nodes
+
+let audio ?(key="") ?(unique="") props nodes = fullnode "" "audio" key unique props nodes
+
+let video ?(key="") ?(unique="") props nodes = fullnode "" "video" key unique props nodes
+
+let source ?(key="") ?(unique="") props nodes = fullnode "" "source" key unique props nodes
+
+let track ?(key="") ?(unique="") props nodes = fullnode "" "track" key unique props nodes
+
+let embed ?(key="") ?(unique="") props nodes = fullnode "" "embed" key unique props nodes
+
+let object' ?(key="") ?(unique="") props nodes = fullnode "" "object" key unique props nodes
+
+let param ?(key="") ?(unique="") props nodes = fullnode "" "param" key unique props nodes
+
+let ins ?(key="") ?(unique="") props nodes = fullnode "" "ins" key unique props nodes
+
+let del ?(key="") ?(unique="") props nodes = fullnode "" "del" key unique props nodes
+
+let small ?(key="") ?(unique="") props nodes = fullnode "" "small" key unique props nodes
+
+let cite ?(key="") ?(unique="") props nodes = fullnode "" "cite" key unique props nodes
+
+let dfn ?(key="") ?(unique="") props nodes = fullnode "" "dfn" key unique props nodes
+
+let abbr ?(key="") ?(unique="") props nodes = fullnode "" "abbr" key unique props nodes
+
+let var' ?(key="") ?(unique="") props nodes = fullnode "" "var" key unique props nodes
+
+let samp ?(key="") ?(unique="") props nodes = fullnode "" "samp" key unique props nodes
+
+let kbd ?(key="") ?(unique="") props nodes = fullnode "" "kbd" key unique props nodes
+
+let s ?(key="") ?(unique="") props nodes = fullnode "" "s" key unique props nodes
+
+let q ?(key="") ?(unique="") props nodes = fullnode "" "q" key unique props nodes
+
+let rt ?(key="") ?(unique="") props nodes = fullnode "" "rp" key unique props nodes
+
+let bdi ?(key="") ?(unique="") props nodes = fullnode "" "bdi" key unique props nodes
+
+let bdo ?(key="") ?(unique="") props nodes = fullnode "" "bdo" key unique props nodes
+
+let wbr ?(key="") ?(unique="") props nodes = fullnode "" "wbr" key unique props nodes
+
+let menuitem ?(key="") ?(unique="") props nodes = fullnode "" "menuitem" key unique props nodes
+
+let menu ?(key="") ?(unique="") props nodes = fullnode "" "menu" key unique props nodes
+
 (* Properties *)
 
 let noProp = Vdom.noProp
