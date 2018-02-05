@@ -20,3 +20,4 @@ In alphabetical order in their requisite sections.
 
 - @tcoopman: Adding further to the API.
 
+- @soren-n: Adding further to the API.
