@@ -30,8 +30,8 @@ let float min max =
 
 
 let list count (Generator genCmd) =
-  let rec buildList state i = if i > 0 then (genCmd state)::(buildList state (i-1)) else [] in
-  Generator (fun state -> buildList state count)
+  let rec buildList state i acc = if i > 0 then buildList state (i - 1) (genCmd state :: acc) else acc in
+  Generator (fun state -> buildList state count [])
 
 
 let map func (Generator genCmd) =
