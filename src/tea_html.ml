@@ -1,4 +1,11 @@
+type 'msg t = 'msg Vdom.t
+type 'msg prop = 'msg Vdom.property
+
+type 'msg createNode = ?key:string -> ?unique:string ->
+  'msg prop list -> 'msg t list -> 'msg t
+
 open Vdom
+
 
 module Cmds = Tea_html_cmds
 
@@ -266,7 +273,7 @@ let onInputOpt ?(key="") msg =
     (fun ev ->
        match Js.Undefined.to_opt ev##target with
        | None -> None
-       | Some target -> match Js.Undefined.to_opt target##value with
+       | Some target -> match Js.Undefined.to_opt (Web_node.getValue target) with
          | None -> None
          | Some value -> msg value
     )
@@ -278,7 +285,7 @@ let onChangeOpt ?(key="") msg =
   (fun ev ->
        match Js.Undefined.to_opt ev##target with
        | None -> None
-       | Some target -> match Js.Undefined.to_opt target##value with
+       | Some target -> match Js.Undefined.to_opt (Web_node.getValue target) with
          | None -> None
          | Some value -> msg value
     )
@@ -302,7 +309,7 @@ let onCheckOpt ?(key="") msg =
     (fun ev ->
        match Js.Undefined.to_opt ev##target with
        | None -> None
-       | Some target -> match Js.Undefined.to_opt target##checked with
+       | Some target -> match Web_node.getChecked target |> Js.Undefined.to_opt with
          | None -> None
          | Some value -> msg value
     )
