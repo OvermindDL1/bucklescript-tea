@@ -264,9 +264,9 @@ let onMsg eventName msg = onMsg eventName msg
 let onInputOpt ?(key="") msg =
   onCB "input" key
     (fun ev ->
-       match Js.Undefined.to_opt ev##target with
+       match Js.Undefined.toOption ev##target with
        | None -> None
-       | Some target -> match Js.Undefined.to_opt target##value with
+       | Some target -> match Js.Undefined.toOption target##value with
          | None -> None
          | Some value -> msg value
     )
@@ -276,9 +276,9 @@ let onInput ?(key="") msg = onInputOpt ~key:key (fun ev -> Some (msg ev))
 let onChangeOpt ?(key="") msg =
   onCB "change" key
   (fun ev ->
-       match Js.Undefined.to_opt ev##target with
+       match Js.Undefined.toOption ev##target with
        | None -> None
-       | Some target -> match Js.Undefined.to_opt target##value with
+       | Some target -> match Js.Undefined.toOption target##value with
          | None -> None
          | Some value -> msg value
     )
@@ -300,9 +300,9 @@ let onFocus msg =
 let onCheckOpt ?(key="") msg =
   onCB "change" key
     (fun ev ->
-       match Js.Undefined.to_opt ev##target with
+       match Js.Undefined.toOption ev##target with
        | None -> None
-       | Some target -> match Js.Undefined.to_opt target##checked with
+       | Some target -> match Js.Undefined.toOption target##checked with
          | None -> None
          | Some value -> msg value
     )
