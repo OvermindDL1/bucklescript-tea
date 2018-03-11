@@ -132,7 +132,23 @@ And if you need to shut it down or pass it a message or so then you can do so vi
 
 For further examples see the [bucklescript-testing](https://github.com/OvermindDL1/bucklescript-testing) project for now until a full example set up is built.
 
-### Starter-Kit
+## Starter-Kits
 
-There is a fantastic starter kit made by tcoopman that supports rollup combining of the files and a built-in server for testing, see and get it at: [tcoopman's starter kit](https://github.com/tcoopman/bucklescript-tea-starter-kit)
+A list of starter-kits that get you up and running.
+
+> Feel free to extend this list!
+
+#### [tcoopman/bucklescript-tea-starter-kit](https://github.com/tcoopman/bucklescript-tea-starter-kit)
+
+* syntax: OCaml
+* build-system: [rollup](https://github.com/rollup/rollup)
+* dev-server: [zeit/serve](https://github.com/zeit/serve)
+
+#### [feluxe/bs-tea-starter-kit](https://github.com/feluxe/bs-tea-starter-kit)
+
+* syntax: ReasonML
+* build-system: [webpack](https://github.com/webpack/webpack)
+* dev-server: [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+* css: [bs-css](https://github.com/SentiaAnalytics/bs-css)
+
 
