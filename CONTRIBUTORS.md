@@ -12,6 +12,8 @@ In alphabetical order in their requisite sections.
 
 ## Special Thanks
 
+- @feluxe: Starter-kit provider.
+
 - @IwanKaramazow: Bug finder extraordinaire, thanks for catching all those corner cases! Also helping flesh out the API.
 
 - @jackalcooper: Bug finder extraordinaire, thanks for catching those Bucklescript issues! Also helped flesh out the API.
