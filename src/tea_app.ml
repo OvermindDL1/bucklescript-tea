@@ -110,7 +110,7 @@ let programStateWrapper initModel pump shutdown =
         | Some [] -> pending := None
         | Some msgs ->
           let () = pending := None in
-          List.iter handler (List.rev msgs)
+          Belt.List.forEach (Belt.List.reverse msgs) handler
       )
     | Some msgs -> pending := Some (msg :: msgs) in
   let finalizedCBs : 'msg Vdom.applicationCallbacks = {

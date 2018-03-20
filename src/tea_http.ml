@@ -141,7 +141,7 @@ let send resultToMessage (Request (request, maybeEvents)) =
         with _ -> enqResError (BadUrl url) () in
       let () =
         let setHeader (Header (k, v)) = Web.XMLHttpRequest.setRequestHeader k v xhr in
-        let () = List.iter setHeader headers in
+        let () = Belt.List.forEach headers setHeader in
         let () = Web.XMLHttpRequest.set_responseType typ xhr in
         let () =
           match timeout with
@@ -207,7 +207,7 @@ module Progress = struct
             let lengthComputable =
               let open Tea_json.Decoder in
               let open Tea_result in
-              match decodeValue (field "lengthComputable" bool) ev with
+              match decodeValue (field bool "lengthComputable") ev with
               | Error _e -> false
               | Ok v -> v in
             if lengthComputable then
@@ -215,8 +215,8 @@ module Progress = struct
               let open Tea_result in
               let decoder =
                 map2 (fun bytes bytesExpected -> {bytes; bytesExpected})
-                  (field "loaded" int)
-                  (field "total" int)
+                  (field int "loaded")
+                  (field int "total")
               in
               match decodeValue decoder ev with
               | Error _e -> ()

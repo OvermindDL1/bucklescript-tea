@@ -35,7 +35,7 @@ let rec run callbacks =
   function
   | NoCmd -> ()
   | Tagger tagger -> tagger callbacks
-  | Batch cmds -> List.fold_left (fun () cmd -> run callbacks cmd) () cmds
+  | Batch cmds -> Belt.List.reduceU cmds () (fun [@bs] () cmd -> run callbacks cmd)
   | EnqueueCall cb ->
     (* let () = Js.log ("Cmd.run", "enqueue", cb) in *)
     cb callbacks

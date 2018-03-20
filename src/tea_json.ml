@@ -85,7 +85,7 @@ module Decoder = struct
                   | Tea_result.Ok r -> r
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.to_list a |. Belt.List.map parse)
+              try Tea_result.Ok (Belt.List.fromArray a |. Belt.List.map parse)
               with ParseFail e -> Tea_result.Error ("list -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-list value"
@@ -151,7 +151,7 @@ module Decoder = struct
           | _ -> Tea_result.Error "Non-dict value"
       )
 
-  let field key (Decoder decoder) =
+  let field (Decoder decoder) key =
     Decoder
       ( fun value ->
           let open Web.Json in
@@ -168,7 +168,7 @@ module Decoder = struct
       )
 
   let at fields dec =
-    List.fold_right field fields dec
+    Belt.List.reduceReverse fields dec field
 
   let index idx (Decoder decoder) =
     Decoder
@@ -540,7 +540,7 @@ module Encoder = struct
     let aux o (k, v) =
       let () = Js.Dict.set o k v in
       o in
-    let o = List.fold_left aux (Js.Dict.empty ()) v in
+    let o = Belt.List.reduce v (Js.Dict.empty ()) aux in
     Json.of_type Json.Object o
 
   let array (v : 't array) = Json.of_type Json.Array v

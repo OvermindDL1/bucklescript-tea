@@ -87,9 +87,9 @@ let getAllResponseHeadersAsList x =
     ( s
       |> Js.String.split "\r\n"
       |. Belt.Array.map (Js.String.splitAtMost ": " ~limit:2)
-      |> Array.to_list
-      |> List.filter (fun a -> Belt.Array.length a == 2)
-      |> List.map
+      |> Belt.List.fromArray
+      |. Belt.List.keep (fun a -> Belt.Array.length a == 2)
+      |. Belt.List.map
         ( function
           | [|key; value|] -> (key, value)
           | _ -> failwith "Cannot happen, already checked length"
@@ -102,7 +102,7 @@ let getAllResponseHeadersAsDict x =
   | Tea_result.Error _ as err -> err
   | Tea_result.Ok l ->
     let insert d (k, v) = StringMap.add k v d in
-    Tea_result.Ok (List.fold_left insert StringMap.empty l)
+    Tea_result.Ok (Belt.List.reduce l StringMap.empty insert)
 
 let getResponseHeader key x = Js.Null.toOption (x##getResponse key)
 
@@ -119,10 +119,11 @@ let send body x =
   | FormDataBody f -> x##send__formdata f
   | FormListBody l ->
     let form =
-      List.fold_left
-        (fun f (key, value) -> let () = Web_formdata.append key value f in f)
+      Belt.List.reduce 
+        l
         (Web_formdata.create ())
-        l in
+        (fun f (key, value) -> let () = Web_formdata.append key value f in f)
+        in
     x##send__formdata form
   | DocumentBody d -> x##send__document d
   (* | BlobBody b -> x##send_blob b *)

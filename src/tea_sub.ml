@@ -38,7 +38,7 @@ let rec run : type msgOld msgNew . msgOld Vdom.applicationCallbacks ref -> msgNe
     let rec enable : type msg . msg Vdom.applicationCallbacks ref -> msg t -> unit = fun callbacks -> function
       | NoSub -> ()
       | Batch [] -> ()
-      | Batch subs -> List.iter (enable callbacks) subs
+      | Batch subs -> Belt.List.forEach subs (enable callbacks) 
       | Mapper (mapper, sub) ->
         let subCallbacks = mapper callbacks in
         enable subCallbacks sub
@@ -47,7 +47,7 @@ let rec run : type msgOld msgNew . msgOld Vdom.applicationCallbacks ref -> msgNe
     let rec disable : type msg . msg Vdom.applicationCallbacks ref -> msg t -> unit = fun callbacks -> function
       | NoSub -> ()
       | Batch [] -> ()
-      | Batch subs -> List.iter (disable callbacks) subs
+      | Batch subs -> Belt.List.forEach subs (disable callbacks)
       | Mapper (mapper, sub) ->
         let subCallbacks = mapper callbacks in
         disable subCallbacks sub

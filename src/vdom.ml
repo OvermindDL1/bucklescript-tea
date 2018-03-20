@@ -115,16 +115,16 @@ let rec renderToHtmlString = function
       | Attribute (_namespace, k, v) -> String.concat "" [" "; k; "=\""; v; "\""]
       | Data (k, v) -> String.concat "" [" data-"; k; "=\""; v; "\""]
       | Event (_, _, _) -> ""
-      | Style s -> String.concat "" [" style=\""; String.concat ";" (List.map (fun (k, v) -> String.concat "" [k;":";v;";"]) s); "\""]
+      | Style s -> String.concat "" [" style=\""; String.concat ";" (Belt.List.mapU s (fun [@bs] (k, v) -> String.concat "" [k;":";v;";"])); "\""]
     in
     String.concat ""
       [ "<"
       ; namespace
       ; if namespace = "" then "" else ":"
       ; tagName
-      ; String.concat "" (List.map (fun p -> renderProp p) props)
+      ; String.concat "" (Belt.List.mapU props (fun [@bs] p -> renderProp p))
       ; ">"
-      ; String.concat "" (List.map (fun v -> renderToHtmlString v) vdoms)
+      ; String.concat "" (Belt.List.mapU vdoms (fun [@bs] v -> renderToHtmlString v))
       ; "</"
       ; tagName
       ; ">"
@@ -202,7 +202,7 @@ let patchVNodesOnElems_PropertiesApply_Add callbacks elem _idx = function
   | Attribute (namespace, k, v) -> Web.Node.setAttributeNsOptional elem namespace k v
   | Data (k, v) -> Js.log ("TODO:  Add Data Unhandled", k, v); failwith "TODO:  Add Data Unhandled"
   | Event (name, handlerType, cache) -> cache := eventHandler_Register callbacks elem name handlerType
-  | Style s -> List.fold_left (fun () (k, v) -> Web.Node.setStyleProperty elem k (Js.Null.return v)) () s
+  | Style s -> Belt.List.reduceU s () (fun [@bs] () (k, v) -> Web.Node.setStyleProperty elem k (Js.Null.return v))
 
 
 let patchVNodesOnElems_PropertiesApply_Remove _callbacks elem _idx = function
@@ -211,7 +211,7 @@ let patchVNodesOnElems_PropertiesApply_Remove _callbacks elem _idx = function
   | Attribute (namespace, k, _v) -> Web.Node.removeAttributeNsOptional elem namespace k
   | Data (k, v) -> Js.log ("TODO:  Remove Data Unhandled", k, v); failwith "TODO:  Remove Data Unhandled"
   | Event (name, _, cache) -> cache := eventHandler_Unregister elem name !cache
-  | Style s -> List.fold_left (fun () (k, _v) -> Web.Node.setStyleProperty elem k Js.Null.empty) () s
+  | Style s -> Belt.List.reduceU s () (fun [@bs] () (k, _v) -> Web.Node.setStyleProperty elem k Js.Null.empty)
 
 let patchVNodesOnElems_PropertiesApply_RemoveAdd callbacks elem idx oldProp newProp =
   let () = patchVNodesOnElems_PropertiesApply_Remove callbacks elem idx oldProp in
@@ -232,7 +232,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate _callbacks elem _idx oldProp = fun
     (* let () = Js.log ("Mutating Style", elem, oldProp, _newProp) in *)
     match [@ocaml.warning "-4"] oldProp with
     | Style oldS ->
-      List.fold_left2 (fun () (ok, ov) (nk, nv) ->
+      Belt.List.reduce2U oldS s () (fun [@bs] () (ok, ov) (nk, nv) ->
           if ok = nk then
             if ov = nv then
               ()
@@ -241,7 +241,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate _callbacks elem _idx oldProp = fun
           else
             let () = Web.Node.setStyleProperty elem ok Js.Null.empty in
             Web.Node.setStyleProperty elem nk (Js.Null.return nv)
-        ) () oldS s
+        )
     | _ -> failwith "Passed a non-Style to a new Style as a Mutations while the old Style is not actually a style!"
 
 let rec patchVNodesOnElems_PropertiesApply callbacks elem idx oldProperties newProperties =
@@ -309,7 +309,7 @@ let genEmptyProps length =
     | len -> aux (noProp :: lst) (len - 1)
   in aux [] length
 
-let mapEmptyProps props = List.map (fun _ -> noProp) props
+let mapEmptyProps props = Belt.List.mapU props (fun [@bs] _ -> noProp)
 
 
 let rec patchVNodesOnElems_ReplaceNode callbacks elem elems idx = function [@ocaml.warning "-4"]

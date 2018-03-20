@@ -141,7 +141,7 @@ let map6 func task1 task2 task3 task4 task5 task6 =
 let rec sequence = function
   | [] -> succeed []
   | task :: remainingTasks ->
-    map2 (fun l r -> l :: r (* TODO:  Replace with `List.cons` when updated to version 4.03 *)) task (sequence remainingTasks)
+    map2 (fun l r -> Belt.List.add r l) task (sequence remainingTasks)
 
 
 

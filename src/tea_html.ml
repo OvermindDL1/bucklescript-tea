@@ -224,8 +224,8 @@ let class' name = prop "className" name
 
 let classList classes =
   classes
-  |> List.filter (fun (_fst, snd) -> snd)
-  |> List.map (fun (fst, _snd) -> fst)
+  |. Belt.List.keep (fun (_fst, snd) -> snd)
+  |. Belt.List.map (fun (fst, _snd) -> fst)
   |> String.concat " "
   |> class'
 

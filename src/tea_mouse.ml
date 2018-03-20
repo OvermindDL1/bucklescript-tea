@@ -8,8 +8,8 @@ type position = {
 let position =
   let open Tea_json.Decoder in
   map2 (fun x y -> {x; y})
-    (field "pageX" int)
-    (field "pageY" int)
+    (field int "pageX")
+    (field int "pageY")
 
 
 let registerGlobal name key tagger =
