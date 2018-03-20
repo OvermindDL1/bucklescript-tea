@@ -314,7 +314,7 @@ let mapEmptyProps props = Belt.List.mapU props (fun [@bs] _ -> noProp)
 
 let rec patchVNodesOnElems_ReplaceNode callbacks elem elems idx = function [@ocaml.warning "-4"]
   | (Node (newNamespace, newTagName, _newKey, _newUnique, newProperties, newChildren)) ->
-    let oldChild = elems.(idx) in
+    let oldChild = Belt.Array.getUnsafe elems idx in
     let newChild = Web.Document.createElementNsOptional newNamespace newTagName in
     let [@ocaml.warning "-8"] true = patchVNodesOnElems_Properties callbacks newChild (mapEmptyProps newProperties) newProperties in
     let childChildren = Web.Node.childNodes newChild in
@@ -348,11 +348,11 @@ and patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode =
      (Node (_newNamespace, newTagName, _newKey, newUnique, newProperties, newChildren) as newNode)) ->
     (* We are being ordered to mutate the node, the key's are already handled *)
     if oldUnique <> newUnique || oldTagName <> newTagName then
-      (* let () = Js.log ("Node test", "unique swap", elem, elems.(idx), newNode) in *)
+      (* let () = Js.log ("Node test", "unique swap", elem, Belt.Array.getUnsafe elems idx, newNode) in *)
       patchVNodesOnElems_ReplaceNode callbacks elem elems idx newNode
     else (* Same node type, just mutate things *)
-      (* let () = Js.log ("Node test", "non-unique mutate", elem, elems.(idx), newNode) in *)
-      let child = elems.(idx) in
+      (* let () = Js.log ("Node test", "non-unique mutate", elem, Belt.Array.getUnsafe elems idx, newNode) in *)
+      let child = Belt.Array.getUnsafe elems idx in
       let childChildren = Web.Node.childNodes child in
       let () = if patchVNodesOnElems_Properties callbacks child oldProperties newProperties then () else
           (* Properties mutation failed, full swap and log *)
@@ -378,13 +378,13 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
     let _attachedChild = Web.Node.appendChild elem newChild in
     patchVNodesOnElems callbacks elem elems (idx + 1) [] newRest
   | _oldVnode :: oldRest, [] ->
-    let child = elems.(idx) in
+    let child = Belt.Array.getUnsafe elems idx in
     let _removedChild = Web.Node.removeChild elem child in
     patchVNodesOnElems callbacks elem elems idx oldRest [] (* Not changing idx so we can delete the rest too *)
   | CommentNode oldS :: oldRest, CommentNode newS :: newRest when oldS = newS -> patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
   | Text oldText :: oldRest, Text newText :: newRest ->
     let () = if oldText = newText then () else
-      let child = elems.(idx) in
+      let child = Belt.Array.getUnsafe elems idx in
       Web.Node.set_nodeValue child newText in
     patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
   | LazyGen (oldKey, _oldGen, oldCache) :: oldRest, LazyGen (newKey, newGen, newCache) :: newRest ->
@@ -396,30 +396,30 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
       ( match oldRest, newRest with
         | LazyGen (olderKey, _olderGen, _olderCache) :: olderRest,
           LazyGen (newerKey, _newerGen, _newerCache) :: newerRest when olderKey = newKey && oldKey = newerKey ->
-          (* let () = Js.log ("Lazy older newer swap", olderKey, oldKey, newKey, newerKey, elem, elems.(idx)) in *)
+          (* let () = Js.log ("Lazy older newer swap", olderKey, oldKey, newKey, newerKey, elem, Belt.Array.getUnsafe elems idx) in *)
           (* TODO:  Test this branch, it is untested thus far *)
-          let firstChild = elems.(idx) in
-          let secondChild = elems.(idx+1) in
+          let firstChild = Belt.Array.getUnsafe elems idx in
+          let secondChild = Belt.Array.getUnsafe elems (idx+1) in
           let _removedChild = Web.Node.removeChild elem secondChild in
           let _attachedChild = Web.Node.insertBefore elem secondChild firstChild in
           patchVNodesOnElems callbacks elem elems (idx+2) olderRest newerRest
         | LazyGen (olderKey, _olderGen, olderCache) :: olderRest, _ when olderKey = newKey ->
-          (* let () = Js.log ("Lazy older match", olderKey, oldKey, newKey, elem, elems.(idx)) in *)
-          let oldChild = elems.(idx) in
+          (* let () = Js.log ("Lazy older match", olderKey, oldKey, newKey, elem, Belt.Array.getUnsafe elems idx) in *)
+          let oldChild = Belt.Array.getUnsafe elems idx in
           let _removedChild = Web.Node.removeChild elem oldChild in
           let oldVdom = !olderCache in
           let () = newCache := oldVdom in (* Don't forget to pass the cache along... *)
           patchVNodesOnElems callbacks elem elems (idx+1) olderRest newRest
         | _, LazyGen (newerKey, _newerGen, _newerCache) :: _newerRest when newerKey = oldKey ->
-          (* let () = Js.log ("Lazy newer match", "parse", oldKey, newKey, newerKey, elem, elems.(idx)) in *)
-          let oldChild = elems.(idx) in
+          (* let () = Js.log ("Lazy newer match", "parse", oldKey, newKey, newerKey, elem, Belt.Array.getUnsafe elems idx) in *)
+          let oldChild = Belt.Array.getUnsafe elems idx in
           let newVdom = newGen () in
           let () = newCache := newVdom in (* Don't forget to pass the cache along... *)
           let newChild = patchVNodesOnElems_CreateElement callbacks newVdom in
           let _attachedChild = Web.Node.insertBefore elem newChild oldChild in
           patchVNodesOnElems callbacks elem elems (idx+1) oldVNodes newRest
         | _ ->
-          (* let () = Js.log ("Lazy nomatch", oldKey, newKey, elem, elems.(idx)) in *)
+          (* let () = Js.log ("Lazy nomatch", oldKey, newKey, elem, Belt.Array.getUnsafe elems idx) in *)
           let oldVdom = !oldCache in
           let newVdom = newGen () in
           let () = newCache := newVdom in (* Don't forget to pass the cache along... *)
@@ -428,7 +428,7 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
   | (Node (oldNamespace, oldTagName, oldKey, _oldUnique, _oldProperties, _oldChildren) as oldNode) :: oldRest,
     (Node (newNamespace, newTagName, newKey, _newUnique, _newProperties, _newChildren) as newNode) :: newRest ->
     if oldKey = newKey && oldKey <> "" then (* Do nothing, they are keyed identically *)
-      (* let () = Js.log ("Node test", "match", elem, elems.(idx), newNode) in *)
+      (* let () = Js.log ("Node test", "match", elem, Belt.Array.getUnsafe elems idx, newNode) in *)
       patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
     else if oldKey = "" || newKey = "" then
       let () = patchVNodesOnElems_MutateNode callbacks elem elems idx oldNode newNode in
@@ -439,23 +439,23 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
           Node (newerNamespace, newerTagName, newerKey, _newerUnique, _newerProperties, _newerChildren) :: newerRest
           when olderNamespace = newNamespace && olderTagName = newTagName && olderKey = newKey &&
                oldNamespace = newerNamespace && oldTagName = newerTagName && oldKey = newerKey ->
-          (* let () = Js.log ("Node test", "older newer swap", elem, elems.(idx), newNode) in *)
+          (* let () = Js.log ("Node test", "older newer swap", elem, Belt.Array.getUnsafe elems idx, newNode) in *)
           (* TODO:  Test this branch, it is untested thus far *)
-          let firstChild = elems.(idx) in
-          let secondChild = elems.(idx+1) in
+          let firstChild = Belt.Array.getUnsafe elems idx in
+          let secondChild = Belt.Array.getUnsafe elems (idx+1) in
           let _removedChild = Web.Node.removeChild elem secondChild in
           let _attachedChild = Web.Node.insertBefore elem secondChild firstChild in
           patchVNodesOnElems callbacks elem elems (idx+2) olderRest newerRest
         | Node (olderNamespace, olderTagName, olderKey, _olderUnique, _olderProperties, _olderChildren) :: olderRest, _
           when olderNamespace = newNamespace && olderTagName = newTagName && olderKey = newKey ->
-          (* let () = Js.log ("Node test", "older match", elem, elems.(idx), newNode) in *)
-          let oldChild = elems.(idx) in
+          (* let () = Js.log ("Node test", "older match", elem, Belt.Array.getUnsafe elems idx, newNode) in *)
+          let oldChild = Belt.Array.getUnsafe elems idx in
           let _removedChild = Web.Node.removeChild elem oldChild in
           patchVNodesOnElems callbacks elem elems (idx+1) olderRest newRest
         | _, Node (newerNamespace, newerTagName, newerKey, _newerUnique, _newerProperties, _newerChildren) :: _newerRest
           when oldNamespace = newerNamespace && oldTagName = newerTagName && oldKey = newerKey ->
-            (* let () = Js.log ("Node test", "newer match", elem, elems.(idx), newNode) in *)
-          let oldChild = elems.(idx) in
+            (* let () = Js.log ("Node test", "newer match", elem, Belt.Array.getUnsafe elems idx, newNode) in *)
+          let oldChild = Belt.Array.getUnsafe elems idx in
           let newChild = patchVNodesOnElems_CreateElement callbacks newNode in
           let _attachedChild = Web.Node.insertBefore elem newChild oldChild in
           patchVNodesOnElems callbacks elem elems (idx+1) oldVNodes newRest
@@ -464,7 +464,7 @@ and patchVNodesOnElems callbacks elem elems idx oldVNodes newVNodes =
           patchVNodesOnElems callbacks elem elems (idx+1) oldRest newRest
       )
   | _oldVnode :: oldRest, newNode :: newRest ->
-    let oldChild = elems.(idx) in
+    let oldChild = Belt.Array.getUnsafe elems idx in
     let newChild = patchVNodesOnElems_CreateElement callbacks newNode in
     let _attachedChild = Web.Node.insertBefore elem newChild oldChild in
     let _removedChild = Web.Node.removeChild elem oldChild in

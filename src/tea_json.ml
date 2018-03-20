@@ -178,7 +178,7 @@ module Decoder = struct
           | JSONArray a ->
             if idx < 0 || idx > (Belt.Array.length a)
             then Tea_result.Error ("Array index out of range: " ^ (string_of_int idx))
-            else decoder a.(idx)
+            else decoder (Belt.Array.getUnsafe a idx)
           | _ -> Tea_result.Error "Non-array value"
       )
 
