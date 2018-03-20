@@ -207,7 +207,7 @@ module Progress = struct
             let lengthComputable =
               let open Tea_json.Decoder in
               let open Tea_result in
-              match decodeValue (field bool "lengthComputable") ev with
+              match decodeValue (field "lengthComputable" bool) ev with
               | Error _e -> false
               | Ok v -> v in
             if lengthComputable then
@@ -215,8 +215,8 @@ module Progress = struct
               let open Tea_result in
               let decoder =
                 map2 (fun bytes bytesExpected -> {bytes; bytesExpected})
-                  (field int "loaded")
-                  (field int "total")
+                  (field "loaded" int)
+                  (field "total" int)
               in
               match decodeValue decoder ev with
               | Error _e -> ()

@@ -151,7 +151,7 @@ module Decoder = struct
           | _ -> Tea_result.Error "Non-dict value"
       )
 
-  let field (Decoder decoder) key =
+  let field key (Decoder decoder) =
     Decoder
       ( fun value ->
           let open Web.Json in
@@ -168,7 +168,7 @@ module Decoder = struct
       )
 
   let at fields dec =
-    Belt.List.reduceReverse fields dec field
+    Belt.List.reduceReverseU fields dec (fun [@bs] d k -> field k d)
 
   let index idx (Decoder decoder) =
     Decoder
