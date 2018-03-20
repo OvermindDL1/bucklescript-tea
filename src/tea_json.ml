@@ -85,7 +85,7 @@ module Decoder = struct
                   | Tea_result.Ok r -> r
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.to_list a |> List.map parse)
+              try Tea_result.Ok (Array.to_list a |. Belt.List.map parse)
               with ParseFail e -> Tea_result.Error ("list -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-list value"
@@ -102,7 +102,7 @@ module Decoder = struct
                   | Tea_result.Ok r -> r
                   | Tea_result.Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.map parse a)
+              try Tea_result.Ok (Belt.Array.map a parse)
               with ParseFail e -> Tea_result.Error ("array -> " ^ e)
             )
           | _ -> Tea_result.Error "Non-array value"
@@ -115,7 +115,7 @@ module Decoder = struct
           match classify value with
           | JSONObject o ->
             ( let keys = Js.Dict.keys o in
-              let parse k l =
+              let parse l k =
                 ( match Js.Dict.get o k with
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
@@ -123,7 +123,7 @@ module Decoder = struct
                     | Tea_result.Ok r -> (k, r) :: l
                     | Tea_result.Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.fold_right parse keys [])
+              try Tea_result.Ok (Belt.Array.reduceReverse keys [] parse)
               with ParseFail e -> Tea_result.Error ("Invalid keyValuePair parsing: " ^ e)
             )
           | _ -> Tea_result.Error "Non-keyValuePair value"
@@ -136,7 +136,7 @@ module Decoder = struct
           match classify value with
           | JSONObject o ->
             ( let keys = Js.Dict.keys o in
-              let parse k d =
+              let parse d k =
                 ( match Js.Dict.get o k with
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
@@ -145,7 +145,7 @@ module Decoder = struct
                     | Tea_result.Error e -> raise (ParseFail e)
                 ) in
               let emptyDict = ObjectDict.empty in
-              try Tea_result.Ok (Array.fold_right parse keys emptyDict)
+              try Tea_result.Ok (Belt.Array.reduceReverse keys emptyDict parse)
               with ParseFail e -> Tea_result.Error ("Invalid dict parsing: " ^ e)
             )
           | _ -> Tea_result.Error "Non-dict value"
@@ -176,7 +176,7 @@ module Decoder = struct
           let open Web.Json in
           match classify value with
           | JSONArray a ->
-            if idx < 0 || idx > (Array.length a)
+            if idx < 0 || idx > (Belt.Array.length a)
             then Tea_result.Error ("Array index out of range: " ^ (string_of_int idx))
             else decoder a.(idx)
           | _ -> Tea_result.Error "Non-array value"

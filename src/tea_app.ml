@@ -194,7 +194,7 @@ let programLoop update view subscriptions initModel initCmd = function
     (* let () = Js.log (Vdom.createVNodeIntoElement callbacks !lastVdom parentNode) in *)
     (* We own the passed in node, clear it out TODO:  Clear it out properly *)
     (* let () = Js.log ("Blah", Web.Node.firstChild parentNode, Js.Null.test (Web.Node.firstChild parentNode), false, true) in *)
-    let clearPnode () = while (Js.Array.length (Web.Node.childNodes parentNode)) > 0 do
+    let clearPnode () = while (Belt.Array.length (Web.Node.childNodes parentNode)) > 0 do
         match Js.Null.toOption (Web.Node.firstChild parentNode) with
         | None -> ()
         | Some firstChild -> let _removedChild = Web.Node.removeChild parentNode firstChild in ()
