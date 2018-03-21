@@ -97,11 +97,11 @@ let getAllResponseHeadersAsList x =
     )
 
 let getAllResponseHeadersAsDict x =
-  let module StringMap = Map.Make(String) in
+  let module StringMap = Belt.Map.String in
   match getAllResponseHeadersAsList x with
   | Tea_result.Error _ as err -> err
   | Tea_result.Ok l ->
-    let insert d (k, v) = StringMap.add k v d in
+    let insert d (k, v) = StringMap.set d k v in
     Tea_result.Ok (Belt.List.reduce l StringMap.empty insert)
 
 let getResponseHeader key x = Js.Null.toOption (x##getResponse key)
