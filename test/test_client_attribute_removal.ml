@@ -39,7 +39,7 @@ let render_languages selected languages =
     | Some l -> language == l
     | None -> false
   in
-  let rendered = List.map (fun l -> lang l (is_selected selected l)) languages in
+  let rendered = Belt.List.mapU languages (fun [@bs] l -> lang l (is_selected selected l)) in
   ul [] rendered
 
 let update state = function
