@@ -220,6 +220,8 @@ let href str = attribute "" "href" str
 (* `src` is actually an attribute, not a property, but need it here for Elm compat... *)
 let src str = attribute "" "src" str
 
+let title str = attribute "" "title" str
+
 let class' name = prop "className" name
 
 let classList classes =

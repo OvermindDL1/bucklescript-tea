@@ -26,3 +26,4 @@ In alphabetical order in their requisite sections.
 
 - @utkarshkukreti: Bug finder extraordinaire!
 
+- @neochrome (Johan Stenqvist): Adding further to the API.
