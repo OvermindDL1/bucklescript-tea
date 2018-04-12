@@ -196,7 +196,7 @@ let s ?(key="") ?(unique="") props nodes = fullnode "" "s" key unique props node
 
 let q ?(key="") ?(unique="") props nodes = fullnode "" "q" key unique props nodes
 
-let rt ?(key="") ?(unique="") props nodes = fullnode "" "rp" key unique props nodes
+let rt ?(key="") ?(unique="") props nodes = fullnode "" "rt" key unique props nodes
 
 let bdi ?(key="") ?(unique="") props nodes = fullnode "" "bdi" key unique props nodes
 
