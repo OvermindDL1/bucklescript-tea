@@ -9,6 +9,8 @@ module App = Tea_app
 
 module Html = Tea_html
 
+module Html2 = Tea_html2
+
 module Svg = Tea_svg
 
 (* module Task = Tea_task *)
