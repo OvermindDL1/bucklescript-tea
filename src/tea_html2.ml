@@ -509,32 +509,17 @@ module Events = struct
 
   let onMsg eventName msg = onMsg eventName msg
 
-  type options = {
-    stopPropagation : bool;
-    preventDefault : bool;
-  }
+  let on = Tea_html.on
 
-  let defaultOptions = {
-    stopPropagation = false;
-    preventDefault = false;
-  }
+  let onWithOptions = Tea_html.onWithOptions
 
-  let onWithOptions eventName options decoder =
-    onCB eventName "" (fun event ->
-      if options.stopPropagation then event##stopPropagation () |> ignore;
-      if options.preventDefault then event##preventDefault () |> ignore;
-      event
-      |> Tea_json.Decoder.decodeEvent decoder
-      |> Tea_result.result_to_option
-    )
+  let defaultOptions = Tea_html.defaultOptions
 
-  let on eventName decoder = onWithOptions eventName defaultOptions decoder
+  let targetValue = Tea_html.targetValue
 
-  let targetValue = Tea_json.Decoder.at ["target"; "value"] Tea_json.Decoder.string
+  let targetChecked = Tea_html.targetChecked
 
-  let targetChecked = Tea_json.Decoder.at ["target"; "checked"] Tea_json.Decoder.bool
-
-  let keyCode = Tea_json.Decoder.field "keyCode" Tea_json.Decoder.int
+  let keyCode = Tea_html.keyCode
 
   (** {1 Mouse helpers} *)
 
