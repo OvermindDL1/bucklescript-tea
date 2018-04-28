@@ -7,6 +7,16 @@ type msg =
   | Reset
   | Set of int
 
+let string_of_msg = function
+  | Increment -> "Increment"
+  | Decrement -> "Decrement"
+  | Reset -> "Reset"
+  | Set _ -> "Set"
+
+let init () = 4, Tea.Cmd.none
+
+let subscriptions _ = Tea.Sub.none
+
 let update model = function
   | Increment -> model + 1, Tea.Cmd.none
   | Decrement -> model - 1, Tea.Cmd.none
@@ -42,19 +52,28 @@ let view model =
     ; if model <> 0 then view_button "Reset" Reset else noNode
     ]
 
-module D = Tea.Debug.MakeStandardProgram(struct
-  type cflags = unit
-  type cmsg = msg
-  type cmodel = int
-  let init = fun () -> 4, Tea.Cmd.none
-  let update = update
-  let view = view
-  let subscriptions = fun _ -> Tea.Sub.none
-  let string_of_msg = function
-    | Increment -> "Increment"
-    | Decrement -> "Decrement"
-    | Reset -> "Reset"
-    | Set _ -> "Set"
-end)
+let main =
+  Tea.Debug.standardProgram {
+    init;
+    update;
+    view;
+    subscriptions;
+  } string_of_msg
 
-let main = D.start
+  (*
+  Debug.beginnerProgram {
+    model = ();
+    update = (fun model (_msg : msg) -> model);
+    view = (fun _model -> Tea.Html.text "hello world")
+  } string_of_msg
+  *)
+
+  (*
+  Debug.program {
+    init;
+    update;
+    view;
+    subscriptions;
+    shutdown = (fun _model -> Tea.Cmd.none);
+  } string_of_msg
+  *)
