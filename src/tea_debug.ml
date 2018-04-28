@@ -14,14 +14,6 @@ type 'model debug_model = {
   show_details : bool;
 }
 
-type ('flags, 'model, 'msg) options = {
-  init : 'flags -> 'model * 'msg Tea_cmd.t;
-  update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t;
-  view : 'model -> 'msg Vdom.t;
-  subscriptions : 'model -> 'msg Tea_sub.t;
-  shutdown : 'model -> 'msg Tea_cmd.t;
-}
-
 let debug :
   ('msg -> string) ->
   ('flags, 'model, 'msg) Tea_app.program ->
