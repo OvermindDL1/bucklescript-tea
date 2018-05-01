@@ -13,15 +13,11 @@ let string_of_msg = function
   | Reset -> "Reset"
   | Set _ -> "Set"
 
-let init () = 4, Tea.Cmd.none
-
-let subscriptions _ = Tea.Sub.none
-
 let update model = function
-  | Increment -> model + 1, Tea.Cmd.none
-  | Decrement -> model - 1, Tea.Cmd.none
-  | Reset -> 0, Tea.Cmd.none
-  | Set v -> v, Tea.Cmd.none
+  | Increment -> model + 1
+  | Decrement -> model - 1
+  | Reset -> 0
+  | Set v -> v
 
 
 let view_button title msg =
@@ -53,27 +49,8 @@ let view model =
     ]
 
 let main =
-  Tea.Debug.standardProgram {
-    init;
+  Tea.Debug.beginnerProgram {
+    model = 4;
     update;
     view;
-    subscriptions;
   } string_of_msg
-
-  (*
-  Debug.beginnerProgram {
-    model = ();
-    update = (fun model (_msg : msg) -> model);
-    view = (fun _model -> Tea.Html.text "hello world")
-  } string_of_msg
-  *)
-
-  (*
-  Debug.program {
-    init;
-    update;
-    view;
-    subscriptions;
-    shutdown = (fun _model -> Tea.Cmd.none);
-  } string_of_msg
-  *)
