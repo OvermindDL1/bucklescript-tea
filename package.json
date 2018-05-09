@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "browserify": "^14.0.0",
-    "bs-platform": "^2.2.2",
+    "bs-platform": "^3.0.0",
     "npm-run-all": "4.0.2",
     "watchify": "3.9.0"
   }
