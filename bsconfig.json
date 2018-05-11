@@ -1,16 +1,12 @@
 {
   "name": "bucklescript-tea",
   "version": "0.7.2",
-  "bsc-flags": [
-    "-bs-cross-module-opt"
-  ],
-  "package-specs": [
-    "commonjs"
-  ],
+  "bsc-flags": ["-bs-cross-module-opt"],
+  "package-specs": ["commonjs"],
   "sources": [
-    "src",
+    "src-ocaml",
     {
-      "dir": "test",
+      "dir": "test-ocaml",
       "type": "dev"
     }
   ]

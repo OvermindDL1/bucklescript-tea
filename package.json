@@ -15,7 +15,8 @@
     "prebuild:test": "run-s build",
     "build:test": "run-p build:test:*",
     "pretest": "run-s build:test",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dual-syntax": "bin/dual-syntax"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,10 @@
     "browserify": "^14.0.0",
     "bs-platform": "^3.0.0",
     "npm-run-all": "4.0.2",
-    "watchify": "3.9.0"
-  }
+    "watchify": "3.9.0",
+    "pre-commit": "^1.2.0"
+  },
+  "pre-commit": [
+    "dual-syntax"
+  ]
 }
