@@ -27,3 +27,6 @@ In alphabetical order in their requisite sections.
 - @utkarshkukreti: Bug finder extraordinaire!
 
 - @neochrome (Johan Stenqvist): Adding further to the API.
+
+- @canadaduane (Duane Johnson): Creating the auto-conversion between the OCaml and Reason files, tremendously useful so people can see how each work!
+
