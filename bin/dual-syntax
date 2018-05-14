@@ -1,21 +1,22 @@
-#!/bin/bash
+#!/bin/sh
 
-# Make sure all ReasonML formatted files pass basic syntax check
+set -e
+
 git diff --cached --name-only --diff-filter=ACM | while read file; do
-  if [[ "$file" =~ (.re|.rei)$ ]]; then
-    # Convert to ReasonML
-    newfile=$(echo $file | sed 's/-reason/-ocaml/' | sed 's/\.re/\.ml/')
-    echo "Converting $file to $newfile"
-    node_modules/.bin/bsrefmt --parse=re -p ml $file >$newfile
-    git add "$newfile"
-  elif [[ "$file" =~ (.ml|.mli)$ ]]; then
-    # Convert to standard OCaml
+  if [[ "$file" =~ (.ml|.mli)$ ]]; then
+    # Convert from OCaml to ReasonML
     newfile=$(echo $file | sed 's/-ocaml/-reason/' | sed 's/\.ml/\.re/')
     echo "Converting $file to $newfile"
     node_modules/.bin/bsrefmt --parse=ml -p re $file >$newfile
     git add "$newfile"
+  elif [[ "$file" =~ (.re|.rei)$ ]]; then
+    # Convert from ReasonML to OCaml
+    newfile=$(echo $file | sed 's/-reason/-ocaml/' | sed 's/\.re/\.ml/')
+    echo "Converting $file to $newfile"
+    node_modules/.bin/bsrefmt --parse=re -p ml $file >$newfile
+    git add "$newfile"
   else
-    echo "Leaving $file as is"
+    [[ "$VERBOSE" = "" ]] || echo "Leaving $file as is"
   fi
 done
 
