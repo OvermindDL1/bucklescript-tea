@@ -6,13 +6,13 @@ git diff --cached --name-only --diff-filter=ACM | while read file; do
     # Convert to ReasonML
     newfile=$(echo $file | sed 's/-reason/-ocaml/' | sed 's/\.re/\.ml/')
     echo "Converting $file to $newfile"
-    refmt --parse=re -p ml $file >$newfile
+    node_modules/.bin/bsrefmt --parse=re -p ml $file >$newfile
     git add "$newfile"
   elif [[ "$file" =~ (.ml|.mli)$ ]]; then
     # Convert to standard OCaml
     newfile=$(echo $file | sed 's/-ocaml/-reason/' | sed 's/\.ml/\.re/')
     echo "Converting $file to $newfile"
-    refmt --parse=ml -p re $file >$newfile
+    node_modules/.bin/bsrefmt --parse=ml -p re $file >$newfile
     git add "$newfile"
   else
     echo "Leaving $file as is"
