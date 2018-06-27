@@ -12,6 +12,8 @@ In alphabetical order in their requisite sections.
 
 ## Special Thanks
 
+- @alfredfriedrich (Peter Klett): Adding further to the API.
+
 - @feluxe: Starter-kit provider.
 
 - @IwanKaramazow: Bug finder extraordinaire, thanks for catching all those corner cases! Also helping flesh out the API.
