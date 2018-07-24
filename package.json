@@ -33,9 +33,6 @@
     "url": "https://github.com/overminddl1/bucklescript-tea/issues"
   },
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
-  "peerDependencies": {
-    "bs-platform": "^3.0.0"
-  },
   "devDependencies": {
     "browserify": "^14.0.0",
     "bs-platform": "^3.0.0",
