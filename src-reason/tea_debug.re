@@ -26,6 +26,7 @@ let debug:
         cmd |> Tea_cmd.map(client_msg),
       );
     };
+
     let update' = model =>
       fun
       | ClientMsg(msg) =>
@@ -47,9 +48,10 @@ let debug:
         }
       | SelectHistoryItem(i) => ({...model, state: Paused(i)}, Tea_cmd.none)
       | ToggleDetails => (
-          {...model, show_details: ! model.show_details},
+          {...model, show_details: !model.show_details},
           Tea_cmd.none,
         );
+
     let view_styles = () => {
       open Tea_html2;
       let rule = (selector, properties) =>
@@ -58,6 +60,7 @@ let debug:
         |> String.concat(";")
         |> Printf.sprintf("%s {%s}", selector)
         |> text;
+
       node(
         "style",
         [],
@@ -212,16 +215,70 @@ let debug:
         ],
       );
     };
+
     let view_details = model => {
       open Tea_html2;
       module A = Tea_html2.Attributes;
       let format = [%raw
         {|
-        function (v) { return JSON.stringify(v, null, 2); }
+        function (v) {
+          var formatRecord = function (data, labels) {
+            return data.reduce(
+              function (acc, cur, index) {
+                acc[labels[index]] = formatValue(cur)
+                return acc
+              }, {})
+          }
+          var listToArray = function (data) {
+            var result = []
+            var cur = data
+            while (typeof cur !== "number") {
+              result.push(formatValue(cur[0]))
+              cur = cur[1]
+            }
+            return result
+          }
+          var formatVariant = function (data, recordVariant) {
+            if (recordVariant === "::") {
+              return listToArray(data)
+            }
+            else {
+              return formatRecord(data, [recordVariant])
+            }
+          }
+          var formatValue = function (x) {
+            var recordLabels, recordVariant, recordModule, recordPolyVar
+            if (x == null) {
+              return null
+            }
+            else if ((recordLabels = x[Symbol.for('BsRecord')]) !== undefined) {
+              return formatRecord(x, recordLabels)
+            }
+            else if ((recordModule = x[Symbol.for('BsLocalModule')]) !== undefined) {
+              return formatRecord(x, recordModule)
+            }
+            else if ((recordVariant = x[Symbol.for('BsVariant')]) !== undefined) {
+              return formatVariant(x, recordVariant)
+            }
+            else if ((recordPolyVar = x[Symbol.for('BsPolyVar')]) !== undefined) {
+              return x[1]
+            }
+            else if (Array.isArray(x)) {
+              // tuple
+              return x.map(formatValue)
+            }
+            else {
+              // scalar
+              return x
+            }
+          }
+          return JSON.stringify(formatValue(v), null, 2);
+        }
       |}
       ];
       aside([A.class'("details")], [model |> format |> text]);
     };
+
     let view_history = (model, selected_index) => {
       open Tea_html2;
       module A = Tea_html2.Attributes;
@@ -271,6 +328,7 @@ let debug:
         model.history,
       );
     };
+
     let view' = model => {
       open Tea_html2;
       module A = Tea_html2.Attributes;
@@ -284,6 +342,7 @@ let debug:
             true,
           )
         };
+
       let history_count = List.length(model.history);
       div(
         [],
@@ -323,14 +382,17 @@ let debug:
         ],
       );
     };
+
     let subscriptions' = model =>
       model.history
       |> List.hd
       |> snd
       |> subscriptions
       |> Tea_sub.map(client_msg);
+
     let shutdown' = model =>
       model.history |> List.hd |> snd |> shutdown |> Tea_cmd.map(client_msg);
+
     {
       init: init',
       update: update',

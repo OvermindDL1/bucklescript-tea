@@ -130,7 +130,59 @@ let debug :
       let open Tea_html2 in
       let module A = Tea_html2.Attributes in
       let format = [%raw {|
-        function (v) { return JSON.stringify(v, null, 2); }
+        function (v) {
+          var formatRecord = function (data, labels) {
+            return data.reduce(
+              function (acc, cur, index) {
+                acc[labels[index]] = formatValue(cur)
+                return acc
+              }, {})
+          }
+          var listToArray = function (data) {
+            var result = []
+            var cur = data
+            while (typeof cur !== "number") {
+              result.push(formatValue(cur[0]))
+              cur = cur[1]
+            }
+            return result
+          }
+          var formatVariant = function (data, recordVariant) {
+            if (recordVariant === "::") {
+              return listToArray(data)
+            }
+            else {
+              return formatRecord(data, [recordVariant])
+            }
+          }
+          var formatValue = function (x) {
+            var recordLabels, recordVariant, recordModule, recordPolyVar
+            if (x == null) {
+              return null
+            }
+            else if ((recordLabels = x[Symbol.for('BsRecord')]) !== undefined) {
+              return formatRecord(x, recordLabels)
+            }
+            else if ((recordModule = x[Symbol.for('BsLocalModule')]) !== undefined) {
+              return formatRecord(x, recordModule)
+            }
+            else if ((recordVariant = x[Symbol.for('BsVariant')]) !== undefined) {
+              return formatVariant(x, recordVariant)
+            }
+            else if ((recordPolyVar = x[Symbol.for('BsPolyVar')]) !== undefined) {
+              return x[1]
+            }
+            else if (Array.isArray(x)) {
+              // tuple
+              return x.map(formatValue)
+            }
+            else {
+              // scalar
+              return x
+            }
+          }
+          return JSON.stringify(formatValue(v), null, 2);
+        }
       |}] in
       aside [A.class' "details"] [model |> format |> text]
     in
