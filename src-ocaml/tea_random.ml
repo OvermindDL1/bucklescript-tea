@@ -22,11 +22,11 @@ let bool =
 
 
 let int min max =
-  Generator (fun state -> min + Random.State.int state max)
+  Generator (fun state -> min + Random.State.int state (max - min))
 
 
 let float min max =
-  Generator (fun state -> min +. Random.State.float state max)
+  Generator (fun state -> min +. Random.State.float state (max -. min))
 
 
 let list count (Generator genCmd) =

@@ -14,10 +14,10 @@ type t('typ) =
 let bool = Generator(state => Random.State.bool(state));
 
 let int = (min, max) =>
-  Generator(state => min + Random.State.int(state, max));
+  Generator(state => min + Random.State.int(state, max - min));
 
 let float = (min, max) =>
-  Generator(state => min +. Random.State.float(state, max));
+  Generator(state => min +. Random.State.float(state, max -. min));
 
 let list = (count, Generator(genCmd)) => {
   let rec buildList = (state, i, acc) =>
@@ -110,6 +110,7 @@ let generate = (tagger, Generator(genCmd)) =>
   });
 
 /* Generate Values Manually */
+
 type seed =
   | Seed(Random.State.t);
 
