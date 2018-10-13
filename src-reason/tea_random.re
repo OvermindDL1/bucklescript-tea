@@ -14,10 +14,12 @@ type t('typ) =
 let bool = Generator(state => Random.State.bool(state));
 
 let int = (min, max) =>
-  Generator(state => min + Random.State.int(state, max - min));
+  let (min, max) = (min < max) ? (min, max) : (max, min);
+  Generator(state => min + Random.State.int(state, max - min + 1));
 
 let float = (min, max) =>
-  Generator(state => min +. Random.State.float(state, max -. min));
+  let (min, max) = (min < max) ? (min, max) : (max, min);
+  Generator(state => min +. Random.State.float(state, max -. min +. 1.0));
 
 let list = (count, Generator(genCmd)) => {
   let rec buildList = (state, i, acc) =>
