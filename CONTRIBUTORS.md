@@ -33,3 +33,6 @@ In alphabetical order in their requisite sections.
 - @canadaduane (Duane Johnson): Creating the auto-conversion between the OCaml and Reason files, tremendously useful so people can see how each work!
 
 - @dboris (Boris Dobroslavov): Improving model history debug format.
+
+- @seadynamic8: Better matching to the base API, I.E. Bug Fixing.
+
