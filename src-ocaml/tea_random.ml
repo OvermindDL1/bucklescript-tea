@@ -22,7 +22,8 @@ let bool =
 
 
 let int min max =
-  Generator (fun state -> min + Random.State.int state (max - min))
+  let (min, max) = if min < max then (min, max) else (max, min) in
+  Generator (fun state -> min + Random.State.int state (max - min + 1))
 
 
 let float min max =
