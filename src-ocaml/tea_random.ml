@@ -27,7 +27,6 @@ let int min max =
 
 
 let float min max =
-  let (min, max) = if min < max then (min, max) else (max, min) in
   Generator (fun state -> min +. Random.State.float state (max -. min))
 
 

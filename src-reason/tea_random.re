@@ -18,7 +18,6 @@ let int = (min, max) =>
   Generator(state => min + Random.State.int(state, max - min + 1));
 
 let float = (min, max) =>
-  let (min, max) = (min < max) ? (min, max) : (max, min);
   Generator(state => min +. Random.State.float(state, max -. min));
 
 let list = (count, Generator(genCmd)) => {
