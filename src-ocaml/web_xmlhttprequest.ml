@@ -70,16 +70,16 @@ type body =
 
 (* Main interface functions *)
 
-let abort x = x##abort ()
+let abort (x: t) : unit = x##abort ()
 
-let getAllResponseHeaders x =
+let getAllResponseHeaders (x: t) : (string, errors) Tea_result.t =
   let open Tea_result in
   match Js.Null.toOption (x##getAllResponseHeaders ()) with
   | None -> Error IncompleteResponse
   | Some "" -> Error NetworkError
   | Some s -> Ok s
 
-let getAllResponseHeadersAsList x =
+let getAllResponseHeadersAsList (x: t) : ((string * string) list, errors) Tea_result.t =
   let open Tea_result in
   match getAllResponseHeaders x with
   | Error _ as err -> err
@@ -96,7 +96,7 @@ let getAllResponseHeadersAsList x =
         )
     )
 
-let getAllResponseHeadersAsDict x =
+let getAllResponseHeadersAsDict (x: t) : (string Map.Make(String).t, errors) Tea_result.t =
   let module StringMap = Map.Make(String) in
   match getAllResponseHeadersAsList x with
   | Tea_result.Error _ as err -> err
@@ -106,12 +106,13 @@ let getAllResponseHeadersAsDict x =
 
 let getResponseHeader key x = Js.Null.toOption (x##getResponse key)
 
-let open_ method' url ?(async=true) ?(user="") ?(password="") x =
+let open_ (method': string) (url: string) ?(async=true) ?(user="") ?(password="") x =
   x##_open method' url async user password
 
-let overrideMimeType mimetype x = x##overrideMimeType mimetype
+let overrideMimeType (mimetype: string) (x: t) : unit =
+  x##overrideMimeType mimetype
 
-let send body x =
+let send (body: body) (x: t) : unit =
   match body with
   | EmptyBody -> x##send ()
   | EmptyStringBody -> x##send__string Js.Null.empty
@@ -128,7 +129,8 @@ let send body x =
   (* | BlobBody b -> x##send_blob b *)
   (* | ArrayBufferViewBody a -> x##send_arrayBufferView a *)
 
-let setRequestHeader header value x = x##setRequestHeader header value
+let setRequestHeader (header: string) (value: string) (x: t) =
+  x##setRequestHeader header value
 
 
 (* Properties *)
@@ -159,12 +161,14 @@ type responseBody =
   | TextResponse of string
   | RawResponse of string * unit
 
-let set_onreadystatechange cb x = x##onreadystatechange #= cb
+let set_onreadystatechange (cb: event_readystatechange -> unit) (x: t) : unit =
+  x##onreadystatechange #= cb
 
-let get_onreadystatechange x = x##onreadystatechange
+let get_onreadystatechange (x: t) : (event_readystatechange -> unit) =
+  x##onreadystatechange
 
-let readyState x =
-  match x##readystate with
+let readyState (x: t) : state =
+  match x##readyState with
   | 0 -> Unsent
   | 1 -> Opened
   | 2 -> HeadersReceived
@@ -172,7 +176,7 @@ let readyState x =
   | 4 -> Done
   | i -> failwith ("Invalid return from 'readystate' of: " ^ string_of_int i)
 
-let set_responseType typ x =
+let set_responseType (typ: responseType) (x: t) : unit =
   match typ with
   | StringResponseType -> x##responseType #= ""
   | ArrayBufferResponseType -> x##responseType #= "arraybuffer"
@@ -182,7 +186,7 @@ let set_responseType typ x =
   | TextResponseType -> x##responseType #= "text"
   | RawResponseType s -> x##responseType #= s
 
-let get_responseType x =
+let get_responseType (x: t) : responseType =
   match x##responseType with
   | "" -> StringResponseType
   | "arraybuffer" -> ArrayBufferResponseType
@@ -192,7 +196,7 @@ let get_responseType x =
   | "text" -> TextResponseType
   | s -> RawResponseType s
 
-let get_response x =
+let get_response (x: t) : responseBody =
   match Js.Null.toOption x##response with
   | None -> NoResponse
   | Some resp ->
@@ -205,48 +209,57 @@ let get_response x =
     | TextResponseType -> TextResponse (Obj.magic resp)
     | RawResponseType s -> RawResponse (s, Obj.magic resp)
 
-let get_responseText x = x##responseText
+let get_responseText (x: t) : string = x##responseText
 
-let get_responseURL x = x##responseURL
+let get_responseURL (x: t) : string = x##responseURL
 
-let get_responseXML x = Js.Null.toOption x##responseXML
+let get_responseXML (x: t) : Web_document.t option =
+  Js.Null.toOption x##responseXML
 
-let get_status x = x##status
+let get_status (x: t) : int = x##status
 
-let get_statusText x = x##statusText
+let get_statusText (x: t) : string = x##statusText
 
-let set_timeout t x = x##timeout #= t
+let set_timeout (t: float) (x: t) : unit =
+  x##timeout #= t
 
-let get_timeout x = x##timeout
+let get_timeout (x: t) : float = x##timeout
 
-let set_withCredentials b x = x##withCredentials #= b
+let set_withCredentials (b: bool) (x: t) : unit =
+  x##withCredentials #= b
 
-let get_withCredentials x = x##withCredentials
+let get_withCredentials (x: t) : bool = x##withCredentials
 
-let set_onabort cb x = x##onabort #= cb
+let set_onabort (cb: event_abort -> unit) (x: t) : unit =
+  x##onabort #= cb
 
-let get_onabort x = x##onabort
+let get_onabort (x: t) : (event_abort -> unit)= x##onabort
 
-let set_onerror cb x = x##onerror #= cb
+let set_onerror (cb: event_error -> unit) (x: t) : unit =
+  x##onerror #= cb
 
-let get_onerror x = x##onerror
+let get_onerror (x: t) : (event_error -> unit)= x##onerror
 
-let set_onload cb x = x##onload #= cb
+let set_onload (cb: event_load -> unit) (x: t) : unit = x##onload #= cb
 
-let get_onload x = x##onload
+let get_onload (x: t) : (event_load -> unit) = x##onload
 
-let set_onloadstart cb x = x##onloadstart #= cb
+let set_onloadstart (cb: event_loadstart -> unit) (x: t) : unit =
+  x##onloadstart #= cb
 
-let get_onloadstart x = x##onloadstart
+let get_onloadstart (x: t) : (event_loadstart -> unit) = x##onloadstart
 
-let set_onprogress cb x = x##onprogress #= cb
+let set_onprogress (cb: event_loadstart -> unit) (x: t) : unit =
+  x##onprogress #= cb
 
-let get_onprogress x = x##onprogress
+let get_onprogress (x: t) : (event_loadstart -> unit)= x##onprogress
 
-let set_ontimeout cb x = x##ontimeout #= cb
+let set_ontimeout (cb: event_timeout -> unit) (x: t) : unit =
+  x##ontimeout #= cb
 
-let get_ontimeout x = x##ontimeout
+let get_ontimeout (x: t) : (event_timeout -> unit) = x##ontimeout
 
-let set_onloadend cb x = x##onloadend #= cb
+let set_onloadend (cb: event_loadend -> unit) (x: t) : unit =
+  x##onloadend #= cb
 
-let get_onloadend x = x##onloadend
+let get_onloadend (x: t) : (event_loadend -> unit) = x##onloadend
