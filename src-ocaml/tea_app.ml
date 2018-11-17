@@ -184,7 +184,7 @@ let programLoop update view subscriptions initModel initCmd = function
     let scheduleRender () = match !nextFrameID with
       | Some _ -> () (* A frame is already scheduled, nothing to do *)
       | None ->
-        if false then (* This turns on or off requestAnimationFrame or real-time rendering, false for the benchmark, should be true about everywhere else. *)
+        if true then (* This turns on or off requestAnimationFrame or real-time rendering, false for the benchmark, should be true about everywhere else. *)
           let id = Web.Window.requestAnimationFrame doRender in
           let () = nextFrameID := Some id in
           ()

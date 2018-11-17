@@ -1,9 +1,11 @@
 /* "OAK-TEA" Maybe?  For OCaml Application Kernal TEA */
+
 /* TODO:  Create a new program interface to make the program type just handle init/update/shutdown and such interface
    functionality.  Top level should just be a model change handler, what is currently 'view', and multiple programs
    that can update their own part of the model, of which the entirety can be accessed by view.  Probably should be in a
    Tea.AppEx package or something.  Unsure how to work with compatability with Tea.App, perhaps have Tea.App delegate to
    Tea.AppEx or so as a simple wrapper? */
+
 /* module type Program = sig
      type flags
      type model
@@ -13,15 +15,18 @@
      val subscriptions : model -> int
      (* val view : model -> msg Vdom.t *)
    end */
+
 /* type 'flags 'model testRec = {
      init : 'flags -> 'model
    } */
+
 /* type ('flags, 'model, 'msg) fullProgram = {
      internal : unit -> unit;
      init : 'flags -> 'model * 'msg Tea_cmd.t;
      update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t;
      view : 'model -> 'msg Vdom.t;
    } */
+
 type program('flags, 'model, 'msg) = {
   init: 'flags => ('model, Tea_cmd.t('msg)),
   update: ('model, 'msg) => ('model, Tea_cmd.t('msg)),
@@ -63,12 +68,14 @@ external makeProgramInterface :
   "";
 
 /* TODO:  Need to refactor the program layers to layer everything properly, things are a bit mixed up right now... */
+
 /* let programStateWrapper initModel pump =
    let model = ref initModel in
    let rec handler msg =
      let newModel = pump !model msg in
      (model := newModel) in
     handler */
+
 let programStateWrapper = (initModel, pump, shutdown) => {
   /* let programStateWrapper : 'model -> ('msg Vdom.applicationCallbacks ref -> 'model -> 'msg) -> ('msg -> unit) = fun initModel pump -> */
   /* let programStateWrapper : 'model -> ('msg Vdom.applicationCallbacks ref -> 'model -> 'msg -> 'model) -> 'msg programInterface = fun initModel pump -> */
@@ -194,7 +201,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
           switch (nextFrameID^) {
           | Some(_) => () /* A frame is already scheduled, nothing to do */
           | None =>
-            if (false) {
+            if (true) {
               /* This turns on or off requestAnimationFrame or real-time rendering, false for the benchmark, should be true about everywhere else. */
               let id = Web.Window.requestAnimationFrame(doRender);
               let () = nextFrameID := Some(id);
@@ -320,10 +327,12 @@ let beginnerProgram:
     );
 
 let map = (func, vnode) => Vdom.map(func, vnode);
+
 /* let fullProgram program pnode flags =
    match Js.Nullable.toOption pnode with
    | None -> Web.Document.body ()
     | Some parentNode -> parentNode */
+
 /* class fullProgramClass {internal; init; update; view} pnode flags = object(self) */
 /* class ['msg, 'model] fullProgramClass
      (msgHandler : 'model -> 'msg -> 'model * 'msg Tea_cmd.t)
@@ -343,6 +352,7 @@ let map = (func, vnode) => Vdom.map(func, vnode);
        model <- newModel;
        cmd <- newCmd
    end */
+
 /* let programStateWrapperInit initModel =
      ref initModel
 
@@ -386,30 +396,37 @@ let map = (func, vnode) => Vdom.map(func, vnode);
      (* let rec pump model msg = programLoop opnode update view initModel msgHandler model msg *)
      let rec msgHandler msg = programStateWrapper modelState (pump_unfixed msgHandler) msg in
      fun msg -> msgHandler msg */
+
 /* new fullProgramClass
    update
    initModel
    initCmds
    view
    (Js.Nullable.toOption pnode) */
+
 /* {
      internal = (fun () -> Js.log "internal update");
      init = init;
      update = update;
      view = view;
    } (Js.Nullable.toOption pnode) flags */
+
 /* match Js.Nullable.toOption pnode with
    | None -> Web.Document.body ()
    | Some parentNode -> parentNode */
+
 /* let beginnerProgram program = function
    | None -> Js.log 42
    | Some parentNode -> Js.log 84 */
+
 /* let beginnerProgram program pnode = match Js.Nullable.toOption pnode with
    | None -> Web.Document.body ()
    | Some node -> node */
+
 /* let beginnerPrograms pnode = match Js.Nullable.toOption pnode with
    | None -> Web.Document.body ()
    | Some node -> Web.Node.style node */
+
 /*
  module type ProgramState = sig
  end
