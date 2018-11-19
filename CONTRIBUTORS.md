@@ -36,3 +36,5 @@ In alphabetical order in their requisite sections.
 
 - @seadynamic8: Better matching to the base API, I.E. Bug Fixing.
 
+- @pbiggar (Paul Biggar): Adding type signatures, bug fixing, code cleanup.
+

@@ -13,7 +13,7 @@ let nothing () = ()
 (* Resolvers *)
 
 
-let performOpt (toOptionalMessage : 'value -> 'msg) (Task task : ('value, never) t) =
+let performOpt (toOptionalMessage : 'value -> 'msg option) (Task task : ('value, never) t) : 'msg Tea_cmd.t =
   Tea_cmd.call (fun callbacks ->
       let open Tea_result in
       let open Vdom in
@@ -26,11 +26,13 @@ let performOpt (toOptionalMessage : 'value -> 'msg) (Task task : ('value, never)
       in task cb
     )
 
-let perform toMessage task =
+let perform (toMessage : 'value -> 'msg) (task : ('value, never) t) : 'msg Tea_cmd.t =
   performOpt (fun v -> Some (toMessage v)) task
 
 
-let attemptOpt resultToOptionalMessage (Task task) =
+let attemptOpt
+    (resultToOptionalMessage : ('value, string) Tea_result.t -> 'msg option)
+    (Task task: ('value, string) t) : 'msg Tea_cmd.t =
   Tea_cmd.call (fun callbacks ->
       let open Vdom in
       let cb value =
@@ -40,7 +42,10 @@ let attemptOpt resultToOptionalMessage (Task task) =
       in task cb
     )
 
-let attempt resultToMessage task =
+let attempt
+    (resultToMessage : ('value, string) Tea_result.t -> 'msg)
+    (task: ('value, string) t)
+  : 'msg Tea_cmd.t =
   attemptOpt (fun v -> Some (resultToMessage v)) task
 
 
@@ -49,12 +54,11 @@ let attempt resultToMessage task =
 let succeed (value : 'v) : ('v, 'e) t =
   Task (fun cb -> cb (Tea_result.Ok value))
 
-
-let fail (value : 'v) : ('s, 'v) t =
+let fail (value : 'v) : ('e, 'v) t =
   Task (fun cb -> cb (Tea_result.Error value))
 
-
-let nativeBinding func =
+let nativeBinding (func: (('value, string) Tea_result.t -> unit) -> unit)
+  : ('value, string) t =
   Task func
 
 

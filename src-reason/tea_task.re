@@ -5,14 +5,20 @@ type t('succeed, 'fail) =
                                                                'succeed,
                                                                'fail,
                                                              );
-
 /* Task : ((('succeed, 'fail) Tea_result.t -> (unit -> unit)) -> (unit -> unit)) -> ('succeed, 'fail) t */
+
 /* Helpers */
+
 let nothing = () => ();
 
 /* Resolvers */
+
 let performOpt =
-    (toOptionalMessage: 'value => 'msg, Task(task): t('value, never)) =>
+    (
+      toOptionalMessage: 'value => option('msg),
+      Task(task): t('value, never),
+    )
+    : Tea_cmd.t('msg) =>
   Tea_cmd.call(callbacks => {
     open Tea_result;
     open Vdom;
@@ -30,10 +36,17 @@ let performOpt =
     task(cb);
   });
 
-let perform = (toMessage, task) =>
+let perform =
+    (toMessage: 'value => 'msg, task: t('value, never))
+    : Tea_cmd.t('msg) =>
   performOpt(v => Some(toMessage(v)), task);
 
-let attemptOpt = (resultToOptionalMessage, Task(task)) =>
+let attemptOpt =
+    (
+      resultToOptionalMessage: Tea_result.t('value, string) => option('msg),
+      Task(task): t('value, string),
+    )
+    : Tea_cmd.t('msg) =>
   Tea_cmd.call(callbacks => {
     open Vdom;
     let cb = value =>
@@ -44,19 +57,29 @@ let attemptOpt = (resultToOptionalMessage, Task(task)) =>
     task(cb);
   });
 
-let attempt = (resultToMessage, task) =>
+let attempt =
+    (
+      resultToMessage: Tea_result.t('value, string) => 'msg,
+      task: t('value, string),
+    )
+    : Tea_cmd.t('msg) =>
   attemptOpt(v => Some(resultToMessage(v)), task);
 
 /* Basics */
+
 let succeed = (value: 'v) : t('v, 'e) =>
   Task(cb => cb(Tea_result.Ok(value)));
 
-let fail = (value: 'v) : t('s, 'v) =>
+let fail = (value: 'v) : t('e, 'v) =>
   Task(cb => cb(Tea_result.Error(value)));
 
-let nativeBinding = func => Task(func);
+let nativeBinding =
+    (func: (Tea_result.t('value, string) => unit) => unit)
+    : t('value, string) =>
+  Task(func);
 
 /* Chaining */
+
 let andThen = (fn, Task(task)) =>
   Tea_result.(
     Task(
@@ -90,6 +113,7 @@ let onError = (fn, Task(task)) =>
 let mapError = (func, task) => task |> onError(e => fail(func(e)));
 
 /* Mapping */
+
 let map = (func, task1) => task1 |> andThen(v1 => succeed(func(v1)));
 
 let map2 = (func, task1, task2) =>
@@ -163,7 +187,6 @@ let rec sequence =
     );
 
 let testing_deop = ref(true);
-
 let testing = () => {
   open Tea_result;
   let doTest = (expected, Task(task)) => {
@@ -221,7 +244,7 @@ let testing = () => {
       mapError(string_of_float, succeed(2)),
     ]);
   let () = doTest(Ok([1, 2]), n2);
-  let _c0 = perform((_) => 42, succeed(18));
+  let _c0 = perform(_ => 42, succeed(18));
   /* (\* Should not compile *\) let _c1 = perform (fun _ -> 42) (fail 18) in */
   ();
 };
