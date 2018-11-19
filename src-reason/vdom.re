@@ -1,4 +1,5 @@
 /* https://github.com/Matt-Esch/virtual-dom/blob/master/docs/vnode.md */
+
 type applicationCallbacks('msg) = {enqueue: 'msg => unit};
 
 /*
@@ -6,8 +7,10 @@ type applicationCallbacks('msg) = {enqueue: 'msg => unit};
    | UserkeyString of string
    | UserkeyMsg of 'msg
  */
+
 /* Attributes are not properties */
 /* https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes */
+
 type eventHandler('msg) =
   | EventHandlerCallback(string, Web.Node.event => option('msg))
   | EventHandlerMsg('msg);
@@ -34,6 +37,7 @@ type properties('msg) = list(property('msg));
    { renderToHtmlString : unit -> string
    ; patchVNodesIntoElement : 'msg applicationCallbacks ref -> Web.Node.t
    } */
+
 type t('msg) =
   | CommentNode(string)
   | Text(string)
@@ -49,52 +53,82 @@ type t('msg) =
       ref(applicationCallbacks('msg)) => ref(applicationCallbacks('msg)),
       t('msg),
     );
-
 /*  */
 /* | Tagger of (('a -> 'msg) -> 'a t -> 'msg t) */
 /* Custom (key, cbAdd, cbRemove, cbChange, properties, children) */
 /* | Custom of string * (unit -> Web.Node.t) * (Web.Node.t -> unit) * */
+
 /* Nodes */
-let noNode = CommentNode("");
 
-let comment = s => CommentNode(s);
+let noNode: t('msg) = CommentNode("");
 
-let text = s => Text(s);
+let comment = (s: string) : t('msg) => CommentNode(s);
 
-let fullnode = (namespace, tagName, key, unique, props, vdoms) =>
+let text = (s: string) : t('msg) => Text(s);
+
+let fullnode =
+    (
+      namespace: string,
+      tagName: string,
+      key: string,
+      unique: string,
+      props: properties('msg),
+      vdoms: list(t('msg)),
+    )
+    : t('msg) =>
   [@implicit_arity] Node(namespace, tagName, key, unique, props, vdoms);
 
-let node = (~namespace="", tagName, ~key="", ~unique="", props, vdoms) =>
+let node =
+    (
+      ~namespace: string="",
+      tagName: string,
+      ~key: string="",
+      ~unique: string="",
+      props: properties('msg),
+      vdoms: list(t('msg)),
+    )
+    : t('msg) =>
   fullnode(namespace, tagName, key, unique, props, vdoms);
 
 /* let arraynode namespace tagName key unique props vdoms =
    ArrayNode (namespace, tagName, key, unique, props, vdoms) */
-let lazyGen = (key, fn) => [@implicit_arity] LazyGen(key, fn, ref(noNode));
+
+let lazyGen = (key: string, fn: unit => t('msg)) : t('msg) =>
+  [@implicit_arity] LazyGen(key, fn, ref(noNode));
 
 /* Properties */
-let noProp = NoProp;
 
-let prop = (key, value) => [@implicit_arity] RawProp(key, value);
+let noProp: property('msg) = NoProp;
 
-let onCB = (name, key, cb) =>
+let prop = (key: string, value: string) : property('msg) =>
+  [@implicit_arity] RawProp(key, value);
+
+let onCB =
+    (name: string, key: string, cb: Web.Node.event => option('msg))
+    : property('msg) =>
   [@implicit_arity]
   Event(name, [@implicit_arity] EventHandlerCallback(key, cb), ref(None));
 
-let onMsg = (name, msg) =>
+let onMsg = (name: string, msg: 'msg) : property('msg) =>
   [@implicit_arity] Event(name, EventHandlerMsg(msg), ref(None));
 
-let attribute = (namespace, key, value) =>
+let attribute =
+    (namespace: string, key: string, value: string)
+    : property('msg) =>
   [@implicit_arity] Attribute(namespace, key, value);
 
-let data = (key, value) => [@implicit_arity] Data(key, value);
+let data = (key: string, value: string) : property('msg) =>
+  [@implicit_arity] Data(key, value);
 
-let style = (key, value) => Style([(key, value)]);
+let style = (key: string, value: string) : property('msg) =>
+  Style([(key, value)]);
 
-let styles = s => Style(s);
+let styles = s : property('msg) => Style(s);
 
 /* Accessors */
+
 /* TODO:  Need to properly escape and so forth */
-let rec renderToHtmlString =
+let rec renderToHtmlString: t('msg) => string =
   fun
   | CommentNode(s) => "<!-- " ++ s ++ " -->"
   | Text(s) => s
@@ -125,6 +159,7 @@ let rec renderToHtmlString =
             ],
           )
       );
+
       String.concat(
         "",
         [
@@ -152,24 +187,32 @@ let rec renderToHtmlString =
   | [@implicit_arity] Tagger(_tagger, vdom) => renderToHtmlString(vdom);
 
 /* TODO:  Make a vdom 'patcher' that binds into the actual DOM for hot-loading into an existing template */
+
 /* Diffing/Patching */
+
 let emptyEventHandler: Web.Node.event_cb = (. _ev) => ();
+let emptyEventCB = _ev : option(Web.Node.event_cb) => None;
 
-let emptyEventCB = _ev => None;
-
-let eventHandler = (callbacks, cb) : Web.Node.event_cb =>
+let eventHandler =
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      cb: ref(Web.Node.event => option('msg)),
+    )
+    : Web.Node.event_cb =>
   (. ev) =>
     switch (cb^(ev)) {
     | None => () /* User ignored, do nothing */
     | Some(msg) => callbacks^.enqueue(msg)
     };
 
-let eventHandler_GetCB =
+let eventHandler_GetCB: (eventHandler('msg), Web.Node.event) => option('msg) =
   fun
   | [@implicit_arity] EventHandlerCallback(_, cb) => cb
   | EventHandlerMsg(msg) => (_ev => Some(msg));
 
-let compareEventHandlerTypes = left =>
+let compareEventHandlerTypes =
+    (left: eventHandler('msg))
+    : (eventHandler('msg) => bool) =>
   fun
   | [@implicit_arity] EventHandlerCallback(cb, _) =>
     switch (left) {
@@ -182,14 +225,23 @@ let compareEventHandlerTypes = left =>
     | _ => false
     };
 
-let eventHandler_Register = (callbacks, elem, name, handlerType) => {
+let eventHandler_Register =
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      name: string,
+      handlerType: eventHandler('msg),
+    )
+    : option(eventCache('msg)) => {
   let cb = ref(eventHandler_GetCB(handlerType));
   let handler = eventHandler(callbacks, cb);
   let () = Web.Node.addEventListener(elem, name, handler, false);
   Some({handler, cb});
 };
 
-let eventHandler_Unregister = (elem, name) =>
+let eventHandler_Unregister =
+    (elem: Web.Node.t, name: string)
+    : (option(eventCache('msg)) => option(eventCache('msg))) =>
   fun
   | None => None
   | Some(cache) => {
@@ -199,15 +251,16 @@ let eventHandler_Unregister = (elem, name) =>
 
 let eventHandler_Mutate =
     (
-      callbacks,
-      elem,
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
       oldName: string,
       newName: string,
-      oldHandlerType,
-      newHandlerType,
-      oldCache,
-      newCache,
-    ) =>
+      oldHandlerType: eventHandler('msg),
+      newHandlerType: eventHandler('msg),
+      oldCache: ref(option(eventCache('msg))),
+      newCache: ref(option(eventCache('msg))),
+    )
+    : unit =>
   switch (oldCache^) {
   | None =>
     newCache :=
@@ -231,7 +284,13 @@ let eventHandler_Mutate =
     }
   };
 
-let patchVNodesOnElems_PropertiesApply_Add = (callbacks, elem, _idx) =>
+let patchVNodesOnElems_PropertiesApply_Add =
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      _idx: int,
+    )
+    : (property('msg) => unit) =>
   fun
   | NoProp => ()
   | [@implicit_arity] RawProp(k, v) => Web.Node.setProp(elem, k, v)
@@ -251,7 +310,13 @@ let patchVNodesOnElems_PropertiesApply_Add = (callbacks, elem, _idx) =>
       s,
     );
 
-let patchVNodesOnElems_PropertiesApply_Remove = (_callbacks, elem, _idx) =>
+let patchVNodesOnElems_PropertiesApply_Remove =
+    (
+      _callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      _idx: int,
+    )
+    : (property('msg) => unit) =>
   fun
   | NoProp => ()
   | [@implicit_arity] RawProp(k, _v) =>
@@ -272,7 +337,14 @@ let patchVNodesOnElems_PropertiesApply_Remove = (_callbacks, elem, _idx) =>
     );
 
 let patchVNodesOnElems_PropertiesApply_RemoveAdd =
-    (callbacks, elem, idx, oldProp, newProp) => {
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      idx: int,
+      oldProp: property('msg),
+      newProp: property('msg),
+    )
+    : unit => {
   let () =
     patchVNodesOnElems_PropertiesApply_Remove(callbacks, elem, idx, oldProp);
   let () =
@@ -281,7 +353,13 @@ let patchVNodesOnElems_PropertiesApply_RemoveAdd =
 };
 
 let patchVNodesOnElems_PropertiesApply_Mutate =
-    (_callbacks, elem, _idx, oldProp) =>
+    (
+      _callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      _idx: int,
+      oldProp: property('msg),
+    )
+    : (property('msg) => unit) =>
   fun
   | NoProp as _newProp =>
     failwith(
@@ -329,7 +407,14 @@ let patchVNodesOnElems_PropertiesApply_Mutate =
     );
 
 let rec patchVNodesOnElems_PropertiesApply =
-        (callbacks, elem, idx, oldProperties, newProperties) =>
+        (
+          callbacks: ref(applicationCallbacks('msg)),
+          elem: Web.Node.t,
+          idx: int,
+          oldProperties: list(property('msg)),
+          newProperties: list(property('msg)),
+        )
+        : bool =>
   /* let () = Js.log ("PROPERTY-APPLY", elem, idx, oldProperties, newProperties) in */
   [@ocaml.warning "-4"]
   (
@@ -508,7 +593,13 @@ let rec patchVNodesOnElems_PropertiesApply =
   );
 
 let patchVNodesOnElems_Properties =
-    (callbacks, elem, oldProperties, newProperties) =>
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      oldProperties: list(property('msg)),
+      newProperties: list(property('msg)),
+    )
+    : bool =>
   /* Profiling here show `=` to be very slow, but testing reveals it to be faster than checking through the properties
      manually on times when there are few to no changes, which is most of the time, so keeping it for now... */
   /* TODO:  Look into if there is a better way to quick test property comparisons, especially since it likely returns
@@ -524,7 +615,7 @@ let patchVNodesOnElems_Properties =
     newProperties,
   );
 
-let genEmptyProps = length => {
+let genEmptyProps = (length: int) : list(property('msg)) => {
   let rec aux = lst =>
     fun
     | 0 => lst
@@ -532,9 +623,17 @@ let genEmptyProps = length => {
   aux([], length);
 };
 
-let mapEmptyProps = props => List.map((_) => noProp, props);
+let mapEmptyProps = (props: list(property('msg))) : list(property('msg)) =>
+  List.map(_ => noProp, props);
 
-let rec patchVNodesOnElems_ReplaceNode = (callbacks, elem, elems, idx) =>
+let rec patchVNodesOnElems_ReplaceNode =
+        (
+          callbacks: ref(applicationCallbacks('msg)),
+          elem: Web.Node.t,
+          elems: array(Web.Node.t),
+          idx: int,
+        )
+        : (t('msg) => unit) =>
   [@ocaml.warning "-4"]
   (
     fun
@@ -581,7 +680,9 @@ let rec patchVNodesOnElems_ReplaceNode = (callbacks, elem, elems, idx) =>
         "Node replacement should never be passed anything but a node itself",
       )
   )
-and patchVNodesOnElems_CreateElement = callbacks =>
+and patchVNodesOnElems_CreateElement =
+    (callbacks: ref(applicationCallbacks('msg)))
+    : (t('msg) => Web.Node.t) =>
   fun
   | CommentNode(s) => Web.Document.createComment(s)
   | Text(text) => Web.Document.createTextNode(text)
@@ -627,7 +728,15 @@ and patchVNodesOnElems_CreateElement = callbacks =>
     /* let () = Js.log ("Tagger", "creating", tagger, vdom) in */
     patchVNodesOnElems_CreateElement(tagger(callbacks), vdom)
 and patchVNodesOnElems_MutateNode =
-    (callbacks, elem, elems, idx, oldNode, newNode) =>
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      elems: array(Web.Node.t),
+      idx: int,
+      oldNode: t('msg),
+      newNode: t('msg),
+    )
+    : unit =>
   switch (oldNode, newNode) {
   | (
       [@implicit_arity]
@@ -656,6 +765,7 @@ and patchVNodesOnElems_MutateNode =
     } else {
       /* let () = Js.log ("Node test", "non-unique mutate", elem, elems.(idx), newNode) in */
       /* Same node type, just mutate things */
+
       let child = elems[idx];
       let childChildren = Web.Node.childNodes(child);
       let () =
@@ -691,7 +801,16 @@ and patchVNodesOnElems_MutateNode =
     }
   | _ => failwith("Non-node passed to patchVNodesOnElems_MutateNode")
   }
-and patchVNodesOnElems = (callbacks, elem, elems, idx, oldVNodes, newVNodes) =>
+and patchVNodesOnElems =
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      elems: array(Web.Node.t),
+      idx: int,
+      oldVNodes: list(t('msg)),
+      newVNodes: list(t('msg)),
+    )
+    : unit =>
   /* let () = Js.log ("patchVNodesOnElems", elem, elems, idx, oldVNodes, newVNodes) in */
   [@ocaml.warning "-4"]
   (
@@ -866,6 +985,7 @@ and patchVNodesOnElems = (callbacks, elem, elems, idx, oldVNodes, newVNodes) =>
       if (oldKey == newKey && oldKey != "") {
         /* let () = Js.log ("Node test", "match", elem, elems.(idx), newNode) in */
         /* Do nothing, they are keyed identically */
+
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest);
       } else if (oldKey == "" || newKey == "") {
         let () =
@@ -1020,19 +1140,36 @@ and patchVNodesOnElems = (callbacks, elem, elems, idx, oldVNodes, newVNodes) =>
     }
   );
 
-let patchVNodesIntoElement = (callbacks, elem, oldVNodes, newVNodes) => {
+let patchVNodesIntoElement =
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      oldVNodes: list(t('msg)),
+      newVNodes: list(t('msg)),
+    )
+    : list(t('msg)) => {
   let elems = Web.Node.childNodes(elem);
   let () =
     patchVNodesOnElems(callbacks, elem, elems, 0, oldVNodes, newVNodes); /* Planning to return an altered vdom set here instead of using mutation... */
   newVNodes;
 };
 
-let patchVNodeIntoElement = (callbacks, elem, oldVNode, newVNode) =>
+let patchVNodeIntoElement =
+    (
+      callbacks: ref(applicationCallbacks('msg)),
+      elem: Web.Node.t,
+      oldVNode: t('msg),
+      newVNode: t('msg),
+    )
+    : list(t('msg)) =>
   patchVNodesIntoElement(callbacks, elem, [oldVNode], [newVNode]);
 
 /* Node namespace key tagName properties children  */
 /* | Node of string option * string option * string * 'msg property list * 'msg velem list */
-let wrapCallbacks = (func, callbacks) =>
+
+let wrapCallbacks =
+    (func: 'msga => 'msgb, callbacks: ref(applicationCallbacks('msgb)))
+    : ref(applicationCallbacks('msga)) =>
   ref({enqueue: msg => callbacks^.enqueue(func(msg))});
 
 let map: ('a => 'b, t('a)) => t('b) =
@@ -1041,6 +1178,7 @@ let map: ('a => 'b, t('a)) => t('b) =
       ref({enqueue: msg => callbacks^.enqueue(func(msg))});
     [@implicit_arity] Tagger(Obj.magic(tagger), Obj.magic(vdom));
   };
+
 /* let map func vdom =
    let toString () = renderToHtmlString vdom in
    let toDom in
