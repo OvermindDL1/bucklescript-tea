@@ -38,6 +38,9 @@ type t('msg) =
       ref(applicationCallbacks('msg)) => ref(applicationCallbacks('msg)),
       t('msg),
     );
+/* TODO: support Custom */
+/* Custom (key, cbAdd, cbRemove, cbChange, properties, children) */
+/* | Custom of string * (unit -> Web.Node.t) * (Web.Node.t -> unit) * */
 
 /* Nodes */
 

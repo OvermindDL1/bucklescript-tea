@@ -40,6 +40,9 @@ type 'msg t =
   | LazyGen of string * (unit -> 'msg t) * 'msg t ref
   (* Tagger (tagger, vdom) *)
   | Tagger of ('msg applicationCallbacks ref -> 'msg applicationCallbacks ref) * 'msg t
+  (* TODO: support Custom *)
+  (* Custom (key, cbAdd, cbRemove, cbChange, properties, children) *)
+  (* | Custom of string * (unit -> Web.Node.t) * (Web.Node.t -> unit) * *)
 
 
 (* Nodes *)
