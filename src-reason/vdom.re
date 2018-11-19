@@ -2,12 +2,6 @@
 
 type applicationCallbacks('msg) = {enqueue: 'msg => unit};
 
-/*
- type 'msg userkey =
-   | UserkeyString of string
-   | UserkeyMsg of 'msg
- */
-
 /* Attributes are not properties */
 /* https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes */
 
@@ -28,35 +22,22 @@ type property('msg) =
   | Data(string, string)
   /* Event (name, userkey, callback) */
   | Event(string, eventHandler('msg), ref(option(eventCache('msg))))
-  /* | Event of string * (Web.Event.t -> 'msg) */
   | Style(list((string, string)));
 
 type properties('msg) = list(property('msg));
-
-/* type 'msg taggerCallbacks =
-   { renderToHtmlString : unit -> string
-   ; patchVNodesIntoElement : 'msg applicationCallbacks ref -> Web.Node.t
-   } */
 
 type t('msg) =
   | CommentNode(string)
   | Text(string)
   /* Node (namespace, tagName, key, unique, properties, children)  */
   | Node(string, string, string, string, properties('msg), list(t('msg)))
-  /* | ArrayNode of string * string * string * string * 'msg property array * 'msg t array */
   /* LazyGen (key, fnGenerator) */
   | LazyGen(string, unit => t('msg), ref(t('msg)))
-  /* Tagger (toString, toDom, toVNodes) */
-  /* | Tagger of (unit -> string) * ('msg applicationCallbacks ref -> Web.Node.t -> Web.Node.t -> int ->  'msg t list -> Web.Node.t) * (unit -> 'msg t) */
   /* Tagger (tagger, vdom) */
   | Tagger(
       ref(applicationCallbacks('msg)) => ref(applicationCallbacks('msg)),
       t('msg),
     );
-/*  */
-/* | Tagger of (('a -> 'msg) -> 'a t -> 'msg t) */
-/* Custom (key, cbAdd, cbRemove, cbChange, properties, children) */
-/* | Custom of string * (unit -> Web.Node.t) * (Web.Node.t -> unit) * */
 
 /* Nodes */
 
@@ -89,9 +70,6 @@ let node =
     )
     : t('msg) =>
   fullnode(namespace, tagName, key, unique, props, vdoms);
-
-/* let arraynode namespace tagName key unique props vdoms =
-   ArrayNode (namespace, tagName, key, unique, props, vdoms) */
 
 let lazyGen = (key: string, fn: unit => t('msg)) : t('msg) =>
   [@implicit_arity] LazyGen(key, fn, ref(noNode));
@@ -519,8 +497,6 @@ let rec patchVNodesOnElems_PropertiesApply =
         newRest,
       );
     /* Event */
-    /* | Event (oldTyp, oldKey, oldCbev) :: oldRest, Event (newTyp, newKey, newCbev) :: newRest ->
-       let () = if oldTyp = newTyp && oldKey = newKey then () else */
     | (
         [
           [@implicit_arity] Event(oldName, oldHandlerType, oldCache) as _oldProp,
@@ -1164,9 +1140,6 @@ let patchVNodeIntoElement =
     : list(t('msg)) =>
   patchVNodesIntoElement(callbacks, elem, [oldVNode], [newVNode]);
 
-/* Node namespace key tagName properties children  */
-/* | Node of string option * string option * string * 'msg property list * 'msg velem list */
-
 let wrapCallbacks =
     (func: 'msga => 'msgb, callbacks: ref(applicationCallbacks('msgb)))
     : ref(applicationCallbacks('msga)) =>
@@ -1178,8 +1151,3 @@ let map: ('a => 'b, t('a)) => t('b) =
       ref({enqueue: msg => callbacks^.enqueue(func(msg))});
     [@implicit_arity] Tagger(Obj.magic(tagger), Obj.magic(vdom));
   };
-
-/* let map func vdom =
-   let toString () = renderToHtmlString vdom in
-   let toDom in
-   Tagger (toString, toDom, toVNodes) */
