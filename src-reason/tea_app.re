@@ -201,16 +201,18 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
           switch (nextFrameID^) {
           | Some(_) => () /* A frame is already scheduled, nothing to do */
           | None =>
-            if (true) {
-              /* This turns on or off requestAnimationFrame or real-time rendering, false for the benchmark, should be true about everywhere else. */
+            /* Use requestAnimationFrame unless we're trying to benchmark, in which case we use real-time rendering */
+            let realtimeRendering = false;
+            if (realtimeRendering) {
+              let () = nextFrameID := Some(-1);
+              doRender(16);
+            } else {
               let id = Web.Window.requestAnimationFrame(doRender);
               let () = nextFrameID := Some(id);
               ();
-            } else {
-              let () = nextFrameID := Some(-1);
-              doRender(16);
-            }
+            };
           };
+
         /* let () = Js.log (Vdom.createVNodeIntoElement callbacks !lastVdom parentNode) in */
         /* We own the passed in node, clear it out TODO:  Clear it out properly */
         /* let () = Js.log ("Blah", Web.Node.firstChild parentNode, Js.Null.test (Web.Node.firstChild parentNode), false, true) in */
