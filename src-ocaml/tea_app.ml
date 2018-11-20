@@ -184,13 +184,16 @@ let programLoop update view subscriptions initModel initCmd = function
     let scheduleRender () = match !nextFrameID with
       | Some _ -> () (* A frame is already scheduled, nothing to do *)
       | None ->
-        if true then (* This turns on or off requestAnimationFrame or real-time rendering, false for the benchmark, should be true about everywhere else. *)
+        (* Use requestAnimationFrame unless we're trying to benchmark, in which case we use real-time rendering *)
+        let realtimeRendering = false in
+        if realtimeRendering then
+          let () = nextFrameID := Some (-1) in
+          doRender 16
+        else
           let id = Web.Window.requestAnimationFrame doRender in
           let () = nextFrameID := Some id in
           ()
-        else
-          let () = nextFrameID := Some (-1) in
-          doRender 16 in
+    in
     (* let () = Js.log (Vdom.createVNodeIntoElement callbacks !lastVdom parentNode) in *)
     (* We own the passed in node, clear it out TODO:  Clear it out properly *)
     (* let () = Js.log ("Blah", Web.Node.firstChild parentNode, Js.Null.test (Web.Node.firstChild parentNode), false, true) in *)
