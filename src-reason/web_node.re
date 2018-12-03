@@ -39,6 +39,8 @@ type t = {
   "removeEventListener": (string, Web_event.cb(t), Web_event.options) => unit,
   [@bs.meth] "focus": unit => unit,
   [@bs.meth] "getBoundingClientRect": unit => rect,
+  /* input and text area only */
+  [@bs.meth] "setSelectionRange": (int, int) => unit,
   /* Text Nodes only */
   [@bs.set] [@bs.get {null: null}] "nodeValue": string,
 };

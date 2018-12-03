@@ -33,6 +33,8 @@ type t = <
   removeEventListener : string -> t Web_event.cb -> Web_event.options -> unit [@bs.meth];
   focus : unit -> unit [@bs.meth];
   getBoundingClientRect : unit -> rect [@bs.meth];
+  (* input and text area only *)
+  setSelectionRange : int -> int -> unit [@bs.meth];
   (* Text Nodes only *)
   nodeValue : string [@bs.set] [@bs.get {null}];
 > Js.t
