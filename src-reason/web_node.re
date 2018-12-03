@@ -5,10 +5,18 @@ type style = {
   "setProperty__": (string, Js.null(string), Js.null(string)) => unit,
 };
 
-[@bs.get_index] external getStyle : (style, string) => Js.null(string) = "";
+type rect = {
+  .
+  "top": float,
+  "bottom": float,
+  "left": float,
+  "right": float,
+};
+
+[@bs.get_index] external getStyle: (style, string) => Js.null(string) = "";
 
 [@bs.set_index]
-external setStyle : (style, string, Js.null(string)) => unit = "";
+external setStyle: (style, string, Js.null(string)) => unit = "";
 
 type t = {
   .
@@ -30,28 +38,29 @@ type t = {
   [@bs.meth]
   "removeEventListener": (string, Web_event.cb(t), Web_event.options) => unit,
   [@bs.meth] "focus": unit => unit,
+  [@bs.meth] "getBoundingClientRect": unit => rect,
   /* Text Nodes only */
   [@bs.set] [@bs.get {null: null}] "nodeValue": string,
 };
 
-[@bs.val] external document_node : t = "document";
+[@bs.val] external document_node: t = "document";
 
 type event = Web_event.t(t);
 
 type event_cb = Web_event.cb(t);
 
 [@bs.get_index]
-external getProp_asEventListener : (t, 'key) => Js.undefined(Web_event.cb(t)) =
+external getProp_asEventListener: (t, 'key) => Js.undefined(Web_event.cb(t)) =
   "";
 
 [@bs.set_index]
-external setProp_asEventListener :
+external setProp_asEventListener:
   (t, 'key, Js.undefined(Web_event.cb(t))) => unit =
   "";
 
-[@bs.get_index] external getProp : (t, 'key) => 'value = "";
+[@bs.get_index] external getProp: (t, 'key) => 'value = "";
 
-[@bs.set_index] external setProp : (t, 'key, 'value) => unit = "";
+[@bs.set_index] external setProp: (t, 'key, 'value) => unit = "";
 
 let style = n => n##style;
 
@@ -119,11 +128,13 @@ let removeEventListener = (n, typ, listener, options) =>
 let focus = n => n##focus();
 
 /* Text Nodes only */
-let set_nodeValue = (n, text) => n##nodeValue#=text;
+
+let set_nodeValue = (n, text) => n##nodeValue #= text;
 
 let get_nodeValue = n => n##nodeValue;
 
 /* Polyfills */
+
 let remove_polyfill: unit => unit =
   () => [%bs.raw
     {|

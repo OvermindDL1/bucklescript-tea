@@ -4,6 +4,13 @@ type style = <
    setProperty__ : string -> string Js.null -> string Js.null -> unit [@bs.meth];
    > Js.t
 
+type rect = <
+  top : float;
+  bottom : float;
+  left : float;
+  right : float;
+> Js.t
+
 external getStyle : style -> string -> string Js.null = "" [@@bs.get_index]
 
 external setStyle : style -> string -> string Js.null -> unit = "" [@@bs.set_index]
@@ -25,6 +32,7 @@ type t = <
   addEventListener : string -> t Web_event.cb -> Web_event.options -> unit [@bs.meth];
   removeEventListener : string -> t Web_event.cb -> Web_event.options -> unit [@bs.meth];
   focus : unit -> unit [@bs.meth];
+  getBoundingClientRect : unit -> rect [@bs.meth];
   (* Text Nodes only *)
   nodeValue : string [@bs.set] [@bs.get {null}];
 > Js.t
