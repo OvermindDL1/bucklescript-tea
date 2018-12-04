@@ -24,7 +24,7 @@ let view = model => {
         model |> string_of_int |> text,
         button([onClick(Click)], [text("onClick")]),
         button(
-          [on("click", Decoder.succeed(Click))],
+          [on(~key="", "click", Decoder.succeed(Click))],
           [text("on \"click\"")],
         ),
         a([href("https://www.google.com")], [text("a normal link")]),
@@ -32,6 +32,7 @@ let view = model => {
           [
             href("https://www.google.com"),
             onWithOptions(
+              ~key="",
               "click",
               {...defaultOptions, preventDefault: true},
               Tea.Json.Decoder.succeed(Click),
@@ -40,13 +41,14 @@ let view = model => {
           [text("a link with prevent default")],
         ),
         button(
-          [on("click", Decoder.map(set_value, clientX))],
+          [on(~key="", "click", Decoder.map(set_value, clientX))],
           [text("on \"click\", use clientX value")],
         ),
         input'(
           [
             type'("text"),
             on(
+              ~key="",
               "input",
               Decoder.map(v => v |> int_of_string |> set_value, targetValue),
             ),

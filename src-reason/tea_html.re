@@ -440,8 +440,7 @@ type options = {
 
 let defaultOptions = {stopPropagation: false, preventDefault: false};
 
-let onWithOptions =
-    (~key: string, eventName, options: Tea_html.options, decoder) =>
+let onWithOptions = (~key: string, eventName, options: options, decoder) =>
   onCB(
     eventName,
     key,
@@ -458,8 +457,8 @@ let onWithOptions =
     },
   );
 
-let on = (eventName, decoder) =>
-  onWithOptions(eventName, defaultOptions, decoder);
+let on = (~key: string, eventName, decoder) =>
+  onWithOptions(~key, eventName, defaultOptions, decoder);
 
 let targetValue =
   Tea_json.Decoder.at(["target", "value"], Tea_json.Decoder.string);
