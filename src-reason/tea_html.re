@@ -440,8 +440,7 @@ type options = {
 
 let defaultOptions = {stopPropagation: false, preventDefault: false};
 
-let onWithOptions =
-    (~key: string, eventName, options: Tea_html.options, decoder) =>
+let onWithOptions = (~key: string, eventName, options: options, decoder) =>
   onCB(
     eventName,
     key,
