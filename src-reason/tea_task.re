@@ -43,8 +43,8 @@ let perform =
 
 let attemptOpt =
     (
-      resultToOptionalMessage: Tea_result.t('value, string) => option('msg),
-      Task(task): t('value, string),
+      resultToOptionalMessage: Tea_result.t('succeed, 'fail) => option('msg),
+      Task(task): t('succeed, 'fail),
     )
     : Tea_cmd.t('msg) =>
   Tea_cmd.call(callbacks => {
@@ -59,8 +59,8 @@ let attemptOpt =
 
 let attempt =
     (
-      resultToMessage: Tea_result.t('value, string) => 'msg,
-      task: t('value, string),
+      resultToMessage: Tea_result.t('succeed, 'fail) => 'msg,
+      task: t('succeed, 'fail),
     )
     : Tea_cmd.t('msg) =>
   attemptOpt(v => Some(resultToMessage(v)), task);
@@ -74,8 +74,8 @@ let fail = (value: 'v) : t('e, 'v) =>
   Task(cb => cb(Tea_result.Error(value)));
 
 let nativeBinding =
-    (func: (Tea_result.t('value, string) => unit) => unit)
-    : t('value, string) =>
+    (func: (Tea_result.t('succeed, 'fail) => unit) => unit)
+    : t('succeed, 'fail) =>
   Task(func);
 
 /* Chaining */
