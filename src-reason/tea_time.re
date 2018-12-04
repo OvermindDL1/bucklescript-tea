@@ -6,9 +6,9 @@ type t = float;
 
    type 'msg myCmd =
      | Delay of t * (unit -> 'msg) */
-let every = (interval, tagger) => {
+
+let every = (~key, interval, tagger) => {
   open Vdom;
-  let key = string_of_float(interval);
   let enableCall = callbacks => {
     let id =
       Web.Window.setInterval(
@@ -31,6 +31,7 @@ let delay = (msTime, msg) =>
   });
 
 /* Generic Helpers */
+
 let millisecond = 1.0;
 
 let second = 1000.0 *. millisecond;

@@ -11,9 +11,8 @@ type 'msg myCmd =
   | Delay of t * (unit -> 'msg) *)
 
 
-let every interval tagger =
+let every ~key interval tagger =
   let open Vdom in
-  let key = string_of_float interval in
   let enableCall callbacks =
     let id = (Web.Window.setInterval (fun () -> callbacks.enqueue (tagger (Web.Date.now ())) ) interval) in
     (* let () = Js.log ("Time.every", "enable", interval, tagger, callbacks) in *)

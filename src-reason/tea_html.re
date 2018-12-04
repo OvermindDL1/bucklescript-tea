@@ -4,7 +4,9 @@ module Cmds = Tea_html_cmds;
 
 /* let map lift vdom =
  */
+
 /* Nodes */
+
 let noNode = noNode;
 
 let text = str => text(str);
@@ -15,7 +17,9 @@ let node = (~namespace="", tagName, ~key="", ~unique="", props, nodes) =>
   fullnode(namespace, tagName, key, unique, props, nodes);
 
 /* let embedProgram main = custom */
+
 /* HTML Elements */
+
 let br = props => fullnode("", "br", "br", "br", props, []);
 
 let br' = (~key="", ~unique="", props, nodes) =>
@@ -298,6 +302,7 @@ let menu = (~key="", ~unique="", props, nodes) =>
   fullnode("", "menu", key, unique, props, nodes);
 
 /* Properties */
+
 let noProp = Vdom.noProp;
 
 let id = str => prop("id", str);
@@ -361,6 +366,7 @@ let action = a => prop("action", a);
 let method' = m => prop("method", m);
 
 /* Events */
+
 let onCB = (eventName, key, cb) => onCB(eventName, key, cb);
 
 let onMsg = (eventName, msg) => onMsg(eventName, msg);
@@ -434,10 +440,11 @@ type options = {
 
 let defaultOptions = {stopPropagation: false, preventDefault: false};
 
-let onWithOptions = (eventName, options, decoder) =>
+let onWithOptions =
+    (~key: string, eventName, options: Tea_html.options, decoder) =>
   onCB(
     eventName,
-    "",
+    key,
     event => {
       if (options.stopPropagation) {
         event##stopPropagation() |> ignore;
@@ -464,20 +471,26 @@ let keyCode = Tea_json.Decoder.field("keyCode", Tea_json.Decoder.int);
 
 module Attributes = {
   let max = value => attribute("", "max", value);
+
   let min = value => attribute("", "min", value);
+
   let step = value => attribute("", "step", value);
+
   let disabled = b =>
     if (b) {
       attribute("", "disabled", "true");
     } else {
       noProp;
     };
+
   let selected = b =>
     if (b) {
       attribute("", "selected", "true");
     } else {
       noProp;
     };
+
   let acceptCharset = c => attribute("", "accept-charset", c);
+
   let rel = value => attribute("", "rel", value);
 };

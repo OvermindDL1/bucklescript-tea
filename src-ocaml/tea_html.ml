@@ -339,8 +339,8 @@ let defaultOptions = {
   preventDefault = false;
 }
 
-let onWithOptions eventName options decoder =
-  onCB eventName "" (fun event ->
+let onWithOptions ~(key:string) eventName (options: Tea_html.options) decoder =
+  onCB eventName key (fun event ->
     if options.stopPropagation then event##stopPropagation () |> ignore;
     if options.preventDefault then event##preventDefault () |> ignore;
     event
