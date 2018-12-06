@@ -265,9 +265,9 @@ module Attributes = struct
 
   let noProp = Vdom.noProp
 
-  let style key value = style key value
+  let style key value = Vdom.style key value
 
-  let styles s = styles s
+  let styles s = Vdom.styles s
 
   (** {1 Super common attributes} *)
 
