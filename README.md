@@ -151,4 +151,10 @@ A list of starter-kits that get you up and running.
 * dev-server: [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
 * css: [bs-css](https://github.com/SentiaAnalytics/bs-css)
 
+#### [darklang/philip2](https://github.com/darklang/philip2)
+
+This one is not so much a starter kit as it is a porting kit, it can actually take in elm files, parse them, and output bucklescript-tea OCaml code (which can be converted to ReasonML via `refmt` of course) with only minor'ish tweaks there-after needed to get it working.
+
+See its announcement article at:  https://medium.com/@paulbiggar/philip2-an-elm-to-reasonml-compiler-a210aaa6cd04
+And its porting guide at:  https://github.com/darklang/philip2#how-to-port-your-project
 
