@@ -521,6 +521,8 @@ module Events = struct
 
   let keyCode = Tea_html.keyCode
 
+  let preventDefaultOn ?(key="") eventName decoder = onWithOptions ~key eventName { defaultOptions with preventDefault = true } decoder
+
   (** {1 Mouse helpers} *)
 
   let onClick msg = onMsg "click" msg
@@ -576,6 +578,8 @@ module Events = struct
       )
 
   let onChange ?(key="") msg = onChangeOpt ~key:key (fun ev -> Some (msg ev))
+
+  let onSubmit msg = preventDefaultOn "submit" (Tea_json.Decoder.succeed msg) 
 
   (** {1 Focus helpers} *)
 
