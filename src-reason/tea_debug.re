@@ -3,17 +3,14 @@ type debug_msg('msg) =
   | TogglePaused
   | SelectHistoryItem(int)
   | ToggleDetails;
-
 type state =
   | Running
   | Paused(int);
-
 type debug_model('model) = {
   history: list((string, 'model)),
   state,
   show_details: bool,
 };
-
 let debug:
   ('msg => string, Tea_app.program('flags, 'model, 'msg)) =>
   Tea_app.program('flags, debug_model('model), debug_msg('msg)) = {
@@ -26,7 +23,6 @@ let debug:
         cmd |> Tea_cmd.map(client_msg),
       );
     };
-
     let update' = model =>
       fun
       | ClientMsg(msg) =>
@@ -51,7 +47,6 @@ let debug:
           {...model, show_details: !model.show_details},
           Tea_cmd.none,
         );
-
     let view_styles = () => {
       open Tea_html2;
       let rule = (selector, properties) =>
@@ -60,7 +55,6 @@ let debug:
         |> String.concat(";")
         |> Printf.sprintf("%s {%s}", selector)
         |> text;
-
       node(
         "style",
         [],
@@ -215,7 +209,6 @@ let debug:
         ],
       );
     };
-
     let view_details = model => {
       open Tea_html2;
       module A = Tea_html2.Attributes;
@@ -278,7 +271,6 @@ let debug:
       ];
       aside([A.class'("details")], [model |> format |> text]);
     };
-
     let view_history = (model, selected_index) => {
       open Tea_html2;
       module A = Tea_html2.Attributes;
@@ -328,7 +320,6 @@ let debug:
         model.history,
       );
     };
-
     let view' = model => {
       open Tea_html2;
       module A = Tea_html2.Attributes;
@@ -342,12 +333,11 @@ let debug:
             true,
           )
         };
-
       let history_count = List.length(model.history);
       div(
         [],
         [
-          view(selected_model) |> Tea_app.map(client_msg),
+          view(selected_model) |> map(client_msg),
           div(
             [A.id("debug"), A.classList([("paused", paused)])],
             [
@@ -382,17 +372,14 @@ let debug:
         ],
       );
     };
-
     let subscriptions' = model =>
       model.history
       |> List.hd
       |> snd
       |> subscriptions
       |> Tea_sub.map(client_msg);
-
     let shutdown' = model =>
       model.history |> List.hd |> snd |> shutdown |> Tea_cmd.map(client_msg);
-
     {
       init: init',
       update: update',
@@ -402,7 +389,6 @@ let debug:
     };
   };
 };
-
 let beginnerProgram:
   (
     Tea_app.beginnerProgram('model, 'msg),
@@ -425,7 +411,6 @@ let beginnerProgram:
       );
     Tea_app.program(debugged, pnode, flags);
   };
-
 let standardProgram:
   (
     Tea_app.standardProgram('flags, 'model, 'msg),
@@ -442,7 +427,6 @@ let standardProgram:
       );
     Tea_app.program(debugged, pnode, flags);
   };
-
 let program:
   (
     Tea_app.program('flags, 'model, 'msg),
