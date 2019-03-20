@@ -41,6 +41,7 @@ let attempt (resultToMessage : ('succeed,'fail) Tea_result.t -> 'msg)
   (task : ('succeed,'fail) t) =
   (attemptOpt (fun v  -> ((Some ((resultToMessage v)))[@explicit_arity ]))
      task : 'msg Tea_cmd.t)
+let ignore task = attemptOpt (fun _ -> None) task
 let succeed (value : 'v) =
   (((Task ((fun cb  -> cb ((Tea_result.Ok (value))[@explicit_arity ]))))
   [@explicit_arity ]) : ('v,'e) t)
