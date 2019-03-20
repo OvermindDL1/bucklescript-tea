@@ -1,17 +1,10 @@
 type never;
 
 type t('succeed, 'fail) =
-  | Task((Tea_result.t('succeed, 'fail) => unit) => unit): t(
-                                                               'succeed,
-                                                               'fail,
-                                                             );
-/* Task : ((('succeed, 'fail) Tea_result.t -> (unit -> unit)) -> (unit -> unit)) -> ('succeed, 'fail) t */
-
-/* Helpers */
+  | Task((Tea_result.t('succeed, 'fail) => unit) => unit)
+    : t('succeed, 'fail);
 
 let nothing = () => ();
-
-/* Resolvers */
 
 let performOpt =
     (
@@ -37,8 +30,7 @@ let performOpt =
   });
 
 let perform =
-    (toMessage: 'value => 'msg, task: t('value, never))
-    : Tea_cmd.t('msg) =>
+    (toMessage: 'value => 'msg, task: t('value, never)): Tea_cmd.t('msg) =>
   performOpt(v => Some(toMessage(v)), task);
 
 let attemptOpt =
@@ -65,20 +57,16 @@ let attempt =
     : Tea_cmd.t('msg) =>
   attemptOpt(v => Some(resultToMessage(v)), task);
 
-/* Basics */
-
-let succeed = (value: 'v) : t('v, 'e) =>
+let succeed = (value: 'v): t('v, 'e) =>
   Task(cb => cb(Tea_result.Ok(value)));
 
-let fail = (value: 'v) : t('e, 'v) =>
+let fail = (value: 'v): t('e, 'v) =>
   Task(cb => cb(Tea_result.Error(value)));
 
 let nativeBinding =
     (func: (Tea_result.t('succeed, 'fail) => unit) => unit)
     : t('succeed, 'fail) =>
   Task(func);
-
-/* Chaining */
 
 let andThen = (fn, Task(task)) =>
   Tea_result.(
@@ -110,9 +98,12 @@ let onError = (fn, Task(task)) =>
     )
   );
 
-let mapError = (func, task) => task |> onError(e => fail(func(e)));
+let fromResult: Tea_result.t('success, 'failure) => t('success, 'failure) =
+  fun
+  | Tea_result.Ok(s) => succeed(s)
+  | Tea_result.Error(err) => fail(err);
 
-/* Mapping */
+let mapError = (func, task) => task |> onError(e => fail(func(e)));
 
 let map = (func, task1) => task1 |> andThen(v1 => succeed(func(v1)));
 
@@ -179,14 +170,10 @@ let rec sequence =
   fun
   | [] => succeed([])
   | [task, ...remainingTasks] =>
-    map2(
-      (l, r) =>
-        [l, ...r] /* TODO:  Replace with `List.cons` when updated to version 4.03 */,
-      task,
-      sequence(remainingTasks),
-    );
+    map2((l, r) => [l, ...r], task, sequence(remainingTasks));
 
 let testing_deop = ref(true);
+
 let testing = () => {
   open Tea_result;
   let doTest = (expected, Task(task)) => {
@@ -245,6 +232,8 @@ let testing = () => {
     ]);
   let () = doTest(Ok([1, 2]), n2);
   let _c0 = perform(_ => 42, succeed(18));
-  /* (\* Should not compile *\) let _c1 = perform (fun _ -> 42) (fail 18) in */
+
+  let () = doTest(Ok(42), fromResult(Ok(42)));
+  let () = doTest(Error("failure"), fromResult(Error("failure")));
   ();
 };

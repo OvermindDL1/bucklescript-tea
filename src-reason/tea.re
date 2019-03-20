@@ -15,7 +15,8 @@ module Html2 = Tea_html2;
 
 module Svg = Tea_svg;
 
-/* module Task = Tea_task */
+module Task = Tea_task;
+
 module Program = Tea_program;
 
 module Time = Tea_time;
