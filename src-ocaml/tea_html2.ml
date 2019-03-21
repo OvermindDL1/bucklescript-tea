@@ -5,6 +5,8 @@ open Vdom
 
 module Cmds = Tea_html_cmds
 
+let map = Tea_app.map
+
 (** {1 Primitives} *)
 
 let text str = text str

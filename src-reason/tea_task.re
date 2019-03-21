@@ -2,7 +2,9 @@ type never;
 type t('succeed, 'fail) =
   | Task((Tea_result.t('succeed, 'fail) => unit) => unit)
     : t('succeed, 'fail);
+
 let nothing = () => ();
+
 let performOpt =
     (
       toOptionalMessage: 'value => option('msg),
@@ -59,6 +61,7 @@ let nativeBinding =
     (func: (Tea_result.t('succeed, 'fail) => unit) => unit)
     : t('succeed, 'fail) =>
   Task(func);
+
 let andThen = (fn, Task(task)) =>
   Tea_result.(
     Task(
@@ -87,7 +90,14 @@ let onError = (fn, Task(task)) =>
         ),
     )
   );
+
+let fromResult: Tea_result.t('success, 'failure) => t('success, 'failure) =
+  fun
+  | Tea_result.Ok(s) => succeed(s)
+  | Tea_result.Error(err) => fail(err);
+
 let mapError = (func, task) => task |> onError(e => fail(func(e)));
+
 let map = (func, task1) => task1 |> andThen(v1 => succeed(func(v1)));
 let map2 = (func, task1, task2) =>
   task1 |> andThen(v1 => task2 |> andThen(v2 => succeed(func(v1, v2))));
@@ -148,7 +158,9 @@ let rec sequence =
   | [] => succeed([])
   | [task, ...remainingTasks] =>
     map2((l, r) => [l, ...r], task, sequence(remainingTasks));
+
 let testing_deop = ref(true);
+
 let testing = () => {
   open Tea_result;
   let doTest = (expected, Task(task)) => {
@@ -207,5 +219,12 @@ let testing = () => {
     ]);
   let () = doTest(Ok([1, 2]), n2);
   let _c0 = perform(_ => 42, succeed(18));
+
+  let () = doTest(Ok(42), fromResult(Ok(42)));
+  let () = doTest(Error("failure"), fromResult(Error("failure")));
+
+  let () = doTest(Ok(None), fail("for some reason") |> toOption);
+  let () = doTest(Ok(Some(42)), succeed(42) |> toOption);
+
   ();
 };
