@@ -1,5 +1,4 @@
 type never;
-
 type t('succeed, 'fail) =
   | Task((Tea_result.t('succeed, 'fail) => unit) => unit)
     : t('succeed, 'fail);
@@ -28,11 +27,9 @@ let performOpt =
         };
     task(cb);
   });
-
 let perform =
     (toMessage: 'value => 'msg, task: t('value, never)): Tea_cmd.t('msg) =>
   performOpt(v => Some(toMessage(v)), task);
-
 let attemptOpt =
     (
       resultToOptionalMessage: Tea_result.t('succeed, 'fail) => option('msg),
@@ -48,7 +45,6 @@ let attemptOpt =
       };
     task(cb);
   });
-
 let attempt =
     (
       resultToMessage: Tea_result.t('succeed, 'fail) => 'msg,
@@ -62,7 +58,6 @@ let succeed = (value: 'v): t('v, 'e) =>
 
 let fail = (value: 'v): t('e, 'v) =>
   Task(cb => cb(Tea_result.Error(value)));
-
 let nativeBinding =
     (func: (Tea_result.t('succeed, 'fail) => unit) => unit)
     : t('succeed, 'fail) =>
@@ -82,7 +77,6 @@ let andThen = (fn, Task(task)) =>
         ),
     )
   );
-
 let onError = (fn, Task(task)) =>
   Tea_result.(
     Task(
@@ -106,17 +100,14 @@ let fromResult: Tea_result.t('success, 'failure) => t('success, 'failure) =
 let mapError = (func, task) => task |> onError(e => fail(func(e)));
 
 let map = (func, task1) => task1 |> andThen(v1 => succeed(func(v1)));
-
 let map2 = (func, task1, task2) =>
   task1 |> andThen(v1 => task2 |> andThen(v2 => succeed(func(v1, v2))));
-
 let map3 = (func, task1, task2, task3) =>
   task1
   |> andThen(v1 =>
        task2
        |> andThen(v2 => task3 |> andThen(v3 => succeed(func(v1, v2, v3))))
      );
-
 let map4 = (func, task1, task2, task3, task4) =>
   task1
   |> andThen(v1 =>
@@ -128,7 +119,6 @@ let map4 = (func, task1, task2, task3, task4) =>
                )
           )
      );
-
 let map5 = (func, task1, task2, task3, task4, task5) =>
   task1
   |> andThen(v1 =>
@@ -144,7 +134,6 @@ let map5 = (func, task1, task2, task3, task4, task5) =>
                )
           )
      );
-
 let map6 = (func, task1, task2, task3, task4, task5, task6) =>
   task1
   |> andThen(v1 =>
@@ -165,7 +154,6 @@ let map6 = (func, task1, task2, task3, task4, task5, task6) =>
                )
           )
      );
-
 let rec sequence =
   fun
   | [] => succeed([])
@@ -235,5 +223,9 @@ let testing = () => {
 
   let () = doTest(Ok(42), fromResult(Ok(42)));
   let () = doTest(Error("failure"), fromResult(Error("failure")));
+
+  let () = doTest(Ok(None), fail("for some reason") |> toOption);
+  let () = doTest(Ok(Some(42)), succeed(42) |> toOption);
+
   ();
 };
