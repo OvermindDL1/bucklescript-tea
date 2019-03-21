@@ -48,6 +48,8 @@ let attempt (resultToMessage : ('succeed,'fail) Tea_result.t -> 'msg)
   (attemptOpt (fun v  -> ((Some ((resultToMessage v)))[@explicit_arity ]))
      task : 'msg Tea_cmd.t)
 
+let ignore task = attemptOpt (fun _ -> None) task
+
 let succeed (value : 'v) =
   (((Task ((fun cb  -> cb ((Tea_result.Ok (value))[@explicit_arity ]))))
   [@explicit_arity ]) : ('v,'e) t)
@@ -228,6 +230,7 @@ let testing () =
         [mapError string_of_int (succeed 1);
         mapError string_of_float (succeed 2)] in
     let () = doTest ((Ok ([1; 2]))[@explicit_arity ]) n2 in
+
     let _c0 = perform (fun _  -> 42) (succeed 18) in
     
     let () = doTest (Ok 42) (fromResult (Ok 42)) in

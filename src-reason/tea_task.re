@@ -52,10 +52,9 @@ let attempt =
     )
     : Tea_cmd.t('msg) =>
   attemptOpt(v => Some(resultToMessage(v)), task);
-
+let ignore = task => attemptOpt(_ => None, task);
 let succeed = (value: 'v): t('v, 'e) =>
   Task(cb => cb(Tea_result.Ok(value)));
-
 let fail = (value: 'v): t('e, 'v) =>
   Task(cb => cb(Tea_result.Error(value)));
 let nativeBinding =
