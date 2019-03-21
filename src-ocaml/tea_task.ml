@@ -1,8 +1,11 @@
 type never
+
 type ('succeed,'fail) t =
   | Task: ((('succeed,'fail) Tea_result.t -> unit) -> unit) ->
   ('succeed,'fail) t
+
 let nothing () = ()
+
 let performOpt (toOptionalMessage : 'value -> 'msg option)
   (((Task (task))[@explicit_arity ]) : ('value,never) t) =
   (Tea_cmd.call
@@ -22,9 +25,11 @@ let performOpt (toOptionalMessage : 'value -> 'msg option)
                    | ((Some (result))[@explicit_arity ]) ->
                        (!callbacks).enqueue result) in
             task cb) : 'msg Tea_cmd.t)
+
 let perform (toMessage : 'value -> 'msg) (task : ('value,never) t) =
-  (performOpt (fun v  -> ((Some ((toMessage v)))[@explicit_arity ])) task : 
+  (performOpt (fun v  -> ((Some ((toMessage v)))[@explicit_arity ])) task :
   'msg Tea_cmd.t)
+
 let attemptOpt
   (resultToOptionalMessage : ('succeed,'fail) Tea_result.t -> 'msg option)
   (((Task (task))[@explicit_arity ]) : ('succeed,'fail) t) =
@@ -37,18 +42,23 @@ let attemptOpt
             | ((Some (result))[@explicit_arity ]) ->
                 (!callbacks).enqueue result in
           task cb) : 'msg Tea_cmd.t)
+
 let attempt (resultToMessage : ('succeed,'fail) Tea_result.t -> 'msg)
   (task : ('succeed,'fail) t) =
   (attemptOpt (fun v  -> ((Some ((resultToMessage v)))[@explicit_arity ]))
      task : 'msg Tea_cmd.t)
+
 let succeed (value : 'v) =
   (((Task ((fun cb  -> cb ((Tea_result.Ok (value))[@explicit_arity ]))))
   [@explicit_arity ]) : ('v,'e) t)
+
 let fail (value : 'v) =
   (((Task ((fun cb  -> cb ((Tea_result.Error (value))[@explicit_arity ]))))
   [@explicit_arity ]) : ('e,'v) t)
+
 let nativeBinding (func : (('succeed,'fail) Tea_result.t -> unit) -> unit) =
   (((Task (func))[@explicit_arity ]) : ('succeed,'fail) t)
+
 let andThen fn ((Task (task))[@explicit_arity ]) =
   let open Tea_result in
     ((Task
@@ -59,6 +69,7 @@ let andThen fn ((Task (task))[@explicit_arity ]) =
                | ((Ok (v))[@explicit_arity ]) ->
                    let ((Task (nextTask))[@explicit_arity ]) = fn v in
                    nextTask cb))))[@explicit_arity ])
+
 let onError fn ((Task (task))[@explicit_arity ]) =
   let open Tea_result in
     ((Task
@@ -69,16 +80,25 @@ let onError fn ((Task (task))[@explicit_arity ]) =
                | ((Error (e))[@explicit_arity ]) ->
                    let ((Task (newTask))[@explicit_arity ]) = fn e in
                    newTask cb))))[@explicit_arity ])
+
+let fromResult : ('success,'failure) Tea_result.t -> ('success,'failure) t = function
+  | Tea_result.Ok s -> succeed s
+  | Tea_result.Error err -> fail err
+
 let mapError func task = task |> (onError (fun e  -> fail (func e)))
+
 let toOption task =
   task
   |> andThen (fun v -> succeed (Some v))
   |> onError (fun _ -> succeed None)
+
 let map func task1 = task1 |> (andThen (fun v1  -> succeed (func v1)))
+
 let map2 func task1 task2 =
   task1 |>
     (andThen
        (fun v1  -> task2 |> (andThen (fun v2  -> succeed (func v1 v2)))))
+
 let map3 func task1 task2 task3 =
   task1 |>
     (andThen
@@ -87,6 +107,7 @@ let map3 func task1 task2 task3 =
             (andThen
                (fun v2  ->
                   task3 |> (andThen (fun v3  -> succeed (func v1 v2 v3)))))))
+
 let map4 func task1 task2 task3 task4 =
   task1 |>
     (andThen
@@ -99,6 +120,7 @@ let map4 func task1 task2 task3 task4 =
                        (fun v3  ->
                           task4 |>
                             (andThen (fun v4  -> succeed (func v1 v2 v3 v4)))))))))
+
 let map5 func task1 task2 task3 task4 task5 =
   task1 |>
     (andThen
@@ -116,6 +138,7 @@ let map5 func task1 task2 task3 task4 task5 =
                                     (andThen
                                        (fun v5  ->
                                           succeed (func v1 v2 v3 v4 v5)))))))))))
+
 let map6 func task1 task2 task3 task4 task5 task6 =
   task1 |>
     (andThen
@@ -137,12 +160,15 @@ let map6 func task1 task2 task3 task4 task5 task6 =
                                                (fun v6  ->
                                                   succeed
                                                     (func v1 v2 v3 v4 v5 v6)))))))))))))
+
 let rec sequence =
   function
   | [] -> succeed []
   | task::remainingTasks ->
       map2 (fun l  -> fun r  -> l :: r) task (sequence remainingTasks)
+
 let testing_deop = ref true
+
 let testing () =
   let open Tea_result in
     let doTest expected ((Task (task))[@explicit_arity ]) =
@@ -203,6 +229,11 @@ let testing () =
         mapError string_of_float (succeed 2)] in
     let () = doTest ((Ok ([1; 2]))[@explicit_arity ]) n2 in
     let _c0 = perform (fun _  -> 42) (succeed 18) in
+    
+    let () = doTest (Ok 42) (fromResult (Ok 42)) in
+    let () = doTest (Error "failure") (fromResult (Error "failure")) in
+    
     let () = doTest (Ok None) (fail "for some reason" |> toOption) in
     let () = doTest (Ok (Some 42)) (succeed 42 |> toOption) in
+
     ()
