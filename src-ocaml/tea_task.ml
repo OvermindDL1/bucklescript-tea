@@ -70,6 +70,10 @@ let onError fn ((Task (task))[@explicit_arity ]) =
                    let ((Task (newTask))[@explicit_arity ]) = fn e in
                    newTask cb))))[@explicit_arity ])
 let mapError func task = task |> (onError (fun e  -> fail (func e)))
+let toOption task =
+  task
+  |> andThen (fun v -> succeed (Some v))
+  |> onError (fun _ -> succeed None)
 let map func task1 = task1 |> (andThen (fun v1  -> succeed (func v1)))
 let map2 func task1 task2 =
   task1 |>
@@ -198,4 +202,7 @@ let testing () =
         [mapError string_of_int (succeed 1);
         mapError string_of_float (succeed 2)] in
     let () = doTest ((Ok ([1; 2]))[@explicit_arity ]) n2 in
-    let _c0 = perform (fun _  -> 42) (succeed 18) in ()
+    let _c0 = perform (fun _  -> 42) (succeed 18) in
+    let () = doTest (Ok None) (fail "for some reason" |> toOption) in
+    let () = doTest (Ok (Some 42)) (succeed 42 |> toOption) in
+    ()
