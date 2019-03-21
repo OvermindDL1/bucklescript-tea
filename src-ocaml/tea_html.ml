@@ -2,8 +2,7 @@ open Vdom
 
 module Cmds = Tea_html_cmds
 
-(* let map lift vdom =
-   *)
+let map = Tea_app.map
 
 (* Nodes *)
 
