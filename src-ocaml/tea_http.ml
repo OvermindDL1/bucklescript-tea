@@ -91,6 +91,53 @@ let getString url =
     ; withCredentials = false
     }
 
+let toTask (Request (request, _maybeEvents)) =
+  let module StringMap = Map.Make(String) in
+  let {method'; headers; url; body; expect; timeout; withCredentials } = request in
+  let (Expect (typ, responseToResult)) = expect in
+  Tea_task.nativeBinding (fun cb ->
+    let enqRes result = fun _ev -> cb result in
+    let enqResError result = enqRes (Tea_result.Error result) in
+    let enqResOk result = enqRes (Tea_result.Ok result) in
+    let xhr = Web.XMLHttpRequest.create () in
+    let setEvent ev cb = ev cb xhr in
+    let () = setEvent Web.XMLHttpRequest.set_onerror (enqResError NetworkError) in
+    let () = setEvent Web.XMLHttpRequest.set_ontimeout (enqResError Timeout) in
+    let () = setEvent Web.XMLHttpRequest.set_onabort (enqResError Aborted) in
+    let () = setEvent Web.XMLHttpRequest.set_onload
+        ( fun _ev ->
+            let open Web.XMLHttpRequest in
+            let headers =
+              match getAllResponseHeadersAsDict xhr with
+              | Tea_result.Error _e -> StringMap.empty
+              | Tea_result.Ok headers -> headers in
+            let response =
+              { status = { code = get_status xhr; message = get_statusText xhr }
+              ; headers = headers
+              ; url = get_responseURL xhr
+              ; body = get_response xhr
+              } in
+            if response.status.code < 200 || 300 <= response.status.code
+            then enqResError (BadStatus response) ()
+            else match responseToResult response with
+              | Tea_result.Error error -> enqResError (BadPayload (error, response)) ()
+              | Tea_result.Ok result -> enqResOk result ()
+        ) in
+    let () = try Web.XMLHttpRequest.open_ method' url xhr
+      with _ -> enqResError (BadUrl url) () in
+    let () =
+      let setHeader (Header (k, v)) = Web.XMLHttpRequest.setRequestHeader k v xhr in
+      let () = List.iter setHeader headers in
+      let () = Web.XMLHttpRequest.set_responseType typ xhr in
+      let () =
+        match timeout with
+        | None -> ()
+        | Some t -> Web.XMLHttpRequest.set_timeout t xhr in
+      let () = Web.XMLHttpRequest.set_withCredentials withCredentials xhr in
+      () in
+    let () = Web.XMLHttpRequest.send body xhr in
+    ()
+  )
 
 let send resultToMessage (Request (request, maybeEvents)) =
   let module StringMap = Map.Make(String) in

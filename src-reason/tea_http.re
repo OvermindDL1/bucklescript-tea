@@ -4,9 +4,7 @@ type response_status = {
 };
 
 type requestBody = Web.XMLHttpRequest.body;
-
 type bodyType = Web.XMLHttpRequest.responseType;
-
 type responseBody = Web.XMLHttpRequest.responseBody;
 
 type response = {
@@ -103,6 +101,73 @@ let getString = url =>
     withCredentials: false,
   });
 
+let toTask = ([@implicit_arity] Request(request, _maybeEvents)) => {
+  module StringMap = Map.Make(String);
+  let {method', headers, url, body, expect, timeout, withCredentials} = request;
+  let [@implicit_arity] Expect(typ, responseToResult) = expect;
+  Tea_task.nativeBinding(cb => {
+    let enqRes = (result, _ev) => cb(result);
+    let enqResError = result => enqRes(Tea_result.Error(result));
+    let enqResOk = result => enqRes(Tea_result.Ok(result));
+    let xhr = Web.XMLHttpRequest.create();
+    let setEvent = (ev, cb) => ev(cb, xhr);
+    let () =
+      setEvent(Web.XMLHttpRequest.set_onerror, enqResError(NetworkError));
+    let () =
+      setEvent(Web.XMLHttpRequest.set_ontimeout, enqResError(Timeout));
+    let () = setEvent(Web.XMLHttpRequest.set_onabort, enqResError(Aborted));
+    let () =
+      setEvent(
+        Web.XMLHttpRequest.set_onload,
+        _ev => {
+          open Web.XMLHttpRequest;
+          let headers =
+            switch (getAllResponseHeadersAsDict(xhr)) {
+            | Tea_result.Error(_e) => StringMap.empty
+            | Tea_result.Ok(headers) => headers
+            };
+          let response = {
+            status: {
+              code: get_status(xhr),
+              message: get_statusText(xhr),
+            },
+            headers,
+            url: get_responseURL(xhr),
+            body: get_response(xhr),
+          };
+          if (response.status.code < 200 || 300 <= response.status.code) {
+            enqResError(BadStatus(response), ());
+          } else {
+            switch (responseToResult(response)) {
+            | Tea_result.Error(error) =>
+              enqResError([@implicit_arity] BadPayload(error, response), ())
+            | Tea_result.Ok(result) => enqResOk(result, ())
+            };
+          };
+        },
+      );
+    let () =
+      try (Web.XMLHttpRequest.open_(method', url, xhr)) {
+      | _ => enqResError(BadUrl(url), ())
+      };
+    let () = {
+      let setHeader = ([@implicit_arity] Header(k, v)) =>
+        Web.XMLHttpRequest.setRequestHeader(k, v, xhr);
+      let () = List.iter(setHeader, headers);
+      let () = Web.XMLHttpRequest.set_responseType(typ, xhr);
+      let () =
+        switch (timeout) {
+        | None => ()
+        | Some(t) => Web.XMLHttpRequest.set_timeout(t, xhr)
+        };
+      let () = Web.XMLHttpRequest.set_withCredentials(withCredentials, xhr);
+      ();
+    };
+    let () = Web.XMLHttpRequest.send(body, xhr);
+    ();
+  });
+};
+
 let send = (resultToMessage, [@implicit_arity] Request(request, maybeEvents)) => {
   module StringMap = Map.Make(String);
   let {method', headers, url, body, expect, timeout, withCredentials} = request;
@@ -185,11 +250,11 @@ let send = (resultToMessage, [@implicit_arity] Request(request, maybeEvents)) =>
   });
 };
 
-[@bs.val] external encodeURIComponent : string => string = "";
+[@bs.val] external encodeURIComponent: string => string = "";
 
 let encodeUri = str => encodeURIComponent(str);
 
-[@bs.val] external decodeURIComponent : string => string = "";
+[@bs.val] external decodeURIComponent: string => string = "";
 
 let decodeUri = str =>
   try (Some(decodeURIComponent(str))) {
@@ -216,11 +281,14 @@ module Progress = {
      ; toError : 'parseFailData error -> 'msg
      }
    */
+
   type t = {
     bytes: int,
     bytesExpected: int,
   };
+
   let emptyProgress = {bytes: 0, bytesExpected: 0};
+
   /* Yeah this does not follow the original API, but that original
      API is... not extensible...  Instead, we have generic event
      listener support here so no need to constrain the API.
@@ -248,6 +316,7 @@ module Progress = {
                 field("loaded", int),
                 field("total", int),
               );
+
             switch (decodeValue(decoder, ev)) {
             | Error(_e) => ()
             | Ok(t) => callbacks^.enqueue(toMessage(t))
