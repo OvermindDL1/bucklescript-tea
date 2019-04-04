@@ -14,7 +14,23 @@ type debug_model('model) = {
   show_details: bool,
 };
 
-let debug = (string_of_msg, update, view, subscriptions, shutdown) => {
+let debug =
+    (
+      string_of_msg: 'msg => string,
+      update: ('model, 'msg) => ('model, Tea_cmd.t('msg)),
+      view: 'model => Vdom.t('msg),
+      subscriptions: 'model => Tea_sub.t('msg),
+      shutdown: 'model => Tea_cmd.t('msg),
+    )
+    : (
+        (('model, Tea_cmd.t('msg))) =>
+        (debug_model('model), Tea_cmd.t(debug_msg('msg))),
+        (debug_model('model), debug_msg('msg)) =>
+        (debug_model('model), Tea_cmd.t(debug_msg('msg))),
+        debug_model('model) => Vdom.t(debug_msg('msg)),
+        debug_model('model) => Tea_sub.t(debug_msg('msg)),
+        debug_model('model) => Tea_cmd.t(debug_msg('msg)),
+      ) => {
   let client_msg = msg => ClientMsg(msg);
 
   let init_debug = ((cmodel, cmd)) => (

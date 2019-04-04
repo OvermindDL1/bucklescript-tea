@@ -14,7 +14,19 @@ type 'model debug_model = {
   show_details : bool;
 }
 
-let debug string_of_msg update view subscriptions shutdown =
+let debug
+  (string_of_msg : 'msg -> string)
+  (update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t)
+  (view : 'model -> 'msg Vdom.t)
+  (subscriptions : 'model -> 'msg Tea_sub.t)
+  (shutdown : 'model -> 'msg Tea_cmd.t) :
+  ( ('model * 'msg Tea_cmd.t -> 'model debug_model * 'msg debug_msg Tea_cmd.t) *
+    ('model debug_model -> 'msg debug_msg -> 'model debug_model * 'msg debug_msg Tea_cmd.t) *
+    ('model debug_model -> 'msg debug_msg Vdom.t)  *
+    ('model debug_model -> 'msg debug_msg Tea_sub.t) *
+    ('model debug_model -> 'msg debug_msg Tea_cmd.t)
+  )
+  =
   let client_msg msg = ClientMsg msg
   in
 
