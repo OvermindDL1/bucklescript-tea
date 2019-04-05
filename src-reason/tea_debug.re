@@ -3,6 +3,7 @@ type debug_msg('msg) =
   | TogglePaused
   | SelectHistoryItem(int)
   | ToggleDetails;
+let client_msg = msg => ClientMsg(msg);
 
 type state =
   | Running
@@ -31,8 +32,6 @@ let debug =
         debug_model('model) => Tea_sub.t(debug_msg('msg)),
         debug_model('model) => Tea_cmd.t(debug_msg('msg)),
       ) => {
-  let client_msg = msg => ClientMsg(msg);
-
   let init_debug = ((cmodel, cmd)) => (
     {history: [("_init_", cmodel)], state: Running, show_details: false},
     cmd |> Tea_cmd.map(client_msg),

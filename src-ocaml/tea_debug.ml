@@ -3,6 +3,7 @@ type 'msg debug_msg =
   | TogglePaused
   | SelectHistoryItem of int
   | ToggleDetails
+let client_msg msg = ClientMsg msg
 
 type state =
   | Running
@@ -27,9 +28,6 @@ let debug
     ('model debug_model -> 'msg debug_msg Tea_cmd.t)
   )
   =
-  let client_msg msg = ClientMsg msg
-  in
-
   let init_debug (cmodel, cmd) =
     {
       history = ["_init_", cmodel];
