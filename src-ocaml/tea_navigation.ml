@@ -64,6 +64,17 @@ let newUrl url =
     )
 
 
+let go step =
+  Tea_cmd.call (fun _enqueue ->
+    let _ = Web.Window.(History.go window) step in
+    let () = notifyUrlChange () in
+    ()
+  )
+
+let back step = go (-step)
+let forward step = go step
+
+
 let navigationProgram locationToMessage stuff =
     let init flag =
       stuff.init flag (getLocation ()) in
