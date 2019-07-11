@@ -38,3 +38,4 @@ In alphabetical order in their requisite sections.
 
 - @pbiggar (Paul Biggar): Adding type signatures, bug fixing, code cleanup.
 
+- @BenSchZA (Benjamin Scholtz): Documenting method to integrate BS-TEA into ReasonReact components.

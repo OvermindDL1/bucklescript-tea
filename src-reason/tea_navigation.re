@@ -67,13 +67,25 @@ let newUrl = url =>
     ();
   });
 
+let go = step =>
+  Tea_cmd.call(_enqueue => {
+    let _ = Web.Window.(History.go(window))(step);
+    let () = notifyUrlChange();
+    ();
+  });
+
+let back = step => go(- step);
+let forward = step => go(step);
+
 let navigationProgram = (locationToMessage, stuff) => {
   let init = flag => stuff.init(flag, getLocation());
+
   let subscriptions = model =>
     Tea_sub.batch([
       subscribe(locationToMessage),
       stuff.subscriptions(model),
     ]);
+
   open! Tea_app;
   program({
     init,
