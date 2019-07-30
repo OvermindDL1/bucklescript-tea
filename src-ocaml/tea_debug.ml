@@ -267,8 +267,9 @@ let beginnerProgram :
   ('msg -> string) ->
   Web.Node.t Js.null_undefined ->
   unit ->
+  bool ->
   'msg debug_msg Tea_app.programInterface
-  = fun { model; update; view; } string_of_msg pnode flags ->
+  = fun { model; update; view; } string_of_msg pnode flags hydrate ->
     let debugged = debug
       string_of_msg
       {
@@ -278,7 +279,7 @@ let beginnerProgram :
         subscriptions = (fun _model -> Tea_sub.none);
         shutdown = (fun _model -> Tea_cmd.none);
       }
-    in Tea_app.program debugged pnode flags
+    in Tea_app.program debugged pnode flags hydrate
 
 
 let standardProgram :
@@ -286,8 +287,9 @@ let standardProgram :
   ('msg -> string) ->
   Web.Node.t Js.null_undefined ->
   'flags ->
+  bool ->
   'msg debug_msg Tea_app.programInterface
-  = fun { init; update; view; subscriptions } string_of_msg pnode flags ->
+  = fun { init; update; view; subscriptions } string_of_msg pnode flags hydrate ->
     let debugged = debug
       string_of_msg
       {
@@ -297,7 +299,7 @@ let standardProgram :
         subscriptions;
         shutdown = (fun _model -> Tea_cmd.none);
       }
-    in Tea_app.program debugged pnode flags
+    in Tea_app.program debugged pnode flags hydrate
 
 
 let program :
@@ -305,8 +307,9 @@ let program :
   ('msg -> string) ->
   Web.Node.t Js.null_undefined ->
   'flags ->
+  bool ->
   'msg debug_msg Tea_app.programInterface
-  = fun { init; update; view; subscriptions; shutdown } string_of_msg pnode flags ->
+  = fun { init; update; view; subscriptions; shutdown } string_of_msg pnode flags hydrate ->
     let debugged = debug
       string_of_msg
       {
@@ -316,4 +319,4 @@ let program :
         subscriptions;
         shutdown;
       }
-    in Tea_app.program debugged pnode flags
+    in Tea_app.program debugged pnode flags hydrate

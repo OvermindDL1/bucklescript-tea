@@ -70,8 +70,7 @@ external makeProgramInterface :
   getHtmlString:(unit -> string) ->
   'msg programInterface = "" [@@bs.obj]
 
-
-
+              
 (* TODO:  Need to refactor the program layers to layer everything properly, things are a bit mixed up right now... *)
 
 
@@ -132,7 +131,7 @@ let programStateWrapper initModel pump shutdown =
     ~getHtmlString:render_string
 
 
-let programLoop update view subscriptions initModel initCmd = function
+let programLoop update view subscriptions initModel initCmd hydrate = function
   | None -> fun callbacks ->
     let oldSub = ref Tea_sub.none in
     let handleSubscriptionChange model =
@@ -166,8 +165,13 @@ let programLoop update view subscriptions initModel initCmd = function
         )
     }
   | Some parentNode -> fun callbacks ->
-    (* let priorRenderedVdom = ref [view initModel] in *)
-    let priorRenderedVdom = ref [] in
+    let priorRenderedVdom =
+      if hydrate = true then
+        ref [view initModel]
+      else
+        ref []
+    in
+    
     (* let lastVdom = ref (!priorRenderedVdom) in *)
     let latestModel = ref initModel in
     let nextFrameID = ref None in
@@ -211,7 +215,11 @@ let programLoop update view subscriptions initModel initCmd = function
       let newSub = subscriptions model in
       oldSub := (Tea_sub.run callbacks callbacks !oldSub newSub) in
     let handlerStartup () =
-      let () = clearPnode () in
+      let () =
+        if hydrate = false then
+          clearPnode ()
+      in
+        
       let () = Tea_cmd.run callbacks initCmd in
       let () = handleSubscriptionChange !latestModel in
       let () = nextFrameID := Some (-1) in
@@ -255,34 +263,34 @@ let programLoop update view subscriptions initModel initCmd = function
     }
 
 
-let program : ('flags, 'model, 'msg) program -> Web.Node.t Js.null_undefined -> 'flags -> 'msg programInterface =
-  fun {init; update; view; subscriptions; shutdown} pnode flags ->
+let program : ('flags, 'model, 'msg) program -> Web.Node.t Js.null_undefined -> 'flags -> bool -> 'msg programInterface =
+  fun {init; update; view; subscriptions; shutdown} pnode flags hydrate ->
   let () = Web.polyfills () in
   let initModel, initCmd = init flags in
   let opnode = Js.Nullable.toOption pnode in
-  let pumpInterface = programLoop update view subscriptions initModel initCmd opnode in
+  let pumpInterface = programLoop update view subscriptions initModel initCmd hydrate opnode in
   programStateWrapper initModel pumpInterface shutdown
 
 
-let standardProgram : ('flags, 'model, 'msg) standardProgram -> Web.Node.t Js.null_undefined -> 'flags -> 'msg programInterface =
-  fun {init; update; view; subscriptions} pnode args ->
+let standardProgram : ('flags, 'model, 'msg) standardProgram -> Web.Node.t Js.null_undefined -> 'flags -> bool -> 'msg programInterface =
+  fun {init; update; view; subscriptions} pnode args hydrate ->
     program {
       init = init;
       update = update;
       view = view;
       subscriptions = subscriptions;
       shutdown = fun _model -> Tea_cmd.none
-    } pnode args
+    } pnode args hydrate
 
-
-let beginnerProgram : ('model, 'msg) beginnerProgram -> Web.Node.t Js.null_undefined -> unit -> 'msg programInterface =
-  fun {model; update; view} pnode () ->
+  
+let beginnerProgram : ('model, 'msg) beginnerProgram -> Web.Node.t Js.null_undefined -> unit -> bool -> 'msg programInterface =
+  fun {model; update; view} pnode () hydrate ->
     standardProgram {
       init = (fun () -> (model, Tea_cmd.none));
       update = (fun model msg -> (update model msg, Tea_cmd.none));
       view = view;
       subscriptions = (fun _model -> Tea_sub.none)
-    } pnode ()
+    } pnode () hydrate
 
 
 let map func vnode =
