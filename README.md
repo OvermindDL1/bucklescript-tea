@@ -117,6 +117,7 @@ let main =
     model = init (); (* Since model is a set value here, we call our init function to generate that value *)
     update;
     view;
+    renderCallback = (fun _ -> ())
   }
 ```
 
