@@ -1,5 +1,4 @@
 open Tea.App;
-
 open Tea.Html;
 
 type msg =
@@ -17,7 +16,7 @@ let string_of_msg =
 
 let init = () => (4, Tea.Cmd.none);
 
-let subscriptions = (_) => Tea.Sub.none;
+let subscriptions = _ => Tea.Sub.none;
 
 let update = model =>
   fun
@@ -55,8 +54,10 @@ let view = model =>
     ],
   );
 
+let renderCallback = _ => ();
+
 let main =
   Tea.Debug.standardProgram(
-    {init, update, view, subscriptions},
+    {init, update, view, renderCallback, subscriptions},
     string_of_msg,
   );

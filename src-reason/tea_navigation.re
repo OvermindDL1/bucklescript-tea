@@ -3,6 +3,7 @@ type navigationProgram('flags, 'model, 'msg) = {
   update: ('model, 'msg) => ('model, Tea_cmd.t('msg)),
   view: 'model => Vdom.t('msg),
   subscriptions: 'model => Tea_sub.t('msg),
+  renderCallback: 'model => unit,
   shutdown: 'model => Tea_cmd.t('msg),
 };
 
@@ -92,6 +93,7 @@ let navigationProgram = (locationToMessage, stuff) => {
     update: stuff.update,
     view: stuff.view,
     subscriptions,
+    renderCallback: stuff.renderCallback,
     shutdown: stuff.shutdown,
   });
 };

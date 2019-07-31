@@ -33,6 +33,7 @@ type ('flags, 'model, 'msg) program = {
   init : 'flags -> 'model * 'msg Tea_cmd.t;
   update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t;
   view : 'model -> 'msg Vdom.t;
+  renderCallback: 'model -> unit;
   subscriptions : 'model -> 'msg Tea_sub.t;
   shutdown : 'model -> 'msg Tea_cmd.t;
 }
@@ -42,6 +43,7 @@ type ('flags, 'model, 'msg) standardProgram = {
   init : 'flags -> 'model * 'msg Tea_cmd.t;
   update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t;
   view : 'model -> 'msg Vdom.t;
+  renderCallback: 'model -> unit;
   subscriptions : 'model -> 'msg Tea_sub.t;
 }
 
@@ -132,7 +134,7 @@ let programStateWrapper initModel pump shutdown =
     ~getHtmlString:render_string
 
 
-let programLoop update view subscriptions initModel initCmd = function
+let programLoop update view renderCallback subscriptions initModel initCmd = function
   | None -> fun callbacks ->
     let oldSub = ref Tea_sub.none in
     let handleSubscriptionChange model =
@@ -177,6 +179,7 @@ let programLoop update view subscriptions initModel initCmd = function
       | Some _id ->
         let newVdom = [view !latestModel] in
         let justRenderedVdom = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom newVdom in
+        let () = renderCallback !latestModel in
         let () = priorRenderedVdom := justRenderedVdom in
         (* let () = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom !lastVdom in
         let () = priorRenderedVdom := (!lastVdom) in *)
@@ -256,20 +259,21 @@ let programLoop update view subscriptions initModel initCmd = function
 
 
 let program : ('flags, 'model, 'msg) program -> Web.Node.t Js.null_undefined -> 'flags -> 'msg programInterface =
-  fun {init; update; view; subscriptions; shutdown} pnode flags ->
+  fun {init; update; view; renderCallback; subscriptions; shutdown} pnode flags ->
   let () = Web.polyfills () in
   let initModel, initCmd = init flags in
   let opnode = Js.Nullable.toOption pnode in
-  let pumpInterface = programLoop update view subscriptions initModel initCmd opnode in
+  let pumpInterface = programLoop update view renderCallback subscriptions initModel initCmd opnode in
   programStateWrapper initModel pumpInterface shutdown
 
 
 let standardProgram : ('flags, 'model, 'msg) standardProgram -> Web.Node.t Js.null_undefined -> 'flags -> 'msg programInterface =
-  fun {init; update; view; subscriptions} pnode args ->
+  fun {init; update; view; renderCallback; subscriptions} pnode args ->
     program {
       init = init;
       update = update;
       view = view;
+      renderCallback = renderCallback;
       subscriptions = subscriptions;
       shutdown = fun _model -> Tea_cmd.none
     } pnode args
@@ -281,6 +285,7 @@ let beginnerProgram : ('model, 'msg) beginnerProgram -> Web.Node.t Js.null_undef
       init = (fun () -> (model, Tea_cmd.none));
       update = (fun model msg -> (update model msg, Tea_cmd.none));
       view = view;
+      renderCallback= (fun _ -> ());
       subscriptions = (fun _model -> Tea_sub.none)
     } pnode ()
 

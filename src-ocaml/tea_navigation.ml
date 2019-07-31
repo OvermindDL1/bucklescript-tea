@@ -4,6 +4,7 @@ type ('flags, 'model, 'msg) navigationProgram =
   ; update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t
   ; view : 'model -> 'msg Vdom.t
   ; subscriptions : 'model -> 'msg Tea_sub.t
+  ; renderCallback : 'model -> unit
   ; shutdown : 'model -> 'msg Tea_cmd.t
   }
 
@@ -91,5 +92,6 @@ let navigationProgram locationToMessage stuff =
       ; update = stuff.update
       ; view = stuff.view
       ; subscriptions = subscriptions
+      ; renderCallback = stuff.renderCallback
       ; shutdown = stuff.shutdown
       }

@@ -100,11 +100,13 @@ let view model =
     [ text "Drag Me!"
     ]
 
+let renderCallback _ = ()
 
 let main =
   standardProgram {
     init;
     update;
     view;
+    renderCallback;
     subscriptions;
   }

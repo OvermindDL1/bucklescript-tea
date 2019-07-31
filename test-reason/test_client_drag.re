@@ -1,9 +1,6 @@
 open Tea;
-
 open Tea.App;
-
 open Tea.Html;
-
 open Tea.Mouse;
 
 [@bs.deriving {accessors: accessors}]
@@ -33,6 +30,7 @@ let init = () => ({
 let getPosition = ({position, drag}) =>
   switch (drag) {
   | None => position
+
   | Some({start, current}) => {
       x: position.x + current.x - start.x,
       y: position.y + current.y - start.y,
@@ -42,6 +40,7 @@ let getPosition = ({position, drag}) =>
 let updateHelp = ({position} as model) =>
   fun
   | DragStart(xy) => {position, drag: Some({start: xy, current: xy})}
+
   | DragAt(xy) => {
       position,
       drag:
@@ -50,6 +49,7 @@ let updateHelp = ({position} as model) =>
         | Some(drag) => Some({...drag, current: xy})
         },
     }
+
   | DragEnd(_) => {position: getPosition(model), drag: None};
 
 let update = (model, msg) => (updateHelp(model, msg), Cmd.none);
@@ -57,6 +57,7 @@ let update = (model, msg) => (updateHelp(model, msg), Cmd.none);
 let subscriptions = model =>
   switch (model.drag) {
   | None => Sub.none
+
   | Some(_) => Sub.batch([Mouse.moves(dragAt), Mouse.ups(dragEnd)])
   };
 
@@ -92,4 +93,7 @@ let view = model => {
   );
 };
 
-let main = standardProgram({init, update, view, subscriptions});
+let renderCallback = _ => ();
+
+let main =
+  standardProgram({init, update, view, renderCallback, subscriptions});

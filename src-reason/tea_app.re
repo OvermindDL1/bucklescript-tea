@@ -31,6 +31,7 @@ type program('flags, 'model, 'msg) = {
   init: 'flags => ('model, Tea_cmd.t('msg)),
   update: ('model, 'msg) => ('model, Tea_cmd.t('msg)),
   view: 'model => Vdom.t('msg),
+  renderCallback: 'model => unit,
   subscriptions: 'model => Tea_sub.t('msg),
   shutdown: 'model => Tea_cmd.t('msg),
 };
@@ -39,6 +40,7 @@ type standardProgram('flags, 'model, 'msg) = {
   init: 'flags => ('model, Tea_cmd.t('msg)),
   update: ('model, 'msg) => ('model, Tea_cmd.t('msg)),
   view: 'model => Vdom.t('msg),
+  renderCallback: 'model => unit,
   subscriptions: 'model => Tea_sub.t('msg),
 };
 
@@ -58,7 +60,7 @@ type pumpInterface('model, 'msg) = {
 type programInterface('msg) = {. "pushMsg": 'msg => unit};
 
 [@bs.obj]
-external makeProgramInterface :
+external makeProgramInterface:
   (
     ~pushMsg: 'msg => unit,
     ~shutdown: unit => unit,
@@ -135,7 +137,8 @@ let programStateWrapper = (initModel, pump, shutdown) => {
   );
 };
 
-let programLoop = (update, view, subscriptions, initModel, initCmd) =>
+let programLoop =
+    (update, view, renderCallback, subscriptions, initModel, initCmd) =>
   fun
   | None => (
       callbacks => {
@@ -192,6 +195,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
                 priorRenderedVdom^,
                 newVdom,
               );
+            let () = renderCallback(latestModel^);
             let () = priorRenderedVdom := justRenderedVdom;
             /* let () = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom !lastVdom in
                let () = priorRenderedVdom := (!lastVdom) in */
@@ -290,12 +294,24 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
 let program:
   (program('flags, 'model, 'msg), Js.null_undefined(Web.Node.t), 'flags) =>
   programInterface('msg) =
-  ({init, update, view, subscriptions, shutdown}, pnode, flags) => {
+  (
+    {init, update, view, renderCallback, subscriptions, shutdown},
+    pnode,
+    flags,
+  ) => {
     let () = Web.polyfills();
     let (initModel, initCmd) = init(flags);
     let opnode = Js.Nullable.toOption(pnode);
     let pumpInterface =
-      programLoop(update, view, subscriptions, initModel, initCmd, opnode);
+      programLoop(
+        update,
+        view,
+        renderCallback,
+        subscriptions,
+        initModel,
+        initCmd,
+        opnode,
+      );
     programStateWrapper(initModel, pumpInterface, shutdown);
   };
 
@@ -306,9 +322,16 @@ let standardProgram:
     'flags
   ) =>
   programInterface('msg) =
-  ({init, update, view, subscriptions}, pnode, args) =>
+  ({init, update, view, renderCallback, subscriptions}, pnode, args) =>
     program(
-      {init, update, view, subscriptions, shutdown: _model => Tea_cmd.none},
+      {
+        init,
+        update,
+        view,
+        renderCallback,
+        subscriptions,
+        shutdown: _model => Tea_cmd.none,
+      },
       pnode,
       args,
     );
@@ -322,6 +345,7 @@ let beginnerProgram:
         init: () => (model, Tea_cmd.none),
         update: (model, msg) => (update(model, msg), Tea_cmd.none),
         view,
+        renderCallback: _ => (),
         subscriptions: _model => Tea_sub.none,
       },
       pnode,

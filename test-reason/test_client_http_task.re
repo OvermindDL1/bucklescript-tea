@@ -36,6 +36,8 @@ let som =
   | GotResponse(Error(_)) => "GotResponse Error"
   | Req => "Req";
 
+let renderCallback = _ => ();
+
 let main =
   Tea.Debug.standardProgram(
     {
@@ -43,6 +45,7 @@ let main =
       subscriptions: _ => Sub.none,
       update,
       view,
+      renderCallback,
     },
     som,
   );
