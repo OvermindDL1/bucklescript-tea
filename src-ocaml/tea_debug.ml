@@ -20,7 +20,7 @@ let debug :
   ('flags, 'model debug_model, 'msg debug_msg) Tea_app.program
   =
   let client_msg msg = ClientMsg msg in
-  fun string_of_msg { init; update; view; subscriptions; shutdown } ->
+  fun string_of_msg { init; update; view; renderCallback; subscriptions; shutdown } ->
     let init' (flags : 'flags) =
       let cmodel, cmd = init flags in
       {
@@ -245,6 +245,10 @@ let debug :
       ]
     in
 
+    let renderCallback' model =
+      model.history |> List.hd |> snd |> renderCallback
+    in
+
     let subscriptions' model =
       model.history |> List.hd |> snd |> subscriptions |> Tea_sub.map client_msg
     in
@@ -257,6 +261,7 @@ let debug :
       init = init';
       update = update';
       view = view';
+      renderCallback = renderCallback';
       subscriptions = subscriptions';
       shutdown = shutdown';
     }
@@ -275,6 +280,7 @@ let beginnerProgram :
         init = (fun () -> model, Tea_cmd.none);
         update = (fun model msg -> update model msg, Tea_cmd.none);
         view;
+        renderCallback= (fun _ -> ());
         subscriptions = (fun _model -> Tea_sub.none);
         shutdown = (fun _model -> Tea_cmd.none);
       }
@@ -287,13 +293,14 @@ let standardProgram :
   Web.Node.t Js.null_undefined ->
   'flags ->
   'msg debug_msg Tea_app.programInterface
-  = fun { init; update; view; subscriptions } string_of_msg pnode flags ->
+  = fun { init; update; renderCallback; view; subscriptions } string_of_msg pnode flags ->
     let debugged = debug
       string_of_msg
       {
         init;
         update;
         view;
+        renderCallback;
         subscriptions;
         shutdown = (fun _model -> Tea_cmd.none);
       }
@@ -306,13 +313,14 @@ let program :
   Web.Node.t Js.null_undefined ->
   'flags ->
   'msg debug_msg Tea_app.programInterface
-  = fun { init; update; view; subscriptions; shutdown } string_of_msg pnode flags ->
+  = fun { init; update; view; renderCallback; subscriptions; shutdown } string_of_msg pnode flags ->
     let debugged = debug
       string_of_msg
       {
         init;
         update;
         view;
+        renderCallback;
         subscriptions;
         shutdown;
       }

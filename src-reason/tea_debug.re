@@ -18,7 +18,10 @@ let debug:
   ('msg => string, Tea_app.program('flags, 'model, 'msg)) =>
   Tea_app.program('flags, debug_model('model), debug_msg('msg)) = {
   let client_msg = msg => ClientMsg(msg);
-  (string_of_msg, {init, update, view, subscriptions, shutdown}) => {
+  (
+    string_of_msg,
+    {init, update, view, renderCallback, subscriptions, shutdown},
+  ) => {
     let init' = (flags: 'flags) => {
       let (cmodel, cmd) = init(flags);
       (
@@ -383,6 +386,9 @@ let debug:
       );
     };
 
+    let renderCallback' = model =>
+      model.history |> List.hd |> snd |> renderCallback;
+
     let subscriptions' = model =>
       model.history
       |> List.hd
@@ -397,6 +403,7 @@ let debug:
       init: init',
       update: update',
       view: view',
+      renderCallback: renderCallback',
       subscriptions: subscriptions',
       shutdown: shutdown',
     };
@@ -419,6 +426,7 @@ let beginnerProgram:
           init: () => (model, Tea_cmd.none),
           update: (model, msg) => (update(model, msg), Tea_cmd.none),
           view,
+          renderCallback: _ => (),
           subscriptions: _model => Tea_sub.none,
           shutdown: _model => Tea_cmd.none,
         },
@@ -434,11 +442,23 @@ let standardProgram:
     'flags
   ) =>
   Tea_app.programInterface(debug_msg('msg)) =
-  ({init, update, view, subscriptions}, string_of_msg, pnode, flags) => {
+  (
+    {init, update, renderCallback, view, subscriptions},
+    string_of_msg,
+    pnode,
+    flags,
+  ) => {
     let debugged =
       debug(
         string_of_msg,
-        {init, update, view, subscriptions, shutdown: _model => Tea_cmd.none},
+        {
+          init,
+          update,
+          view,
+          renderCallback,
+          subscriptions,
+          shutdown: _model => Tea_cmd.none,
+        },
       );
     Tea_app.program(debugged, pnode, flags);
   };
@@ -452,12 +472,15 @@ let program:
   ) =>
   Tea_app.programInterface(debug_msg('msg)) =
   (
-    {init, update, view, subscriptions, shutdown},
+    {init, update, view, renderCallback, subscriptions, shutdown},
     string_of_msg,
     pnode,
     flags,
   ) => {
     let debugged =
-      debug(string_of_msg, {init, update, view, subscriptions, shutdown});
+      debug(
+        string_of_msg,
+        {init, update, view, renderCallback, subscriptions, shutdown},
+      );
     Tea_app.program(debugged, pnode, flags);
   };
