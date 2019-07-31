@@ -52,10 +52,13 @@ let view model =
     ; if model <> 0 then view_button "Reset" Reset else noNode
     ]
 
+let renderCallback _ = ()
+
 let main =
   Tea.Debug.standardProgram {
     init;
     update;
     view;
+    renderCallback;
     subscriptions;
   } string_of_msg

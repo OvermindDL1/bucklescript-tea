@@ -30,10 +30,13 @@ let som = function
   | GotResponse (Error _) -> "GotResponse Error"
   | Req -> "Req"
 
+let renderCallback _ = ()
+
 let main =
   Tea.Debug.standardProgram {
     init = (fun () -> "nothing", Cmd.none);
     subscriptions = (fun _ -> Sub.none);
     update;
     view;
+    renderCallback;
   } som
