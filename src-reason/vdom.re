@@ -1163,16 +1163,19 @@ let wrapCallbacks:
   type a b.
     (a => b, ref(applicationCallbacks(b))) => ref(applicationCallbacks(a)) =
   (func, callbacks) =>
-    ref({
-      enqueue: (msg: a) => {
-        let new_msg = func(msg);
-        callbacks^.enqueue(new_msg);
+    Obj.magic(
+      ref,
+      {
+        enqueue: (msg: a) => {
+          let new_msg = func(msg);
+          callbacks^.enqueue(new_msg);
+        },
+        on: smsg => {
+          let new_smsg = wrapCallbacks_On(func, smsg);
+          callbacks^.on(new_smsg);
+        },
       },
-      on: smsg => {
-        let new_smsg = wrapCallbacks_On(func, smsg);
-        callbacks^.on(new_smsg);
-      },
-    });
+    );
 
 let map: ('a => 'b, t('a)) => t('b) =
   (func, vdom) => {
