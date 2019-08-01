@@ -17,10 +17,10 @@ type debug_model('model) = {
 let debug:
   ('msg => string, Tea_app.program('flags, 'model, 'msg)) =>
   Tea_app.program('flags, debug_model('model), debug_msg('msg)) = {
-  let client_msg = msg => ClientMsg(msg);
+  let client_msg = (msg: 'msg): debug_msg('msg) => ClientMsg(msg);
   (string_of_msg, {init, update, view, subscriptions, shutdown}) => {
     let init' = (flags: 'flags) => {
-      let (cmodel, cmd) = init(flags);
+      let (cmodel, cmd): ('model, Tea_cmd.t('msg)) = init(flags);
       (
         {history: [("_init_", cmodel)], state: Running, show_details: false},
         cmd |> Tea_cmd.map(client_msg),

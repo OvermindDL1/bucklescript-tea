@@ -58,7 +58,7 @@ type pumpInterface('model, 'msg) = {
 type programInterface('msg) = {. "pushMsg": 'msg => unit};
 
 [@bs.obj]
-external makeProgramInterface :
+external makeProgramInterface:
   (
     ~pushMsg: 'msg => unit,
     ~shutdown: unit => unit,
@@ -81,7 +81,8 @@ let programStateWrapper = (initModel, pump, shutdown) => {
   /* let programStateWrapper : 'model -> ('msg Vdom.applicationCallbacks ref -> 'model -> 'msg -> 'model) -> 'msg programInterface = fun initModel pump -> */
   open Vdom;
   let model = ref(initModel);
-  let callbacks = ref({enqueue: _msg => Js.log("INVALID enqueue CALL!")});
+  let callbacks =
+    ref({enqueue: _msg => Js.log("INVALID enqueue CALL!"), on: _ => ()});
   let pumperInterfaceC = () => pump(callbacks);
   let pumperInterface = pumperInterfaceC();
   /* let handler = function
@@ -111,14 +112,25 @@ let programStateWrapper = (initModel, pump, shutdown) => {
       };
     | Some(msgs) => pending := Some([msg, ...msgs])
     };
+  let render_events = ref([]);
   let finalizedCBs: Vdom.applicationCallbacks('msg) = {
     enqueue: msg => handler(msg),
+    on:
+      fun
+      | Render => List.iter(handler, render_events^)
+      | AddRenderMsg(msg) =>
+        render_events := List.append(render_events^, [msg])
+      | RemoveRenderMsg(msg) =>
+        render_events := List.filter(mg => msg !== mg, render_events^),
   };
   let () = callbacks := finalizedCBs;
   let pi_requestShutdown = () => {
     let () =
       callbacks :=
-        {enqueue: _msg => Js.log("INVALID message enqueued when shut down")};
+        {
+          enqueue: _msg => Js.log("INVALID message enqueued when shut down"),
+          on: _ => (),
+        };
     let cmd = shutdown(model^);
     let () = pumperInterface.shutdown(cmd);
     ();
@@ -193,8 +205,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
                 newVdom,
               );
             let () = priorRenderedVdom := justRenderedVdom;
-            /* let () = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom !lastVdom in
-               let () = priorRenderedVdom := (!lastVdom) in */
+            let () = callbacks^.on(Render);
             nextFrameID := None;
           };
         let scheduleRender = () =>

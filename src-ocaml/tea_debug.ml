@@ -19,10 +19,10 @@ let debug :
   ('flags, 'model, 'msg) Tea_app.program ->
   ('flags, 'model debug_model, 'msg debug_msg) Tea_app.program
   =
-  let client_msg msg = ClientMsg msg in
+  let client_msg (msg : 'msg) : 'msg debug_msg = ClientMsg msg in
   fun string_of_msg { init; update; view; subscriptions; shutdown } ->
     let init' (flags : 'flags) =
-      let cmodel, cmd = init flags in
+      let (cmodel, cmd) : 'model * 'msg Tea_cmd.t = init flags in
       {
         history = ["_init_", cmodel];
         state = Running;

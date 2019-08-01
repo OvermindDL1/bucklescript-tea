@@ -22,11 +22,7 @@ let registration key enableCall =
 
 
 let map msgMapper sub =
-  let open Vdom in
-  let func callbacks = ref
-    { enqueue = (fun userMsg -> !callbacks.enqueue (msgMapper userMsg))
-    }
-    in
+  let func callbacks = Vdom.wrapCallbacks msgMapper callbacks in
   Mapper (func, sub)
 
 let mapFunc func sub =

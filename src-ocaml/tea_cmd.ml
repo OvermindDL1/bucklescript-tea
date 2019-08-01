@@ -3,10 +3,10 @@
 type 'msg applicationCallbacks = 'msg Vdom.applicationCallbacks
 
 type 'msg t =
-  | NoCmd
-  | Tagger of ('msg applicationCallbacks ref -> unit)
-  | Batch of 'msg t list
-  | EnqueueCall of ('msg applicationCallbacks ref -> unit)
+  | NoCmd : _ t
+  | Mapper : ('msg Vdom.applicationCallbacks ref -> 'msgB Vdom.applicationCallbacks ref) * 'msgB t -> 'msg t
+  | Batch : 'msg t list -> 'msg t
+  | EnqueueCall : ('msg applicationCallbacks ref -> unit) -> 'msg t
 
 
 
@@ -31,10 +31,12 @@ let msg msg =
   EnqueueCall (fun callbacks -> !callbacks.enqueue msg)
 
 
-let rec run callbacks =
+let rec run : type msg . msg applicationCallbacks ref -> msg t -> unit = fun callbacks ->
   function
   | NoCmd -> ()
-  | Tagger tagger -> tagger callbacks
+  | Mapper (mapper, cmd) ->
+    let subCallbacks = mapper callbacks in
+    run subCallbacks cmd
   | Batch cmds -> List.fold_left (fun () cmd -> run callbacks cmd) () cmds
   | EnqueueCall cb ->
     (* let () = Js.log ("Cmd.run", "enqueue", cb) in *)
@@ -48,9 +50,6 @@ let rec run callbacks =
 (*     { enqueue = (fun msg -> !callbacks.enqueue (func msg)) *)
 (*     } *)
 
-let map : ('a -> 'b) -> 'a t -> 'b t = fun func cmd ->
-  let open Vdom in
-  Tagger
-    ( fun callbacks ->
-        run (wrapCallbacks func callbacks) cmd
-    )
+let map : type a b .(a -> b) -> a t -> b t = fun func cmd ->
+  let mapper = Vdom.wrapCallbacks func in
+  Mapper (mapper, cmd)

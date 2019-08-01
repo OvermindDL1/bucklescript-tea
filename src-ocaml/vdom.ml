@@ -2,9 +2,14 @@
 (* https://github.com/Matt-Esch/virtual-dom/blob/master/docs/vnode.md *)
 
 
+type 'msg systemMessage =
+  | Render
+  | AddRenderMsg of 'msg
+  | RemoveRenderMsg of 'msg
 
 type 'msg applicationCallbacks = {
   enqueue : 'msg -> unit;
+  on : 'msg systemMessage -> unit;
 }
 
 (* Attributes are not properties *)
@@ -572,16 +577,27 @@ let patchVNodeIntoElement
   patchVNodesIntoElement callbacks elem [oldVNode] [newVNode]
 
 
-let wrapCallbacks (func: 'msga -> 'msgb) (callbacks: 'msgb applicationCallbacks ref)
-  : 'msga applicationCallbacks ref =
-  ref
-    { enqueue = (fun msg -> !callbacks.enqueue (func msg))
-    }
+let wrapCallbacks_On : type a b . (a -> b) -> a systemMessage -> b systemMessage
+  = fun func -> function
+    | Render -> Render
+    | AddRenderMsg msg -> AddRenderMsg (func msg)
+    | RemoveRenderMsg msg -> RemoveRenderMsg (func msg)
 
-let map : ('a -> 'b) -> 'a t -> 'b t = fun func vdom ->
-  let tagger callbacks =
+let wrapCallbacks : type a b .
+  (a -> b)
+  -> b applicationCallbacks ref
+  -> a applicationCallbacks ref
+  = fun func callbacks -> Obj.magic
     ref
-      { enqueue = (fun msg -> !callbacks.enqueue (func msg))
-      } in
+    { enqueue = (fun (msg : a) ->
+          let new_msg = func msg in
+          !callbacks.enqueue new_msg);
+      on = (fun smsg ->
+          let new_smsg = wrapCallbacks_On func smsg in
+          !callbacks.on new_smsg);
+    }
+ 
+let map : ('a -> 'b) -> 'a t -> 'b t = fun func vdom ->
+  let tagger = wrapCallbacks func in
   Tagger (Obj.magic tagger, Obj.magic vdom)
 

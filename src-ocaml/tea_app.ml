@@ -87,7 +87,10 @@ let programStateWrapper initModel pump shutdown =
 (* let programStateWrapper : 'model -> ('msg Vdom.applicationCallbacks ref -> 'model -> 'msg -> 'model) -> 'msg programInterface = fun initModel pump -> *)
   let open Vdom in
   let model = ref initModel in
-  let callbacks = ref { enqueue = fun _msg -> Js.log "INVALID enqueue CALL!" } in
+  let callbacks = ref {
+      enqueue = (fun _msg -> Js.log "INVALID enqueue CALL!");
+      on = (fun _ -> ());
+    } in
   let pumperInterfaceC () = pump callbacks in
   let pumperInterface = pumperInterfaceC () in
   (* let handler = function
@@ -113,12 +116,24 @@ let programStateWrapper initModel pump shutdown =
           List.iter handler (List.rev msgs)
       )
     | Some msgs -> pending := Some (msg :: msgs) in
+  let render_events = ref [] in
   let finalizedCBs : 'msg Vdom.applicationCallbacks = {
-    enqueue = fun msg -> handler msg;
+    enqueue = (fun msg -> handler msg);
+    on = (function
+        | Render ->
+          List.iter handler !render_events
+        | AddRenderMsg msg ->
+          render_events := List.append !render_events [msg]
+        | RemoveRenderMsg msg ->
+          render_events := List.filter (fun mg -> msg != mg) !render_events
+      );
   } in
   let () = (callbacks := finalizedCBs) in
   let pi_requestShutdown () =
-    let () = callbacks := { enqueue = fun _msg -> Js.log "INVALID message enqueued when shut down" } in
+    let () = callbacks := {
+        enqueue = (fun _msg -> Js.log "INVALID message enqueued when shut down");
+        on = (fun _ -> ());
+      } in
     let cmd = shutdown !model in
     let () = pumperInterface.shutdown cmd in
     () in
@@ -178,8 +193,7 @@ let programLoop update view subscriptions initModel initCmd = function
         let newVdom = [view !latestModel] in
         let justRenderedVdom = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom newVdom in
         let () = priorRenderedVdom := justRenderedVdom in
-        (* let () = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom !lastVdom in
-        let () = priorRenderedVdom := (!lastVdom) in *)
+        let () = !callbacks.on Render in
         (nextFrameID := None) in
     let scheduleRender () = match !nextFrameID with
       | Some _ -> () (* A frame is already scheduled, nothing to do *)

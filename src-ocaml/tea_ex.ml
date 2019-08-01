@@ -1,6 +1,15 @@
 
 (* Everything here is not in Elm and is purely used as an extension and may vanish at any time if a better API comes out. *)
 
+let render_event ?(key="") msg =
+  let open Vdom in
+  let enableCall callbacks =
+    let () = callbacks.on (AddRenderMsg msg) in
+    fun () ->
+      callbacks.on (RemoveRenderMsg msg)
+  in Tea_sub.registration key enableCall
+
+
 module LocalStorage = struct
   open Tea_task
   open Tea_result
