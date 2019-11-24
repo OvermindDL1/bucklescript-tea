@@ -55,7 +55,12 @@ type pumpInterface('model, 'msg) = {
   shutdown: Tea_cmd.t('msg) => unit,
 };
 
-type programInterface('msg) = {. "pushMsg": 'msg => unit};
+type programInterface('msg) = {
+  .
+  "pushMsg": 'msg => unit,
+  "shutdown": unit => unit,
+  "getHtmlString": unit => string,
+};
 
 [@bs.obj]
 external makeProgramInterface:

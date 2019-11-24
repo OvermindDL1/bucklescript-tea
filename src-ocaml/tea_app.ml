@@ -62,6 +62,8 @@ type ('model, 'msg) pumpInterface = {
 
 type 'msg programInterface = <
   pushMsg : 'msg -> unit;
+  shutdown : unit -> unit;
+  getHtmlString : unit -> string;
 > Js.t
 
 external makeProgramInterface :
