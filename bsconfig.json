@@ -9,5 +9,8 @@
       "dir": "test-ocaml",
       "type": "dev"
     }
-  ]
+  ],
+  "warnings": {
+    "error" : true
+  }
 }
