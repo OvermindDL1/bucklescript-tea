@@ -213,14 +213,14 @@ let testing () =
     let n0 =
       sequence
         [mapError string_of_int (fail 42);
-        mapError string_of_float (fail 3.14)] in
+        mapError Js.Float.toString (fail 3.14)] in
     let () =
       doTest ((Error ((("42")[@reason.raw_literal "42"])))[@explicit_arity ])
         n0 in
     let n1 =
       sequence
         [mapError string_of_int (succeed 1);
-        mapError string_of_float (fail 3.14)] in
+        mapError Js.Float.toString (fail 3.14)] in
     let () =
       doTest
         ((Error ((("3.14")[@reason.raw_literal "3.14"])))[@explicit_arity ])
@@ -228,7 +228,7 @@ let testing () =
     let n2 =
       sequence
         [mapError string_of_int (succeed 1);
-        mapError string_of_float (succeed 2)] in
+        mapError Js.Float.toString (succeed 2)] in
     let () = doTest ((Ok ([1; 2]))[@explicit_arity ]) n2 in
 
     let _c0 = perform (fun _  -> 42) (succeed 18) in
