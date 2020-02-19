@@ -68,17 +68,25 @@ let debug
         "box-shadow", "inset 0 0 10px #333";
       ];
       rule "#debug nav" [
-        "position", "fixed"; "bottom", "0"; "right", "6px";
+        "position", "fixed"; "max-width", "50%"; "bottom", "0"; "right", "6px";
         "border-radius", "4px 4px 0 0"; "background-color", "#444"; "color", "#fff"; "font-family", "monospace";
         "box-shadow", "0 0 10px #333";
       ];
       rule "#debug.paused nav" ["height", "50%"; "padding-bottom", "2em"];
-      rule "#debug nav .toggle" ["padding", "6px"; "cursor", "pointer"; "min-width", "24ch"; "text-align", "center"];
+      rule "#debug nav .toggle" [
+        "padding", "6px";
+        "padding-left", "9px";
+        "cursor", "pointer";
+        "min-width", "24ch";
+        "text-align", "center";
+        "border-left", "3px solid #333";
+        "border-radius", "4px 4px 0 0"
+      ];
       rule "#debug nav .toggle:before" [
         "content", "' '";
         "position", "absolute"; "left", "0"; "top", "0";
         "width", ".5ch"; "height", "1.8ch";
-        "margin", ".8ch 1ch";
+        "margin", "1.2ch";
         "border", "solid #fff";
         "border-width", "0 .5ch";
       ];
@@ -93,7 +101,7 @@ let debug
         "overflow-y", "auto";
         "list-style", "none";
       ];
-      rule "#debug nav .history li" ["margin", "0"; "padding", "0.2ch"];
+      rule "#debug nav .history li" ["margin", "0"; "padding", "0.2ch"; "border-left", "3px solid #333"];
       rule "#debug nav .history li.selected" ["background-color", "#333"];
       rule "#debug nav .history span.details" [
         "display", "inline-block"; "cursor", "pointer";
@@ -102,14 +110,11 @@ let debug
         "vertical-align", "super";
       ];
       rule "#debug nav .history li.selected span.details:after" ["content", "'\\2026'"];
-      rule "#debug nav .history li.selected span.details.show:before" [
-        "position", "absolute"; "content", "' '";
-        "border", "solid transparent"; "border-right-color", "#333";
-        "border-width", "1.6ch"; "margin-left", "-4.4ch"; "margin-top", "-.3ch";
-      ];
+      rule "#debug nav .history li.selected.show" ["border-left", "3px solid white"];
       rule "#debug nav .history span.message" [
         "display", "inline-block"; "cursor", "pointer";
         "white-space", "nowrap"; "overflow", "hidden"; "text-overflow", "ellipsis";
+        "width", "calc(100% - 75px)"
       ];
       rule "#debug nav .history span.index" [
         "display", "inline-block";
@@ -203,10 +208,10 @@ let debug
           let selected = i = selected_index in
           li [
             E.onClick (SelectHistoryItem i);
-            A.classList ["selected", selected]
+            A.classList ["selected", selected; "show", selected && model.show_details]
           ] [
             span (
-              A.classList ["details", true; "show", selected && model.show_details] ::
+              A.classList ["details", true; "show"] ::
               if selected
               then [E.onClick ToggleDetails; A.title "toggle details"]
               else [A.noProp;A.noProp]
