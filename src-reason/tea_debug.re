@@ -92,6 +92,7 @@ let debug =
           "#debug nav",
           [
             ("position", "fixed"),
+            ("max-width", "50%"),
             ("bottom", "0"),
             ("right", "6px"),
             ("border-radius", "4px 4px 0 0"),
@@ -109,9 +110,12 @@ let debug =
           "#debug nav .toggle",
           [
             ("padding", "6px"),
+            ("padding-left", "9px"),
             ("cursor", "pointer"),
             ("min-width", "24ch"),
             ("text-align", "center"),
+            ("border-left", "3px solid #333"),
+            ("border-radius", "4px 4px 0 0"),
           ],
         ),
         rule(
@@ -123,7 +127,7 @@ let debug =
             ("top", "0"),
             ("width", ".5ch"),
             ("height", "1.8ch"),
-            ("margin", ".8ch 1ch"),
+            ("margin", "1.2ch"),
             ("border", "solid #fff"),
             ("border-width", "0 .5ch"),
           ],
@@ -150,7 +154,11 @@ let debug =
         ),
         rule(
           "#debug nav .history li",
-          [("margin", "0"), ("padding", "0.2ch")],
+          [
+            ("margin", "0"),
+            ("padding", "0.2ch"),
+            ("border-left", "3px solid #333"),
+          ],
         ),
         rule(
           "#debug nav .history li.selected",
@@ -171,16 +179,8 @@ let debug =
           [("content", "'\\2026'")],
         ),
         rule(
-          "#debug nav .history li.selected span.details.show:before",
-          [
-            ("position", "absolute"),
-            ("content", "' '"),
-            ("border", "solid transparent"),
-            ("border-right-color", "#333"),
-            ("border-width", "1.6ch"),
-            ("margin-left", "-4.4ch"),
-            ("margin-top", "-.3ch"),
-          ],
+          "#debug nav .history li.selected.show",
+          [("border-left", "3px solid white")],
         ),
         rule(
           "#debug nav .history span.message",
@@ -190,6 +190,7 @@ let debug =
             ("white-space", "nowrap"),
             ("overflow", "hidden"),
             ("text-overflow", "ellipsis"),
+            ("width", "calc(100% - 75px)"),
           ],
         ),
         rule(
@@ -301,15 +302,15 @@ let debug =
         li(
           [
             E.onClick(SelectHistoryItem(i)),
-            A.classList([("selected", selected)]),
+            A.classList([
+              ("selected", selected),
+              ("show", selected && model.show_details),
+            ]),
           ],
           [
             span(
               [
-                A.classList([
-                  ("details", true),
-                  ("show", selected && model.show_details),
-                ]),
+                A.classList([("details", true), ("show", true)]),
                 ...if (selected) {
                      [E.onClick(ToggleDetails), A.title("toggle details")];
                    } else {
@@ -405,7 +406,7 @@ let debug =
 
 let debug_program:
   ('msg => string, Tea_app.program('flags, 'model, 'msg)) =>
-  Tea_app.program('flags, debug_model('model), debug_msg('msg)) =
+  Tea_app.program('flags, debug_model('model), debug_msg('msg)) = (
   (string_of_msg, {init, update, view, subscriptions, shutdown}) => {
     let (init_debug, update', view', subscriptions', shutdown') =
       debug(string_of_msg, update, view, subscriptions, shutdown);
@@ -417,7 +418,10 @@ let debug_program:
       subscriptions: subscriptions',
       shutdown: shutdown',
     };
-  };
+  }:
+    ('msg => string, Tea_app.program('flags, 'model, 'msg)) =>
+    Tea_app.program('flags, debug_model('model), debug_msg('msg))
+);
 
 let debug_navigation_progam:
   ('msg => string, Tea_navigation.navigationProgram('flags, 'model, 'msg)) =>
@@ -425,7 +429,7 @@ let debug_navigation_progam:
     'flags,
     debug_model('model),
     debug_msg('msg),
-  ) =
+  ) = (
   (string_of_msg, {init, update, view, subscriptions, shutdown}) => {
     let (init_debug, update', view', subscriptions', shutdown') =
       debug(string_of_msg, update, view, subscriptions, shutdown);
@@ -437,7 +441,17 @@ let debug_navigation_progam:
       subscriptions: subscriptions',
       shutdown: shutdown',
     };
-  };
+  }:
+    (
+      'msg => string,
+      Tea_navigation.navigationProgram('flags, 'model, 'msg)
+    ) =>
+    Tea_navigation.navigationProgram(
+      'flags,
+      debug_model('model),
+      debug_msg('msg),
+    )
+);
 
 let beginnerProgram:
   (
@@ -446,7 +460,7 @@ let beginnerProgram:
     Js.null_undefined(Web.Node.t),
     unit
   ) =>
-  Tea_app.programInterface(debug_msg('msg)) =
+  Tea_app.programInterface(debug_msg('msg)) = (
   ({model, update, view}, string_of_msg, pnode, flags) => {
     let debugged =
       debug_program(
@@ -460,7 +474,15 @@ let beginnerProgram:
         },
       );
     Tea_app.program(debugged, pnode, flags);
-  };
+  }:
+    (
+      Tea_app.beginnerProgram('model, 'msg),
+      'msg => string,
+      Js.null_undefined(Web.Node.t),
+      unit
+    ) =>
+    Tea_app.programInterface(debug_msg('msg))
+);
 
 let standardProgram:
   (
@@ -469,7 +491,7 @@ let standardProgram:
     Js.null_undefined(Web.Node.t),
     'flags
   ) =>
-  Tea_app.programInterface(debug_msg('msg)) =
+  Tea_app.programInterface(debug_msg('msg)) = (
   ({init, update, view, subscriptions}, string_of_msg, pnode, flags) => {
     let debugged =
       debug_program(
@@ -477,7 +499,15 @@ let standardProgram:
         {init, update, view, subscriptions, shutdown: _model => Tea_cmd.none},
       );
     Tea_app.program(debugged, pnode, flags);
-  };
+  }:
+    (
+      Tea_app.standardProgram('flags, 'model, 'msg),
+      'msg => string,
+      Js.null_undefined(Web.Node.t),
+      'flags
+    ) =>
+    Tea_app.programInterface(debug_msg('msg))
+);
 
 let program:
   (
@@ -486,7 +516,7 @@ let program:
     Js.null_undefined(Web.Node.t),
     'flags
   ) =>
-  Tea_app.programInterface(debug_msg('msg)) =
+  Tea_app.programInterface(debug_msg('msg)) = (
   (
     {init, update, view, subscriptions, shutdown},
     string_of_msg,
@@ -499,7 +529,15 @@ let program:
         {init, update, view, subscriptions, shutdown},
       );
     Tea_app.program(debugged, pnode, flags);
-  };
+  }:
+    (
+      Tea_app.program('flags, 'model, 'msg),
+      'msg => string,
+      Js.null_undefined(Web.Node.t),
+      'flags
+    ) =>
+    Tea_app.programInterface(debug_msg('msg))
+);
 
 let navigationProgram:
   (
@@ -509,7 +547,7 @@ let navigationProgram:
     Js.null_undefined(Web.Node.t),
     'flags
   ) =>
-  Tea_app.programInterface(debug_msg('msg)) =
+  Tea_app.programInterface(debug_msg('msg)) = (
   (
     location_to_msg,
     {init, update, view, subscriptions, shutdown},
@@ -525,4 +563,13 @@ let navigationProgram:
         {init, update, view, subscriptions, shutdown},
       );
     Tea_navigation.navigationProgram(location, debugged, pnode, flags);
-  };
+  }:
+    (
+      Web.Location.location => 'msg,
+      Tea_navigation.navigationProgram('flags, 'model, 'msg),
+      'msg => string,
+      Js.null_undefined(Web.Node.t),
+      'flags
+    ) =>
+    Tea_app.programInterface(debug_msg('msg))
+);

@@ -211,10 +211,10 @@ let debug
             A.classList ["selected", selected; "show", selected && model.show_details]
           ] [
             span (
-              A.classList ["details", true; "show"] ::
+              A.classList ["details", true; "show", true] ::
               if selected
               then [E.onClick ToggleDetails; A.title "toggle details"]
-              else [A.noProp;A.noProp]
+              else [A.noProp; A.noProp]
             ) [
               if selected && model.show_details
               then view_details cmodel
