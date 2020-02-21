@@ -55,17 +55,21 @@ type pumpInterface('model, 'msg) = {
   shutdown: Tea_cmd.t('msg) => unit,
 };
 
-type programInterface('msg) = {. "pushMsg": 'msg => unit};
+type programInterface('msg) = {
+  .
+  "pushMsg": 'msg => unit,
+  "shutdown": unit => unit,
+  "getHtmlString": unit => string,
+};
 
 [@bs.obj]
-external makeProgramInterface :
+external makeProgramInterface:
   (
     ~pushMsg: 'msg => unit,
     ~shutdown: unit => unit,
     ~getHtmlString: unit => string
   ) =>
-  programInterface('msg) =
-  "";
+  programInterface('msg);
 
 /* TODO:  Need to refactor the program layers to layer everything properly, things are a bit mixed up right now... */
 
@@ -81,7 +85,8 @@ let programStateWrapper = (initModel, pump, shutdown) => {
   /* let programStateWrapper : 'model -> ('msg Vdom.applicationCallbacks ref -> 'model -> 'msg -> 'model) -> 'msg programInterface = fun initModel pump -> */
   open Vdom;
   let model = ref(initModel);
-  let callbacks = ref({enqueue: _msg => Js.log("INVALID enqueue CALL!")});
+  let callbacks =
+    ref({enqueue: _msg => Js.log("INVALID enqueue CALL!"), on: _ => ()});
   let pumperInterfaceC = () => pump(callbacks);
   let pumperInterface = pumperInterfaceC();
   /* let handler = function
@@ -90,7 +95,9 @@ let programStateWrapper = (initModel, pump, shutdown) => {
        let newModel = pumper !model msg in
        let () = (model := newModel) in
        () in */
-  let pending: ref(option(list('msg))) = ref(None);
+  let pending: ref(option(list('msg))) = (
+    ref(None): ref(option(list('msg)))
+  );
   let rec handler = msg =>
     switch (pending^) {
     | None =>
@@ -111,14 +118,28 @@ let programStateWrapper = (initModel, pump, shutdown) => {
       };
     | Some(msgs) => pending := Some([msg, ...msgs])
     };
-  let finalizedCBs: Vdom.applicationCallbacks('msg) = {
-    enqueue: msg => handler(msg),
-  };
+  let render_events = ref([]);
+  let finalizedCBs: Vdom.applicationCallbacks('msg) = (
+    {
+      enqueue: msg => handler(msg),
+      on:
+        fun
+        | Render => List.iter(handler, render_events^)
+        | AddRenderMsg(msg) =>
+          render_events := List.append(render_events^, [msg])
+        | RemoveRenderMsg(msg) =>
+          render_events := List.filter(mg => msg !== mg, render_events^),
+    }:
+      Vdom.applicationCallbacks('msg)
+  );
   let () = callbacks := finalizedCBs;
   let pi_requestShutdown = () => {
     let () =
       callbacks :=
-        {enqueue: _msg => Js.log("INVALID message enqueued when shut down")};
+        {
+          enqueue: _msg => Js.log("INVALID message enqueued when shut down"),
+          on: _ => (),
+        };
     let cmd = shutdown(model^);
     let () = pumperInterface.shutdown(cmd);
     ();
@@ -193,8 +214,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
                 newVdom,
               );
             let () = priorRenderedVdom := justRenderedVdom;
-            /* let () = Vdom.patchVNodesIntoElement callbacks parentNode !priorRenderedVdom !lastVdom in
-               let () = priorRenderedVdom := (!lastVdom) in */
+            let () = callbacks^.on(Render);
             nextFrameID := None;
           };
         let scheduleRender = () =>
@@ -289,7 +309,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd) =>
 
 let program:
   (program('flags, 'model, 'msg), Js.null_undefined(Web.Node.t), 'flags) =>
-  programInterface('msg) =
+  programInterface('msg) = (
   ({init, update, view, subscriptions, shutdown}, pnode, flags) => {
     let () = Web.polyfills();
     let (initModel, initCmd) = init(flags);
@@ -297,7 +317,10 @@ let program:
     let pumpInterface =
       programLoop(update, view, subscriptions, initModel, initCmd, opnode);
     programStateWrapper(initModel, pumpInterface, shutdown);
-  };
+  }:
+    (program('flags, 'model, 'msg), Js.null_undefined(Web.Node.t), 'flags) =>
+    programInterface('msg)
+);
 
 let standardProgram:
   (
@@ -305,17 +328,24 @@ let standardProgram:
     Js.null_undefined(Web.Node.t),
     'flags
   ) =>
-  programInterface('msg) =
+  programInterface('msg) = (
   ({init, update, view, subscriptions}, pnode, args) =>
     program(
       {init, update, view, subscriptions, shutdown: _model => Tea_cmd.none},
       pnode,
       args,
-    );
+    ):
+    (
+      standardProgram('flags, 'model, 'msg),
+      Js.null_undefined(Web.Node.t),
+      'flags
+    ) =>
+    programInterface('msg)
+);
 
 let beginnerProgram:
   (beginnerProgram('model, 'msg), Js.null_undefined(Web.Node.t), unit) =>
-  programInterface('msg) =
+  programInterface('msg) = (
   ({model, update, view}, pnode, ()) =>
     standardProgram(
       {
@@ -326,7 +356,10 @@ let beginnerProgram:
       },
       pnode,
       (),
-    );
+    ):
+    (beginnerProgram('model, 'msg), Js.null_undefined(Web.Node.t), unit) =>
+    programInterface('msg)
+);
 
 let map = (func, vnode) => Vdom.map(func, vnode);
 

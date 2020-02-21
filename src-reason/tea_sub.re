@@ -2,15 +2,17 @@ type t('msg) =
   | NoSub: t(_)
   | Batch(list(t('msg))): t('msg)
   | Registration(
-                  string,
-                  (ref(Vdom.applicationCallbacks('msg)), unit) => unit,
-                  ref(option(unit => unit)),
-                ): t('msg)
+      string,
+      (ref(Vdom.applicationCallbacks('msg)), unit) => unit,
+      ref(option(unit => unit)),
+    )
+    : t('msg)
   | Mapper(
-            ref(Vdom.applicationCallbacks('msg)) =>
-            ref(Vdom.applicationCallbacks('msgB)),
-            t('msgB),
-          ): t('msg);
+      ref(Vdom.applicationCallbacks('msg)) =>
+      ref(Vdom.applicationCallbacks('msgB)),
+      t('msgB),
+    )
+    : t('msg);
 
 type applicationCallbacks('msg) = Vdom.applicationCallbacks('msg);
 
@@ -23,9 +25,7 @@ let registration = (key, enableCall) =>
   Registration(key, callbacks => enableCall(callbacks^), ref(None));
 
 let map = (msgMapper, sub) => {
-  open Vdom;
-  let func = callbacks =>
-    ref({enqueue: userMsg => callbacks^.enqueue(msgMapper(userMsg))});
+  let func = callbacks => Vdom.wrapCallbacks(msgMapper, callbacks);
   [@implicit_arity] Mapper(func, sub);
 };
 
@@ -54,6 +54,7 @@ let rec run:
           }
         | [@implicit_arity] Registration(_key, enCB, diCB) =>
           diCB := Some(enCB(callbacks));
+
     let rec disable:
       type msg. (ref(Vdom.applicationCallbacks(msg)), t(msg)) => unit =
       callbacks =>
@@ -72,6 +73,7 @@ let rec run:
             let () = diCB := None;
             cb();
           };
+
     [@ocaml.warning "-4"]
     (
       switch (oldSub, newSub) {
