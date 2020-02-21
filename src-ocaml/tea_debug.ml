@@ -15,6 +15,7 @@ type 'model debug_model = {
   show_details : bool;
 }
 
+
 let debug
   (string_of_msg : 'msg -> string)
   (update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t)
