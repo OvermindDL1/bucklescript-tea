@@ -9,8 +9,6 @@ let map = Tea_app.map;
 
 /** {1 Primitives} */;
 
-/** {1 Primitives} */
-
 let text = str => text(str);
 
 let node = (~namespace="", tagName, ~key="", ~unique="", props, nodes) =>
@@ -23,9 +21,6 @@ let lazy1 = (key, gen) => lazyGen(key, gen);
 /** {1 Tags} */;
 
 /** {2 Headers} */;
-
-/** {1 Tags} */
-/** {2 Headers} */
 
 let h1 = (~key="", ~unique="", props, nodes) =>
   fullnode("", "h1", key, unique, props, nodes);
@@ -47,8 +42,6 @@ let h6 = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Grouping Content} */;
 
-/** {2 Grouping Content} */
-
 let div = (~key="", ~unique="", props, nodes) =>
   fullnode("", "div", key, unique, props, nodes);
 
@@ -65,8 +58,6 @@ let blockquote = (~key="", ~unique="", props, nodes) =>
   fullnode("", "blockquote", key, unique, props, nodes);
 
 /** {2 Text} */;
-
-/** {2 Text} */
 
 let span = (~key="", ~unique="", props, nodes) =>
   fullnode("", "span", key, unique, props, nodes);
@@ -105,8 +96,6 @@ let br' = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Lists} */;
 
-/** {2 Lists} */
-
 let ol = (~key="", ~unique="", props, nodes) =>
   fullnode("", "ol", key, unique, props, nodes);
 
@@ -127,8 +116,6 @@ let dd = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Embedded Content} */;
 
-/** {2 Embedded Content} */
-
 let img = (~key="", ~unique="", props, nodes) =>
   fullnode("", "img", key, unique, props, nodes);
 
@@ -142,8 +129,6 @@ let math = (~key="", ~unique="", props, nodes) =>
   fullnode("", "math", key, unique, props, nodes);
 
 /** {2 Form and inputs} */;
-
-/** {2 Form and inputs} */
 
 let form = (~key="", ~unique="", props, nodes) =>
   fullnode("", "form", key, unique, props, nodes);
@@ -177,8 +162,6 @@ let legend = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Sections} */;
 
-/** {2 Sections} */
-
 let section = (~key="", ~unique="", props, nodes) =>
   fullnode("", "section", key, unique, props, nodes);
 
@@ -208,8 +191,6 @@ let body = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Figures} */;
 
-/** {2 Figures} */
-
 let figure = (~key="", ~unique="", props, nodes) =>
   fullnode("", "figure", key, unique, props, nodes);
 
@@ -217,8 +198,6 @@ let figcaption = (~key="", ~unique="", props, nodes) =>
   fullnode("", "figcaption", key, unique, props, nodes);
 
 /** {2 Tables} */;
-
-/** {2 Tables} */
 
 let table = (~key="", ~unique="", props, nodes) =>
   fullnode("", "table", key, unique, props, nodes);
@@ -252,8 +231,6 @@ let td = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Less common inputs} */;
 
-/** {2 Less common inputs} */
-
 let datalist = (~key="", ~unique="", props, nodes) =>
   fullnode("", "datalist", key, unique, props, nodes);
 
@@ -271,8 +248,6 @@ let meter = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Audio and Video} */;
 
-/** {2 Audio and Video} */
-
 let audio = (~key="", ~unique="", props, nodes) =>
   fullnode("", "audio", key, unique, props, nodes);
 
@@ -287,8 +262,6 @@ let track = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Embedded objects} */;
 
-/** {2 Embedded objects} */
-
 let embed = (~key="", ~unique="", props, nodes) =>
   fullnode("", "embed", key, unique, props, nodes);
 
@@ -300,8 +273,6 @@ let param = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Text edits} */;
 
-/** {2 Text edits} */
-
 let ins = (~key="", ~unique="", props, nodes) =>
   fullnode("", "ins", key, unique, props, nodes);
 
@@ -309,8 +280,6 @@ let del = (~key="", ~unique="", props, nodes) =>
   fullnode("", "del", key, unique, props, nodes);
 
 /** {2 Semantic text} */;
-
-/** {2 Semantic text} */
 
 let small = (~key="", ~unique="", props, nodes) =>
   fullnode("", "small", key, unique, props, nodes);
@@ -344,8 +313,6 @@ let q = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Less common text tags} */;
 
-/** {2 Less common text tags} */
-
 let mark = (~key="", ~unique="", props, nodes) =>
   fullnode("", "mark", key, unique, props, nodes);
 
@@ -369,8 +336,6 @@ let wbr = (~key="", ~unique="", props, nodes) =>
 
 /** {2 Interactive elements} */;
 
-/** {2 Interactive elements} */
-
 let details = (~key="", ~unique="", props, nodes) =>
   fullnode("", "details", key, unique, props, nodes);
 
@@ -384,8 +349,6 @@ let menu = (~key="", ~unique="", props, nodes) =>
   fullnode("", "menu", key, unique, props, nodes);
 
 /** {2 Header elements} */;
-
-/** {2 Header elements} */
 
 let meta = (~key="", ~unique="", props) =>
   fullnode("", "meta", key, unique, props, []);
@@ -403,8 +366,6 @@ let link = (~key="", ~unique="", props) =>
 module Attributes = {
   /** {1 Primitives} */;
 
-  /** {1 Primitives} */
-
   let noProp = Vdom.noProp;
 
   let style = (key, value) => Vdom.style(key, value);
@@ -412,8 +373,6 @@ module Attributes = {
   let styles = s => Vdom.styles(s);
 
   /** {1 Super common attributes} */;
-
-  /** {1 Super common attributes} */
 
   let class' = name => prop("className", name);
 
@@ -436,8 +395,6 @@ module Attributes = {
     };
 
   /** {1 Inputs} */;
-
-  /** {1 Inputs} */
 
   let type' = typ => prop("type", typ);
 
@@ -462,8 +419,6 @@ module Attributes = {
     };
 
   /** {1 Input helpers} */;
-
-  /** {1 Input helpers} */
 
   let accept = c => attribute("", "accept", c);
 
@@ -519,14 +474,14 @@ module Attributes = {
 
   let readonly = b =>
     if (b) {
-      prop("readonly", "readonly");
+      attribute("", "readonly", "readonly");
     } else {
       noProp;
     };
 
   let required = b =>
     if (b) {
-      prop("required", "required");
+      attribute("", "required", "required");
     } else {
       noProp;
     };
@@ -539,8 +494,6 @@ module Attributes = {
 
   /** {1 Input ranges} */;
 
-  /** {1 Input ranges} */
-
   let max = value => attribute("", "max", value);
 
   let min = value => attribute("", "min", value);
@@ -548,8 +501,6 @@ module Attributes = {
   let step = value => attribute("", "step", value);
 
   /** {1 Textarea} */;
-
-  /** {1 Textarea} */
 
   let cols = n => attribute("", "cols", string_of_int(n));
 
@@ -560,8 +511,6 @@ module Attributes = {
   /** {1 Links and areas} */;
 
   /* `href` is actually an attribute, not a property, but need it here for Elm compat... */
-  /** {1 Links and areas} */
-
   let href = str => attribute("", "href", str);
 
   let target = t => prop("target", t);
@@ -585,8 +534,6 @@ module Attributes = {
 
   /** {1 Maps} */;
 
-  /** {1 Maps} */
-
   let ismap = b =>
     if (b) {
       prop("ismap", "ismap");
@@ -603,8 +550,6 @@ module Attributes = {
   /** {1 Embedded content} */;
 
   /* `src` is actually an attribute, not a property, but need it here for Elm compat... */
-  /** {1 Embedded content} */
-
   let src = str => attribute("", "src", str);
 
   let height = n => attribute("", "height", string_of_int(n));
@@ -614,8 +559,6 @@ module Attributes = {
   let alt = value => prop("alt", value);
 
   /** {1 Audio and Video} */;
-
-  /** {1 Audio and Video} */
 
   let autoplay = b =>
     if (b) {
@@ -655,8 +598,6 @@ module Attributes = {
 
   /** {1 IFrames} */;
 
-  /** {1 IFrames} */
-
   let sandbox = value => prop("sandbox", value);
 
   let seamless = b =>
@@ -670,8 +611,6 @@ module Attributes = {
 
   /** {1 Ordered lists} */;
 
-  /** {1 Ordered lists} */
-
   let reversed = b =>
     if (b) {
       prop("reversed", "reversed");
@@ -682,8 +621,6 @@ module Attributes = {
   let start = n => prop("start", string_of_int(n));
 
   /** {1 Tables} */;
-
-  /** {1 Tables} */
 
   let colspan = n => attribute("", "colspan", string_of_int(n));
 
@@ -696,8 +633,6 @@ module Attributes = {
   let align = value => prop("align", value);
 
   /** {1 Header stuff} */;
-
-  /** {1 Header stuff} */
 
   let async = b =>
     if (b) {
@@ -724,8 +659,6 @@ module Attributes = {
   let scoped = value => prop("scoped", value);
 
   /** {1 Less common global attributes} */;
-
-  /** {1 Less common global attributes} */
 
   let accesskey = ch => prop("accesskey", String.make(1, ch));
 
@@ -759,15 +692,11 @@ module Attributes = {
 
   /** {1 Key generation} */;
 
-  /** {1 Key generation} */
-
   let challenge = value => attribute("", "challenge", value);
 
   let keytype = value => prop("keytype", value);
 
   /** {1 Miscellaneous} */;
-
-  /** {1 Miscellaneous} */
 
   let cite = url => prop("cite", url);
 
@@ -780,8 +709,6 @@ module Attributes = {
 
 module Events = {
   /** {1 Primitives} */;
-
-  /** {1 Primitives} */
 
   let onCB = (eventName, key, cb) => onCB(eventName, key, cb);
 
@@ -809,8 +736,6 @@ module Events = {
 
   /** {1 Mouse helpers} */;
 
-  /** {1 Mouse helpers} */
-
   let onClick = msg => onMsg("click", msg);
 
   let onDoubleClick = msg => onMsg("dblclick", msg);
@@ -828,8 +753,6 @@ module Events = {
   let onMouseOut = msg => onMsg("mouseout", msg);
 
   /** {1 Form helpers} */;
-
-  /** {1 Form helpers} */
 
   let onInputOpt = (~key="", msg) =>
     onCB("input", key, ev =>
@@ -877,8 +800,6 @@ module Events = {
     preventDefaultOn("submit", Tea_json.Decoder.succeed(msg));
 
   /** {1 Focus helpers} */;
-
-  /** {1 Focus helpers} */
 
   let onBlur = msg => onMsg("blur", msg);
 

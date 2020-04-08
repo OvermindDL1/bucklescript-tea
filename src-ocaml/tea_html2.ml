@@ -336,9 +336,9 @@ module Attributes = struct
 
   let pattern p = prop "pattern" p
 
-  let readonly b = if b then prop "readonly" "readonly" else noProp
+  let readonly b = if b then attribute "" "readonly" "readonly" else noProp
 
-  let required b = if b then prop "required" "required" else noProp
+  let required b = if b then attribute "" "required" "required" else noProp
 
   let size n = attribute "" "size" (string_of_int n)
 
