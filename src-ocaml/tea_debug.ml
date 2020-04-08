@@ -296,7 +296,7 @@ let debug_program :
     }
 
 
-let debug_navigation_progam :
+let debug_navigation_program :
   ('msg -> string) ->
   ('flags, 'model, 'msg) Tea_navigation.navigationProgram ->
   ('flags, 'model debug_model, 'msg debug_msg) Tea_navigation.navigationProgram
@@ -390,7 +390,7 @@ let navigationProgram :
     |> location_to_msg
     |> client_msg
   in
-  let debugged = debug_navigation_progam
+  let debugged = debug_navigation_program
     string_of_msg
     {
       init;

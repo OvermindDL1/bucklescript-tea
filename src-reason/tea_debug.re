@@ -423,7 +423,7 @@ let debug_program:
     Tea_app.program('flags, debug_model('model), debug_msg('msg))
 );
 
-let debug_navigation_progam:
+let debug_navigation_program:
   ('msg => string, Tea_navigation.navigationProgram('flags, 'model, 'msg)) =>
   Tea_navigation.navigationProgram(
     'flags,
@@ -558,7 +558,7 @@ let navigationProgram:
     let location = location => location |> location_to_msg |> client_msg;
 
     let debugged =
-      debug_navigation_progam(
+      debug_navigation_program(
         string_of_msg,
         {init, update, view, subscriptions, shutdown},
       );
