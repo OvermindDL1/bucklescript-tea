@@ -4,7 +4,7 @@ type t = <
   length : int [@bs.get];
   clear : unit -> unit [@bs.meth];
   key : int -> string [@bs.meth];
-  getItem : string -> string [@bs.meth];
+  getItem : string -> string Js.Nullable.t [@bs.meth];
   removeItem : string -> unit [@bs.meth];
   setItem : string -> string -> unit [@bs.meth];
 > Js.t

@@ -3,7 +3,7 @@ type t = {
   [@bs.get] "length": int,
   [@bs.meth] "clear": unit => unit,
   [@bs.meth] "key": int => string,
-  [@bs.meth] "getItem": string => string,
+  [@bs.meth] "getItem": string => Js.Nullable.t(string),
   [@bs.meth] "removeItem": string => unit,
   [@bs.meth] "setItem": (string, string) => unit,
 };
