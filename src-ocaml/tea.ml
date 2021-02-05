@@ -17,6 +17,8 @@ module Svg = Tea_svg
 
 module Task = Tea_task
 
+module Promise = Tea_promise
+
 module Program = Tea_program
 
 module Time = Tea_time
