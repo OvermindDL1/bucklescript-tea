@@ -4,6 +4,15 @@ let render_event ?(key= "")  msg =
       let () = callbacks.on ((AddRenderMsg (msg))[@explicit_arity ]) in
       fun () -> callbacks.on ((RemoveRenderMsg (msg))[@explicit_arity ]) in
     Tea_sub.registration key enableCall
+
+let window_resize_event ?(key="") msg =
+  let enableCall callbacks_base =
+    let callbacks = ref callbacks_base in
+    let handler = Vdom.eventHandler callbacks (ref (fun _ev -> Some msg)) in
+    let () = Web_window.addEventListener "resize" handler false in
+    fun () -> Web_window.removeEventListener "resize" handler false
+  in Tea_sub.registration key enableCall
+
 module LocalStorage =
   struct
     open Tea_task
