@@ -466,7 +466,7 @@ module Attributes = struct
 
   let accesskey ch = prop "accesskey" (String.make 1 ch)
 
-  let contenteditable b = if b then prop "contenteditable" "contenteditable" else noProp
+  let contenteditable b = if b then attribute "" "contenteditable" "contenteditable" else noProp
 
   let contextmenu id = attribute "" "contextmenu" id
 
