@@ -68,7 +68,7 @@ let debug =
       properties
       |> List.map(((k, v)) => k ++ ":" ++ v)
       |> String.concat(";")
-      |> Printf.sprintf("%s {%s}", selector)
+      |> (x => {j|$(selector) {$(x)}|j})
       |> text;
 
     node(
@@ -373,10 +373,7 @@ let debug =
                       A.title("click to pause");
                     },
                   ],
-                  [
-                    Printf.sprintf("Explore History (%d)", history_count)
-                    |> text,
-                  ],
+                  [{j|Explore History ($(history_count))|j} |> text],
                 ),
                 if (paused) {
                   view_history(model, selected_index);
