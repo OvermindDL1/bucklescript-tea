@@ -60,7 +60,7 @@ let debug
   let view_styles () =
     let open Tea_html2 in
     let rule selector properties =
-      properties |> List.map (fun (k,v) -> k ^ ":" ^ v) |> String.concat ";" |> Printf.sprintf "%s {%s}" selector |> text
+      properties |> List.map (fun (k,v) -> k ^ ":" ^ v) |> String.concat ";" |> (fun x -> {j|$(selector) {$(x)}|j})  |> text
     in
     node "style" [] [
       rule "#debug.paused" [
@@ -246,7 +246,7 @@ let debug
             if paused then A.title "click to resume"
             else A.title "click to pause"
           ] [
-            Printf.sprintf "Explore History (%d)" history_count |> text
+            {j|Explore History ($(history_count))|j}  |> text
           ];
           if paused then
             view_history model selected_index
