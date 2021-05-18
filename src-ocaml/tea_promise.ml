@@ -28,9 +28,7 @@ let result promise msg =
                   Js.Promise.resolve resolve
                 )
               |> Js.Promise.catch (function err ->
-                  let err_to_string err =
-                    {j|$err|j} in
-                  let reject = enq (Tea_result.Error (err_to_string err)) in
+                  let reject = enq (Tea_result.Error err) in
                   Js.Promise.resolve reject
                 )
       in

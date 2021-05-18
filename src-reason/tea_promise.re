@@ -40,8 +40,7 @@ let result = (promise, msg) =>
             |> Js.Promise.catch(
                  fun
                  | err => {
-                     let err_to_string = err => {j|$err|j};
-                     let reject = enq(Tea_result.Error(err_to_string(err)));
+                     let reject = enq(Tea_result.Error(err));
                      Js.Promise.resolve(reject);
                    },
                );
