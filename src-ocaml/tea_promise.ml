@@ -28,11 +28,24 @@ let result promise msg =
                   Js.Promise.resolve resolve
                 )
               |> Js.Promise.catch (function err ->
-                  let err_to_string err =
-                    {j|$err|j} in
-                  let reject = enq (Tea_result.Error (err_to_string err)) in
+                  let reject = enq (Tea_result.Error err) in
                   Js.Promise.resolve reject
                 )
       in
       ()
     )
+
+
+let toTask promise =
+  Tea_task.nativeBinding (fun cb ->
+      let enqRes result _ev = cb result in
+      let enqResOk result = enqRes (Tea_result.Ok result) () in
+      let enqResError result = enqRes (Tea_result.Error result) () in
+      promise
+      |> Js.Promise.then_ (function res ->
+             let resolve = enqResOk res in
+             Js.Promise.resolve resolve)
+      |> Js.Promise.catch (function err ->
+             let reject = enqResError err in
+             Js.Promise.resolve reject)
+      |> ignore)

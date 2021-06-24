@@ -87,9 +87,8 @@ let rec renderToHtmlString =
                 "\""] in
         String.concat ""
           ["<";
-          namespace;
-          if namespace = "" then "" else ":";
           tagName;
+          if namespace = "" then "" else (" xmlns=\"" ^ namespace ^ "\"");
           String.concat "" (List.map (fun p -> renderProp p) props);
           ">";
           String.concat "" (List.map (fun v -> renderToHtmlString v) vdoms);

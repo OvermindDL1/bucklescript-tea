@@ -664,7 +664,7 @@ module Attributes = {
 
   let contenteditable = b =>
     if (b) {
-      prop("contenteditable", "contenteditable");
+      attribute("", "contenteditable", "true");
     } else {
       noProp;
     };
