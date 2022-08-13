@@ -1,15 +1,16 @@
 {
-  "name": "bucklescript-tea",
+  "name": "rescript-tea",
   "version": "0.15.0",
   "bsc-flags": ["-bs-cross-module-opt"],
   "package-specs": ["commonjs"],
   "sources": [
-    "src-ocaml",
+    "src",
     {
-      "dir": "test-ocaml",
+      "dir": "test",
       "type": "dev"
     }
   ],
+  "bs-dependencies": ["rescript-webapi"],
   "warnings": {
     "error" : true
   }
