@@ -1,46 +1,39 @@
 {
-  "name": "bucklescript-tea",
-  "version": "0.15.0",
-  "description": "TEA for Bucklescript",
-  "main": "index.js",
-  "scripts": {
-    "clean": "bsb clean",
-    "clean:all": "bsb -clean-world",
-    "build": "bsb",
-    "build:all": "bsb -make-world",
-    "watch": "bsb -w",
-    "build:test:client": "browserify --standalone=Test_client --outfile=lib/js/test-ocaml/app_test_client.js lib/js/test-ocaml/test_client.js",
-    "watch:test:client": "watchify --standalone=Test_client --outfile=lib/js/test-ocaml/app_test_client.js lib/js/test-ocaml/test_client.js",
-    "watch:test": "run-p watch watch:test:*",
-    "prebuild:test": "run-s build",
-    "build:test": "run-p build:test:*",
-    "pretest": "run-s build:test",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dual-syntax": "bin/dual-syntax"
-  },
+  "name": "rescript-tea",
+  "version": "0.6.1",
+  "description": "Reason / ReScript bindings to DOM",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/overminddl1/bucklescript-tea.git"
+    "url": "https://github.com/tinymce/rescript-webapi.git"
   },
+  "homepage": "https://github.com/tinymce/rescript-webapi#readme",
   "keywords": [
-    "TEA",
-    "Bucklescript",
-    "OCaml"
+    "reason",
+    "bucklescript",
+    "rescript",
+    "web",
+    "dom"
   ],
-  "author": "OvermindDL1",
-  "license": "LGPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/overminddl1/bucklescript-tea/issues"
+  "scripts": {
+    "build": "rescript",
+    "start": "rescript build -w",
+    "clean": "rescript clean",
+    "doc-install": "npm install --no-save bsdoc",
+    "test": "rescript && bsdoc build api && bsdoc support-files",
+    "format-all": "rescript format -all",
+    "prepublishOnly": "rescript clean && rescript build"
   },
-  "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
+  "files": [
+    "src",
+    "bsconfig.json"
+  ],
+  "author": "Tiny Technologies Inc",
+  "license": "MIT",
   "devDependencies": {
-    "browserify": "^14.0.0",
-    "bs-platform": "^7.1.1",
-    "npm-run-all": "4.0.2",
-    "pre-commit": "^1.2.0",
-    "watchify": "^3.11.1"
+    "@ryyppy/rescript-promise": "^2.1.0",
+    "rescript": "^9.1.4"
   },
-  "pre-commit": [
-    "dual-syntax"
-  ]
+  "dependencies": {
+    "rescript-webapi": "^0.6.1"
+  }
 }
