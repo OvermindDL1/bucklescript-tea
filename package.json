@@ -1,5 +1,6 @@
+
 {
-  "name": "bucklescript-tea",
+  "name": "rescript-tea",
   "version": "0.15.0",
   "description": "TEA for Bucklescript",
   "main": "index.js",
@@ -15,7 +16,6 @@
     "build:test": "run-p build:test:*",
     "pretest": "run-s build:test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fix-syntax": "rescript convert -all"
   },
   "repository": {
     "type": "git",
