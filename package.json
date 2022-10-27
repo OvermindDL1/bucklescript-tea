@@ -4,11 +4,11 @@
   "description": "TEA for Bucklescript",
   "main": "index.js",
   "scripts": {
-    "clean": "bsb clean",
-    "clean:all": "bsb -clean-world",
-    "build": "bsb",
-    "build:all": "bsb -make-world",
-    "watch": "bsb -w",
+    "clean": "rescript clean",
+    "clean:all": "rescript -clean-world",
+    "build": "rescript",
+    "build:all": "rescript build -with-deps",
+    "watch": "rescript build -w",
     "build:test:client": "browserify --standalone=Test_client --outfile=lib/js/test/app_test_client.js lib/js/test/test_client.js",
     "watch:test:client": "watchify --standalone=Test_client --outfile=lib/js/test/app_test_client.js lib/js/test/test_client.js",
     "watch:test": "run-p watch watch:test:*",
@@ -35,7 +35,7 @@
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "bs-platform": "^7.1.1",
+    "rescript": "^9.0.2",
     "npm-run-all": "4.0.2",
     "pre-commit": "^1.2.0",
     "watchify": "^3.11.1"

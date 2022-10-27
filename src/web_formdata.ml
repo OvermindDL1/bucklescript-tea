@@ -2,7 +2,7 @@
 class type _formdata = object
   method append : string -> string -> unit
   (* method append_blob : string -> Web_blob.t -> string -> unit *)
-end [@bs]
+end
 type t = _formdata Js.t
 
 external create : unit -> t = "FormData" [@@bs.new]

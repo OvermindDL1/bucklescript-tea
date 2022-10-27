@@ -49,7 +49,7 @@ class type _xmlhttprequest = object
   method onprogress : (event_loadstart -> unit) [@@bs.get] [@@bs.set]
   method ontimeout : (event_timeout -> unit) [@@bs.get] [@@bs.set]
   method onloadend : (event_loadend -> unit) [@@bs.get] [@@bs.set]
-end [@bs]
+end
 type t = _xmlhttprequest Js.t
 
 external create : unit -> t = "XMLHttpRequest" [@@bs.new]
