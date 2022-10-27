@@ -4,9 +4,9 @@
   "bsc-flags": ["-bs-cross-module-opt"],
   "package-specs": ["commonjs"],
   "sources": [
-    "src-ocaml",
+    "src",
     {
-      "dir": "test-ocaml",
+      "dir": "test",
       "type": "dev"
     }
   ],

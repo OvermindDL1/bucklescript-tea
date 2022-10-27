@@ -1,7 +1,5 @@
 /node_modules
 /.merlin
-/lib/bs
-/lib/js/test
-/lib/ocaml
+/lib
 npm-debug.log
 
