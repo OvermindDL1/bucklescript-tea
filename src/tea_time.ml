@@ -14,7 +14,7 @@ type 'msg myCmd =
 let every ~key interval tagger =
   let open Vdom in
   let enableCall callbacks =
-    let id = (Web.Window.setInterval (fun () -> callbacks.enqueue (tagger (Web.Date.now ())) ) interval) in
+    let id = (Web.Window.setInterval (fun () -> callbacks.enqueue (tagger (Js.Date.now ())) ) interval) in
     (* let () = Js.log ("Time.every", "enable", interval, tagger, callbacks) in *)
     fun () ->
       (* let () = Js.log ("Time.every", "disable", id, interval, tagger, callbacks) in *)

@@ -9,10 +9,10 @@ let every ?(key="") tagger =
   let open Vdom in
   let enableCall callbacks =
     (* let () = Js.log ("rAF", "enable") in *)
-    let lastTime = ref (Web.Date.now ()) in
+    let lastTime = ref (Js.Date.now ()) in
     let id = ref None in
     let rec onFrame _time =
-      let time = Web.Date.now () in
+      let time = Js.Date.now () in
       match !id with
       | None -> ()
       | Some _i ->
