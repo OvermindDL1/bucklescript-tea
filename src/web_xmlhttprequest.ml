@@ -22,7 +22,7 @@ class type _xmlhttprequest = object
   method send : unit -> unit
   method send__string : string Js.null -> unit
   method send__formdata : Web_formdata.t -> unit
-  method send__document : Web_document.t -> unit
+  method send__document : Dom.document -> unit
   (* method send_blob : Web_blob.t -> unit *)
   (* method send_arrayBufferView : Web_arraybuffer_view.t -> unit *)
   method setRequestHeader : string -> string -> unit
@@ -34,7 +34,7 @@ class type _xmlhttprequest = object
   method response : unresolved Js.null [@@bs.get]
   method responseText : string [@@bs.get]
   method responseURL : string [@@bs.get]
-  method responseXML : Web_document.t Js.null [@@bs.get]
+  method responseXML : Dom.document Js.null [@@bs.get]
   method status : int [@@bs.get]
   method statusText : string [@@bs.get]
   method timeout : float [@@bs.get] [@@bs.set]
@@ -64,7 +64,7 @@ type body =
   | StringBody of string
   | FormDataBody of Web_formdata.t
   | FormListBody of (string * string) list
-  | DocumentBody of Web_document.t
+  | DocumentBody of Dom.document
   (* | BlobBody of Web_blob.t *)
   (* | ArrayBufferViewBody of Web_arraybuffer_view.t *)
 
@@ -156,7 +156,7 @@ type responseBody =
   | StringResponse of string
   | ArrayBufferResponse of unit
   | BlobResponse of unit
-  | DocumentResponse of Web_document.t
+  | DocumentResponse of Dom.document
   | JsonResponse of Web_json.t
   | TextResponse of string
   | RawResponse of string * unit
@@ -213,7 +213,7 @@ let get_responseText (x: t) : string = x##responseText
 
 let get_responseURL (x: t) : string = x##responseURL
 
-let get_responseXML (x: t) : Web_document.t option =
+let get_responseXML (x: t) : Dom.document option =
   Js.Null.toOption x##responseXML
 
 let get_status (x: t) : int = x##status

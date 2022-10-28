@@ -8,37 +8,16 @@ external getStyle : style -> string -> string Js.null = "" [@@bs.get_index]
 
 external setStyle : style -> string -> string Js.null -> unit = "" [@@bs.set_index]
 
-type t = <
-  style : style [@bs.get];
-  value : string Js.undefined [@bs.set] [@bs.get];
-  checked : bool Js.undefined [@bs.set] [@bs.get];
-  childNodes : t Js.Array.t [@bs.get];
-  firstChild : t Js.Null.t [@bs.get];
-  appendChild : t -> t [@bs.meth];
-  removeChild : t -> t [@bs.meth];
-  insertBefore : t -> t -> t [@bs.meth];
-  remove : unit -> unit [@bs.meth];
-  setAttributeNS : string -> string -> string -> unit [@bs.meth];
-  setAttribute : string -> string -> unit [@bs.meth];
-  removeAttributeNS : string -> string -> unit [@bs.meth];
-  removeAttribute : string -> unit [@bs.meth];
-  addEventListener : string -> t Web_event.cb -> Web_event.options -> unit [@bs.meth];
-  removeEventListener : string -> t Web_event.cb -> Web_event.options -> unit [@bs.meth];
-  focus : unit -> unit [@bs.meth];
-  (* Text Nodes only *)
-  nodeValue : string [@bs.set] [@bs.get {null}];
-> Js.t
+type t = Dom.node
 
-external document_node : t = "document" [@@bs.val]
+type event = Web_event.t
 
-type event = t Web_event.t
-
-type event_cb = t Web_event.cb
+type event_cb = Web_event.cb
 
 
-external getProp_asEventListener : t -> 'key -> t Web_event.cb Js.undefined = "" [@@bs.get_index]
+external getProp_asEventListener : t -> 'key -> Web_event.cb Js.undefined = "" [@@bs.get_index]
 
-external setProp_asEventListener : t -> 'key -> t Web_event.cb Js.undefined -> unit = "" [@@bs.set_index]
+external setProp_asEventListener : t -> 'key -> Web_event.cb Js.undefined -> unit = "" [@@bs.set_index]
 
 external getProp : t -> 'key -> 'value = "" [@@bs.get_index]
 
@@ -85,10 +64,6 @@ let removeAttributeNsOptional n namespace key =
   match namespace with
   | "" -> n##removeAttribute key
   | ns -> n##removeAttributeNS ns key
-
-let addEventListener n typ listener options = n##addEventListener typ listener options
-
-let removeEventListener n typ listener options = n##removeEventListener typ listener options
 
 let focus n = n##focus ()
 

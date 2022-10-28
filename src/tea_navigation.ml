@@ -25,7 +25,7 @@ let subscribe tagger =
     let notifyHandler location =
       callbacks.enqueue (tagger location) in
     let () = notifier := Some notifyHandler in
-    let handler : Web.Node.event_cb = fun [@bs] _event ->
+    let handler : Web.Event.cb = fun _event ->
       notifyUrlChange () in
     let () = Web.Window.addEventListener "popstate" handler false in
     fun () -> Web.Window.removeEventListener "popstate" handler false

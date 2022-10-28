@@ -545,43 +545,19 @@ module Events = struct
 
   (** {1 Form helpers} *)
 
-  let onInputOpt ?(key="") msg =
-    onCB "input" key
-      (fun ev ->
-         match Js.Undefined.toOption ev##target with
-         | None -> None
-         | Some target -> match Js.Undefined.toOption target##value with
-           | None -> None
-           | Some value -> msg value
-      )
+  let onInputOpt = Tea_html.onInputOpt
 
   let onInput ?(key="") msg = onInputOpt ~key:key (fun ev -> Some (msg ev))
 
-  let onCheckOpt ?(key="") msg =
-    onCB "change" key
-      (fun ev ->
-         match Js.Undefined.toOption ev##target with
-         | None -> None
-         | Some target -> match Js.Undefined.toOption target##checked with
-           | None -> None
-           | Some value -> msg value
-      )
+  let onCheckOpt = Tea_html.onCheckOpt
 
   let onCheck ?(key="") msg = onCheckOpt ~key:key (fun ev -> Some (msg ev))
 
-  let onChangeOpt ?(key="") msg =
-    onCB "change" key
-    (fun ev ->
-         match Js.Undefined.toOption ev##target with
-         | None -> None
-         | Some target -> match Js.Undefined.toOption target##value with
-           | None -> None
-           | Some value -> msg value
-      )
+  let onChangeOpt = Tea_html.onChangeOpt
 
   let onChange ?(key="") msg = onChangeOpt ~key:key (fun ev -> Some (msg ev))
 
-  let onSubmit msg = preventDefaultOn "submit" (Tea_json.Decoder.succeed msg) 
+  let onSubmit msg = preventDefaultOn "submit" (Tea_json.Decoder.succeed msg)
 
   (** {1 Focus helpers} *)
 

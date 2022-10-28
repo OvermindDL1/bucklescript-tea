@@ -258,30 +258,28 @@ let method' m = prop "method" m
 
 (* Events *)
 
-let onCB eventName key cb = onCB eventName key cb
+let onCB eventName key cb = Vdom.onCB eventName key cb
 
 let onMsg eventName msg = onMsg eventName msg
 
 let onInputOpt ?(key="") msg =
   onCB "input" key
-    (fun ev ->
-       match Js.Undefined.toOption ev##target with
+    (fun (ev : Dom.event) ->
+       let element = Webapi.Dom.Event.target ev |> Webapi.Dom.EventTarget.unsafeAsElement in
+       match Webapi.Dom.HtmlElement.ofElement element with
        | None -> None
-       | Some target -> match Js.Undefined.toOption target##value with
-         | None -> None
-         | Some value -> msg value
+       | Some inputElement -> msg (Webapi.Dom.HtmlElement.value inputElement)
     )
 
 let onInput ?(key="") msg = onInputOpt ~key:key (fun ev -> Some (msg ev))
 
 let onChangeOpt ?(key="") msg =
   onCB "change" key
-  (fun ev ->
-       match Js.Undefined.toOption ev##target with
+    (fun (ev : Dom.event) ->
+       let element = Webapi.Dom.Event.target ev |> Webapi.Dom.EventTarget.unsafeAsElement in
+       match Webapi.Dom.HtmlElement.ofElement element with
        | None -> None
-       | Some target -> match Js.Undefined.toOption target##value with
-         | None -> None
-         | Some value -> msg value
+       | Some inputElement -> msg (Webapi.Dom.HtmlElement.value inputElement)
     )
 
 let onChange ?(key="") msg = onChangeOpt ~key:key (fun ev -> Some (msg ev))
@@ -299,13 +297,12 @@ let onFocus msg =
   onMsg "focus" msg
 
 let onCheckOpt ?(key="") msg =
-  onCB "change" key
-    (fun ev ->
-       match Js.Undefined.toOption ev##target with
+  onCB "check" key
+    (fun (ev : Dom.event) ->
+       let element = Webapi.Dom.Event.target ev |> Webapi.Dom.EventTarget.unsafeAsElement in
+       match Webapi.Dom.HtmlElement.ofElement element with
        | None -> None
-       | Some target -> match Js.Undefined.toOption target##checked with
-         | None -> None
-         | Some value -> msg value
+       | Some inputElement -> msg (Webapi.Dom.HtmlElement.checked inputElement)
     )
 
 let onCheck ?(key="") msg = onCheckOpt ~key:key (fun ev -> Some (msg ev))
@@ -338,10 +335,10 @@ let defaultOptions = {
   preventDefault = false;
 }
 
-let onWithOptions ~(key:string) eventName (options: options) decoder =
-  onCB eventName key (fun event ->
-    if options.stopPropagation then event##stopPropagation () |> ignore;
-    if options.preventDefault then event##preventDefault () |> ignore;
+let onWithOptions ~(key:string) (eventName: string) (options: options) decoder =
+  onCB eventName key (fun (event: Dom.event) ->
+    if options.stopPropagation then Webapi.Dom.Event.stopPropagation event;
+    if options.preventDefault then Webapi.Dom.Event.preventDefault event;
     event
     |> Tea_json.Decoder.decodeEvent decoder
     |> Tea_result.result_to_option

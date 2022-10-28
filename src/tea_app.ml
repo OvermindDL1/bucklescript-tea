@@ -5,32 +5,38 @@ type ('flags, 'model, 'msg) program =
   view: 'model -> 'msg Vdom.t ;
   subscriptions: 'model -> 'msg Tea_sub.t ;
   shutdown: 'model -> 'msg Tea_cmd.t }
+
 type ('flags, 'model, 'msg) standardProgram =
   {
   init: 'flags -> ('model * 'msg Tea_cmd.t) ;
   update: 'model -> 'msg -> ('model * 'msg Tea_cmd.t) ;
   view: 'model -> 'msg Vdom.t ;
   subscriptions: 'model -> 'msg Tea_sub.t }
+
 type ('model, 'msg) beginnerProgram =
   {
   model: 'model ;
   update: 'model -> 'msg -> 'model ;
   view: 'model -> 'msg Vdom.t }
+
 type ('model, 'msg) pumpInterface =
   {
   startup: unit -> unit ;
   render_string: 'model -> string ;
   handleMsg: 'model -> 'msg -> 'model ;
   shutdown: 'msg Tea_cmd.t -> unit }
+
 type 'msg programInterface =
   <
     pushMsg: 'msg -> unit  ;shutdown: unit -> unit  ;getHtmlString: unit ->
-                                                                    string  
+                                                                    string
     >  Js.t
+
 external makeProgramInterface :
   pushMsg:('msg -> unit) ->
     shutdown:(unit -> unit) ->
       getHtmlString:(unit -> string) -> 'msg programInterface = ""[@@bs.obj ]
+
 let programStateWrapper initModel pump shutdown =
   let open Vdom in
     let model = ref initModel in
@@ -87,6 +93,7 @@ let programStateWrapper initModel pump shutdown =
     let () = pumperInterface.startup () in
     makeProgramInterface ~pushMsg:handler ~shutdown:pi_requestShutdown
       ~getHtmlString:render_string
+
 let programLoop update view subscriptions initModel initCmd =
   function
   | None ->
@@ -147,12 +154,12 @@ let programLoop update view subscriptions initModel initCmd =
                   let () = nextFrameID := ((Some (id))[@explicit_arity ]) in
                   ()) in
          let clearPnode () =
-           while (Js.Array.length (Web.Node.childNodes parentNode)) > 0 do
-             match Js.Null.toOption (Web.Node.firstChild parentNode) with
+           while (Webapi.Dom.NodeList.length (Webapi.Dom.Node.childNodes parentNode)) > 0 do
+             match Webapi.Dom.Node.firstChild parentNode with
              | None -> ()
              | ((Some (firstChild))[@explicit_arity ]) ->
                  let _removedChild =
-                   Web.Node.removeChild parentNode firstChild in
+                   Webapi.Dom.Node.removeChild parentNode ~child:firstChild in
                  ()
              done in
          let oldSub = ref Tea_sub.none in
@@ -187,6 +194,7 @@ let programLoop update view subscriptions initModel initCmd =
            handleMsg = handler;
            shutdown = handlerShutdown
          })
+
 let program =
   ((fun { init; update; view; subscriptions; shutdown } ->
       fun pnode ->
@@ -205,9 +213,10 @@ let program =
                                                                     ->
                                                                     'flags ->
                                                                     'msg
-                                                                    programInterface) : 
+                                                                    programInterface) :
   ('flags, 'model, 'msg) program ->
     Web.Node.t Js.null_undefined -> 'flags -> 'msg programInterface)
+
 let standardProgram =
   ((fun { init; update; view; subscriptions } ->
       fun pnode ->
@@ -232,6 +241,7 @@ let standardProgram =
                                                                     'flags ->
                                                                     'msg
                                                                     programInterface)
+
 let beginnerProgram =
   ((fun { model; update; view } ->
       fun pnode ->
@@ -245,7 +255,7 @@ let beginnerProgram =
               subscriptions = (fun _model -> Tea_sub.none)
             } pnode () : ('model, 'msg) beginnerProgram ->
                            Web.Node.t Js.null_undefined ->
-                             unit -> 'msg programInterface) : ('model, 
+                             unit -> 'msg programInterface) : ('model,
                                                                 'msg)
                                                                 beginnerProgram
                                                                 ->

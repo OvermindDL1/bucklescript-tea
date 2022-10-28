@@ -23,7 +23,7 @@ let registerGlobal name key tagger =
       | Error _ -> None
       | Ok pos -> Some (tagger pos) in
     let handler = EventHandlerCallback (key, fn) in
-    let elem = Web_node.document_node in
+    let elem = Webapi.Dom.document |> Webapi.Dom.Document.documentElement in
     let cache = eventHandler_Register callbacks elem name handler in
     fun () ->
       let _ = eventHandler_Unregister elem name cache in
