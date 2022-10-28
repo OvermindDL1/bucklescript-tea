@@ -8,7 +8,7 @@ type t = <
   createComment : string -> Web_node.t [@bs.meth];
   createTextNode : string -> Web_node.t [@bs.meth];
   getElementById : string -> Web_node.t Js.null_undefined [@bs.meth];
-  location : Web_location.t [@bs.get];
+  location : Dom.location [@bs.get];
 > Js.t
 
 external document : t = "document" [@@bs.val]

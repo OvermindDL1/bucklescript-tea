@@ -1,6 +1,6 @@
 
 type ('flags, 'model, 'msg) navigationProgram =
-  { init : 'flags -> Web.Location.location -> 'model * 'msg Tea_cmd.t
+  { init : 'flags -> Web.Location.t -> 'model * 'msg Tea_cmd.t
   ; update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t
   ; view : 'model -> 'msg Vdom.t
   ; subscriptions : 'model -> 'msg Tea_sub.t
@@ -8,18 +8,13 @@ type ('flags, 'model, 'msg) navigationProgram =
   }
 
 
-let getLocation () =
-  Web.Location.asRecord (Web.Document.location ())
-
-
-
-let notifier : (Web.Location.location -> unit) option ref = ref None
+let notifier : (Web.Location.t -> unit) option ref = ref None
 
 let notifyUrlChange () =
   match !notifier with
   | None -> ()
   | Some cb ->
-    let location = getLocation () in
+    let location = Web.Location.get () in
     let () = cb location in
     ()
 
@@ -77,7 +72,7 @@ let forward step = go step
 
 let navigationProgram locationToMessage stuff =
     let init flag =
-      stuff.init flag (getLocation ()) in
+      stuff.init flag (Web.Location.get ()) in
 
     let subscriptions model =
       Tea_sub.batch

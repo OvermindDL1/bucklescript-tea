@@ -378,7 +378,7 @@ let program :
 
 
 let navigationProgram :
-  (Web.Location.location -> 'msg) ->
+  (Web.Location.t -> 'msg) ->
   ('flags, 'model, 'msg) Tea_navigation.navigationProgram ->
   ('msg -> string) ->
   Web.Node.t Js.null_undefined ->

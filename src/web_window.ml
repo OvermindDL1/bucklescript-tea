@@ -9,7 +9,7 @@ type timeoutHandlerID = int
 
 type t = <
   history : History.t Js.Undefined.t [@bs.get];
-  location : Web_location.t [@bs.get];
+  location : Dom.location [@bs.get];
   clearTimeout : timeoutHandlerID -> unit [@bs.meth];
   requestAnimationFrame : (float -> unit) -> int [@bs.meth];
   cancelAnimationFrame : int -> unit [@bs.meth];
