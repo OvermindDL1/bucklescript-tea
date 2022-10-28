@@ -35,7 +35,7 @@ let string_of_error = function
 type header = Header of string * string
 
 type 'res expect =
-    Expect of bodyType * (response -> ('res, string) Tea_result.t)
+    Expect of bodyType * (response -> ('res, string) result)
 
 type 'msg requestEvents =
   { onreadystatechange : ('msg Vdom.applicationCallbacks ref -> (Web.XMLHttpRequest.event_readystatechange -> unit)) option
@@ -67,13 +67,13 @@ let expectStringResponse func =
     , ( fun { body; _ } ->
           match body with
           | TextResponse s -> func s
-          | _ -> Tea_result.Error "Non-text response returned"
+          | _ -> Error "Non-text response returned"
       )
     )
 
 
 let expectString =
-  expectStringResponse (fun resString -> Tea_result.Ok resString)
+  expectStringResponse (fun resString -> Ok resString)
 
 
 let request rawRequest =
@@ -97,8 +97,8 @@ let toTask (Request (request, _maybeEvents)) =
   let (Expect (typ, responseToResult)) = expect in
   Tea_task.nativeBinding (fun cb ->
     let enqRes result = fun _ev -> cb result in
-    let enqResError result = enqRes (Tea_result.Error result) in
-    let enqResOk result = enqRes (Tea_result.Ok result) in
+    let enqResError result = enqRes (Error result) in
+    let enqResOk result = enqRes (Ok result) in
     let xhr = Web.XMLHttpRequest.create () in
     let setEvent ev cb = ev cb xhr in
     let () = setEvent Web.XMLHttpRequest.set_onerror (enqResError NetworkError) in
@@ -109,8 +109,8 @@ let toTask (Request (request, _maybeEvents)) =
             let open Web.XMLHttpRequest in
             let headers =
               match getAllResponseHeadersAsDict xhr with
-              | Tea_result.Error _e -> StringMap.empty
-              | Tea_result.Ok headers -> headers in
+              | Error _e -> StringMap.empty
+              | Ok headers -> headers in
             let response =
               { status = { code = get_status xhr; message = get_statusText xhr }
               ; headers = headers
@@ -120,8 +120,8 @@ let toTask (Request (request, _maybeEvents)) =
             if response.status.code < 200 || 300 <= response.status.code
             then enqResError (BadStatus response) ()
             else match responseToResult response with
-              | Tea_result.Error error -> enqResError (BadPayload (error, response)) ()
-              | Tea_result.Ok result -> enqResOk result ()
+              | Error error -> enqResError (BadPayload (error, response)) ()
+              | Ok result -> enqResOk result ()
         ) in
     let () = try Web.XMLHttpRequest.open_ method' url xhr
       with _ -> enqResError (BadUrl url) () in
@@ -148,8 +148,8 @@ let send resultToMessage (Request (request, maybeEvents)) =
         fun _ev ->
           let open Vdom in
           !callbacks.enqueue (resultToMessage result) in
-      let enqResError result = enqRes (Tea_result.Error result) in
-      let enqResOk result = enqRes (Tea_result.Ok result) in
+      let enqResError result = enqRes (Error result) in
+      let enqResOk result = enqRes (Ok result) in
       let xhr = Web.XMLHttpRequest.create () in
       let setEvent ev cb = ev cb xhr in
       let () = match maybeEvents with
@@ -170,8 +170,8 @@ let send resultToMessage (Request (request, maybeEvents)) =
               let open Web.XMLHttpRequest in
               let headers =
                 match getAllResponseHeadersAsDict xhr with
-                | Tea_result.Error _e -> StringMap.empty
-                | Tea_result.Ok headers -> headers in
+                | Error _e -> StringMap.empty
+                | Ok headers -> headers in
               let response =
                 { status = { code = get_status xhr; message = get_statusText xhr }
                 ; headers = headers
@@ -181,8 +181,8 @@ let send resultToMessage (Request (request, maybeEvents)) =
               if response.status.code < 200 || 300 <= response.status.code
               then enqResError (BadStatus response) ()
               else match responseToResult response with
-                | Tea_result.Error error -> enqResError (BadPayload (error, response)) ()
-                | Tea_result.Ok result -> enqResOk result ()
+                | Error error -> enqResError (BadPayload (error, response)) ()
+                | Ok result -> enqResOk result ()
           ) in
       let () = try Web.XMLHttpRequest.open_ method' url xhr
         with _ -> enqResError (BadUrl url) () in
@@ -253,13 +253,13 @@ module Progress = struct
             let open Vdom in
             let lengthComputable =
               let open Tea_json.Decoder in
-              let open Tea_result in
+
               match decodeValue (field "lengthComputable" bool) ev with
               | Error _e -> false
               | Ok v -> v in
             if lengthComputable then
               let open Tea_json.Decoder in
-              let open Tea_result in
+
               let decoder =
                 map2 (fun bytes bytesExpected -> {bytes; bytesExpected})
                   (field "loaded" int)

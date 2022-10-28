@@ -1,6 +1,5 @@
 open Tea
 open Tea.Html
-type ('ok,'err) result = ('ok,'err) Tea_result.t
 
 type msg =
   | GotResponse of (string, string) result

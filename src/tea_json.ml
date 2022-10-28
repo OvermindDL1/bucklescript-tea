@@ -6,16 +6,16 @@ module Decoder = struct
   module ObjectDict = Map.Make(String)
 
   type ('input, 'result) t =
-    Decoder of ('input -> ('result, error) Tea_result.t)
+    Decoder of ('input -> ('result, error) result)
     (*
-    | Parser : (Web.Json.t -> ('result, error) Tea_result.t) -> ('result, error) Tea_result.t t
+    | Parser : (Web.Json.t -> ('result, error) result) -> ('result, error) result t
     *)
     (*
-    | Value : (Web.Json.t, error) Tea_result.t t
-    | Succeed : 'result -> ('result, error) Tea_result.t t
-    | Fail : error -> (_, error) Tea_result.t t
-    | Null : 'result -> ('result, error) Tea_result.t t
-    | String : (string, error) Tea_result.t t
+    | Value : (Web.Json.t, error) result t
+    | Succeed : 'result -> ('result, error) result t
+    | Fail : error -> (_, error) result t
+    | Null : 'result -> ('result, error) result t
+    | String : (string, error) result t
     *)
 
   exception ParseFail of string
@@ -28,8 +28,8 @@ module Decoder = struct
       ( fun value ->
           let open Web.Json in
           match classify value with
-          | JSONString s -> Tea_result.Ok s
-          | _ -> Tea_result.Error "Non-string value"
+          | JSONString s -> Ok s
+          | _ -> Error "Non-string value"
       )
 
   let int =
@@ -39,9 +39,9 @@ module Decoder = struct
           match classify value with
           | JSONNumber n ->
             if n > (float_of_int min_int) && n < (float_of_int max_int)
-            then Tea_result.Ok (int_of_float n)
-            else Tea_result.Error "number out of int range"
-          | _ -> Tea_result.Error "Non-int value"
+            then Ok (int_of_float n)
+            else Error "number out of int range"
+          | _ -> Error "Non-int value"
       )
 
   let float =
@@ -49,8 +49,8 @@ module Decoder = struct
       ( fun value ->
           let open Web.Json in
           match classify value with
-          | JSONNumber n -> Tea_result.Ok n
-          | _ -> Tea_result.Error "Non-float-value"
+          | JSONNumber n -> Ok n
+          | _ -> Error "Non-float-value"
       )
 
   let bool =
@@ -58,9 +58,9 @@ module Decoder = struct
       ( fun value ->
           let open Web.Json in
           match classify value with
-          | JSONTrue -> Tea_result.Ok true
-          | JSONFalse -> Tea_result.Ok false
-          | _ -> Tea_result.Error "Non-boolean value"
+          | JSONTrue -> Ok true
+          | JSONFalse -> Ok false
+          | _ -> Error "Non-boolean value"
       )
 
   let null v =
@@ -68,8 +68,8 @@ module Decoder = struct
       ( fun value ->
           let open Web.Json in
           match classify value with
-          | JSONNull -> Tea_result.Ok v
-          | _ -> Tea_result.Error "Non-null value"
+          | JSONNull -> Ok v
+          | _ -> Error "Non-null value"
       )
 
   (* Compound types *)
@@ -82,13 +82,13 @@ module Decoder = struct
           | JSONArray a ->
             ( let parse v =
                 ( match decoder v with
-                  | Tea_result.Ok r -> r
-                  | Tea_result.Error e -> raise (ParseFail e)
+                  | Ok r -> r
+                  | Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.to_list a |> List.map parse)
-              with ParseFail e -> Tea_result.Error ("list -> " ^ e)
+              try Ok (Array.to_list a |> List.map parse)
+              with ParseFail e -> Error ("list -> " ^ e)
             )
-          | _ -> Tea_result.Error "Non-list value"
+          | _ -> Error "Non-list value"
       )
 
   let array (Decoder decoder) =
@@ -99,13 +99,13 @@ module Decoder = struct
           | JSONArray a ->
             ( let parse v =
                 ( match decoder v with
-                  | Tea_result.Ok r -> r
-                  | Tea_result.Error e -> raise (ParseFail e)
+                  | Ok r -> r
+                  | Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.map parse a)
-              with ParseFail e -> Tea_result.Error ("array -> " ^ e)
+              try Ok (Array.map parse a)
+              with ParseFail e -> Error ("array -> " ^ e)
             )
-          | _ -> Tea_result.Error "Non-array value"
+          | _ -> Error "Non-array value"
       )
 
   let keyValuePairs (Decoder decoder) =
@@ -120,13 +120,13 @@ module Decoder = struct
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
                     match decoder v with
-                    | Tea_result.Ok r -> (k, r) :: l
-                    | Tea_result.Error e -> raise (ParseFail e)
+                    | Ok r -> (k, r) :: l
+                    | Error e -> raise (ParseFail e)
                 ) in
-              try Tea_result.Ok (Array.fold_right parse keys [])
-              with ParseFail e -> Tea_result.Error ("Invalid keyValuePair parsing: " ^ e)
+              try Ok (Array.fold_right parse keys [])
+              with ParseFail e -> Error ("Invalid keyValuePair parsing: " ^ e)
             )
-          | _ -> Tea_result.Error "Non-keyValuePair value"
+          | _ -> Error "Non-keyValuePair value"
       )
 
   let dict (Decoder decoder) =
@@ -141,14 +141,14 @@ module Decoder = struct
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
                     match decoder v with
-                    | Tea_result.Ok r -> ObjectDict.add k r d
-                    | Tea_result.Error e -> raise (ParseFail e)
+                    | Ok r -> ObjectDict.add k r d
+                    | Error e -> raise (ParseFail e)
                 ) in
               let emptyDict = ObjectDict.empty in
-              try Tea_result.Ok (Array.fold_right parse keys emptyDict)
-              with ParseFail e -> Tea_result.Error ("Invalid dict parsing: " ^ e)
+              try Ok (Array.fold_right parse keys emptyDict)
+              with ParseFail e -> Error ("Invalid dict parsing: " ^ e)
             )
-          | _ -> Tea_result.Error "Non-dict value"
+          | _ -> Error "Non-dict value"
       )
 
   let field key (Decoder decoder) =
@@ -158,13 +158,13 @@ module Decoder = struct
           match classify value with
           | JSONObject o ->
             ( match Js.Dict.get o key with
-              | None -> Tea_result.Error ("Field Value is undefined: " ^ key)
+              | None -> Error ("Field Value is undefined: " ^ key)
               | Some v ->
                 match decoder v with
                 | Ok _ as o -> o
                 | Error e -> Error ("field `" ^ key ^ "` -> " ^ e)
             )
-          | _ -> Tea_result.Error "Non-fieldable value"
+          | _ -> Error "Non-fieldable value"
       )
 
   let at fields dec =
@@ -177,29 +177,29 @@ module Decoder = struct
           match classify value with
           | JSONArray a ->
             if idx < 0 || idx > (Array.length a)
-            then Tea_result.Error ("Array index out of range: " ^ (string_of_int idx))
+            then Error ("Array index out of range: " ^ (string_of_int idx))
             else decoder a.(idx)
-          | _ -> Tea_result.Error "Non-array value"
+          | _ -> Error "Non-array value"
       )
 
   let maybe (Decoder decoder) =
     Decoder
       ( fun value ->
           match decoder value with
-          | Tea_result.Ok r -> Tea_result.Ok (Some r)
-          | Tea_result.Error _ -> Tea_result.Ok None
+          | Ok r -> Ok (Some r)
+          | Error _ -> Ok None
       )
 
   let oneOf decoders =
     Decoder
       ( fun value ->
           let rec parse v = function
-            | [] -> Tea_result.Error "No one-of's matched"
+            | [] -> Error "No one-of's matched"
             | ((Decoder decoder) :: rest) ->
               try
                 match decoder v with
-                | Tea_result.Ok _ as ok -> ok
-                | Tea_result.Error _ -> parse v rest
+                | Ok _ as ok -> ok
+                | Error _ -> parse v rest
               with _ -> parse v rest
           in parse value decoders
       )
@@ -208,7 +208,6 @@ module Decoder = struct
       (Decoder decoder1) =
     Decoder
       ( fun value ->
-          let open Tea_result in
           match decoder1 value with
           | Ok v1 -> Ok (mapper v1)
           | Error e -> Error ("map " ^ e)
@@ -219,7 +218,7 @@ module Decoder = struct
     (Decoder decoder2) =
   Decoder
     ( fun value ->
-        let open Tea_result in
+
         match
           decoder1 value,
           decoder2 value
@@ -238,7 +237,6 @@ module Decoder = struct
     (Decoder decoder3) =
   Decoder
     ( fun value ->
-        let open Tea_result in
         match
           decoder1 value,
           decoder2 value,
@@ -265,7 +263,7 @@ module Decoder = struct
     (Decoder decoder4) =
   Decoder
     ( fun value ->
-        let open Tea_result in
+
         match
           decoder1 value,
           decoder2 value,
@@ -296,7 +294,7 @@ module Decoder = struct
     (Decoder decoder5) =
   Decoder
     ( fun value ->
-        let open Tea_result in
+
         match
           decoder1 value,
           decoder2 value,
@@ -331,7 +329,7 @@ module Decoder = struct
     (Decoder decoder6) =
   Decoder
     ( fun value ->
-        let open Tea_result in
+
         match
           decoder1 value,
           decoder2 value,
@@ -370,7 +368,7 @@ module Decoder = struct
     (Decoder decoder7) =
   Decoder
     ( fun value ->
-        let open Tea_result in
+
         match
           decoder1 value,
           decoder2 value,
@@ -413,7 +411,7 @@ module Decoder = struct
     (Decoder decoder8) =
   Decoder
     ( fun value ->
-        let open Tea_result in
+
         match
           decoder1 value,
           decoder2 value,
@@ -454,29 +452,29 @@ module Decoder = struct
   let succeed v =
     Decoder
       ( fun _value ->
-          Tea_result.Ok v
+          Ok v
       )
 
   let fail e =
     Decoder
       ( fun _value ->
-          Tea_result.Error e
+          Error e
       )
 
   let value =
     Decoder
       ( fun value ->
-          Tea_result.Ok value
+          Ok value
       )
 
   let andThen func (Decoder decoder) =
     Decoder
       ( fun value ->
           match decoder value with
-          | Tea_result.Ok r ->
+          | Ok r ->
             let (Decoder andThenDecoder) = func r in
             andThenDecoder value
-          | Tea_result.Error _ as err -> err
+          | Error _ as err -> err
       )
 
   let lazy_ func =
@@ -495,22 +493,22 @@ module Decoder = struct
   let decodeValue (Decoder decoder) value =
     try decoder value
     with
-    | ParseFail e -> Tea_result.Error e
-    | _ -> Tea_result.Error "Unknown JSON parsing error"
+    | ParseFail e -> Error e
+    | _ -> Error "Unknown JSON parsing error"
 
   let decodeEvent (Decoder decoder) (value : Web_node.event) =
     try decoder (Obj.magic value)
     with
-    | ParseFail e -> Tea_result.Error e
-    | _ -> Tea_result.Error "Unknown JSON parsing error"
+    | ParseFail e -> Error e
+    | _ -> Error "Unknown JSON parsing error"
 
   let decodeString decoder string =
     try
       let value = Web.Json.parseExn string in
       decodeValue decoder value
     with
-    (* | JsException e -> Tea_result.Error ("Given an invalid JSON: " ^ e) *)
-    | _ -> Tea_result.Error "Invalid JSON string"
+    (* | JsException e -> Error ("Given an invalid JSON: " ^ e) *)
+    | _ -> Error "Invalid JSON string"
 
 end
 

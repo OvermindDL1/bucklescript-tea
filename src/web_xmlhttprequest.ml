@@ -72,15 +72,15 @@ type body =
 
 let abort (x: t) : unit = x##abort ()
 
-let getAllResponseHeaders (x: t) : (string, errors) Tea_result.t =
-  let open Tea_result in
+let getAllResponseHeaders (x: t) : (string, errors) result =
+
   match Js.Null.toOption (x##getAllResponseHeaders ()) with
   | None -> Error IncompleteResponse
   | Some "" -> Error NetworkError
   | Some s -> Ok s
 
-let getAllResponseHeadersAsList (x: t) : ((string * string) list, errors) Tea_result.t =
-  let open Tea_result in
+let getAllResponseHeadersAsList (x: t) : ((string * string) list, errors) result =
+
   match getAllResponseHeaders x with
   | Error _ as err -> err
   | Ok s -> Ok
@@ -96,13 +96,13 @@ let getAllResponseHeadersAsList (x: t) : ((string * string) list, errors) Tea_re
         )
     )
 
-let getAllResponseHeadersAsDict (x: t) : (string Map.Make(String).t, errors) Tea_result.t =
+let getAllResponseHeadersAsDict (x: t) : (string Map.Make(String).t, errors) result =
   let module StringMap = Map.Make(String) in
   match getAllResponseHeadersAsList x with
-  | Tea_result.Error _ as err -> err
-  | Tea_result.Ok l ->
+  | Error _ as err -> err
+  | Ok l ->
     let insert d (k, v) = StringMap.add k v d in
-    Tea_result.Ok (List.fold_left insert StringMap.empty l)
+    Ok (List.fold_left insert StringMap.empty l)
 
 let getResponseHeader key x = Js.Null.toOption (x##getResponse key)
 

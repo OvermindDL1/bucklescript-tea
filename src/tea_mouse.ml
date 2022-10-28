@@ -18,7 +18,7 @@ let registerGlobal name key tagger =
     let callbacks = ref callbacks_base in
     let fn = fun ev ->
       let open Tea_json.Decoder in
-      let open Tea_result in
+
       match decodeEvent position ev with
       | Error _ -> None
       | Ok pos -> Some (tagger pos) in
