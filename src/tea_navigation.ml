@@ -1,6 +1,37 @@
+module Location = struct
+type t =
+  { href : string
+  ; protocol : string
+  ; host : string
+  ; hostname : string
+  ; port : string
+  ; pathname : string
+  ; search : string
+  ; hash : string
+  ; username : string
+  ; password : string
+  ; origin : string
+  }
+
+let get () : t =
+  let open Webapi.Dom in
+  let open Location in
+  { href = href(location)
+  ; protocol = protocol(location)
+  ; host = host(location)
+  ; hostname = hostname(location)
+  ; port = port(location)
+  ; pathname = pathname(location)
+  ; search = search(location)
+  ; hash = hash(location)
+  ; username = username(location)
+  ; password = password(location)
+  ; origin = origin(location)
+  }
+end
 
 type ('flags, 'model, 'msg) navigationProgram =
-  { init : 'flags -> Web.Location.t -> 'model * 'msg Tea_cmd.t
+  { init : 'flags -> Location.t -> 'model * 'msg Tea_cmd.t
   ; update : 'model -> 'msg -> 'model * 'msg Tea_cmd.t
   ; view : 'model -> 'msg Vdom.t
   ; subscriptions : 'model -> 'msg Tea_sub.t
@@ -8,13 +39,13 @@ type ('flags, 'model, 'msg) navigationProgram =
   }
 
 
-let notifier : (Web.Location.t -> unit) option ref = ref None
+let notifier : (Location.t -> unit) option ref = ref None
 
 let notifyUrlChange () =
   match !notifier with
   | None -> ()
   | Some cb ->
-    let location = Web.Location.get () in
+    let location = Location.get () in
     let () = cb location in
     ()
 
@@ -78,7 +109,7 @@ let forward step = go step
 
 let navigationProgram locationToMessage stuff =
     let init flag =
-      stuff.init flag (Web.Location.get ()) in
+      stuff.init flag (Location.get ()) in
 
     let subscriptions model =
       Tea_sub.batch
