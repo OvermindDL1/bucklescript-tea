@@ -4,68 +4,30 @@ let render_event ?(key= "")  msg =
       let () = callbacks.on ((AddRenderMsg (msg))[@explicit_arity ]) in
       fun () -> callbacks.on ((RemoveRenderMsg (msg))[@explicit_arity ]) in
     Tea_sub.registration key enableCall
-module LocalStorage =
-  struct
-    open Tea_task
-    let length =
-      nativeBinding
-        (fun cb ->
-           match Web.Window.LocalStorage.length Web.Window.window with
-           | None ->
-               cb ((Error ("localStorage is not available"))
-                 [@explicit_arity ])
-           | ((Some (value))[@explicit_arity ]) ->
-               cb ((Ok (value))[@explicit_arity ]))
-    let clear =
-      nativeBinding
-        (fun cb ->
-           match Web.Window.LocalStorage.clear Web.Window.window with
-           | None ->
-               cb ((Error ("localStorage is not available"))
-                 [@explicit_arity ])
-           | ((Some (value))[@explicit_arity ]) ->
-               cb ((Ok (value))[@explicit_arity ]))
-    let clearCmd () = Tea_task.attemptOpt (fun _ -> None) clear
-    let key idx =
-      nativeBinding
-        (fun cb ->
-           match Web.Window.LocalStorage.key Web.Window.window idx with
-           | None ->
-               cb ((Error ("localStorage is not available"))
-                 [@explicit_arity ])
-           | ((Some (value))[@explicit_arity ]) ->
-               cb ((Ok (value))[@explicit_arity ]))
-    let getItem key =
-      nativeBinding
-        (fun cb ->
-           match Web.Window.LocalStorage.getItem Web.Window.window key with
-           | None ->
-               cb ((Error ("localStorage is not available"))
-                 [@explicit_arity ])
-           | ((Some (value))[@explicit_arity ]) ->
-               cb ((Ok (value))[@explicit_arity ]))
-    let removeItem key =
-      nativeBinding
-        (fun cb ->
-           match Web.Window.LocalStorage.removeItem Web.Window.window key
-           with
-           | None ->
-               cb ((Error ("localStorage is not available"))
-                 [@explicit_arity ])
-           | ((Some (value))[@explicit_arity ]) ->
-               cb ((Ok (value))[@explicit_arity ]))
-    let removeItemCmd key =
-      Tea_task.attemptOpt (fun _ -> None) (removeItem key)
-    let setItem key value =
-      nativeBinding
-        (fun cb ->
-           match Web.Window.LocalStorage.setItem Web.Window.window key value
-           with
-           | None ->
-               cb ((Error ("localStorage is not available"))
-                 [@explicit_arity ])
-           | ((Some (()))[@explicit_arity ]) ->
-               cb ((Ok (()))[@explicit_arity ]))
-    let setItemCmd key value =
-      Tea_task.attemptOpt (fun _ -> None) (setItem key value)
-  end
+
+
+module LocalStorage = struct
+  let nativeBinding = Tea_task.nativeBinding
+  let ls = Dom.Storage.localStorage
+
+  let length : (int, string) Tea_task.t = nativeBinding (fun cb -> cb (Ok (Dom.Storage2.length ls)))
+
+  let clear : (unit,string) Tea_task.t = nativeBinding (fun cb -> cb (Ok (Dom.Storage2.clear ls)))
+
+  let clearCmd () = Tea_task.attemptOpt (fun _ -> None) clear
+
+  let key idx : (string option, string) Tea_task.t = nativeBinding (fun cb -> cb (Ok (Dom.Storage2.key ls idx)))
+
+  let getItem key : (string option, string) Tea_task.t = nativeBinding (fun cb -> cb (Ok (Dom.Storage2.getItem ls key)))
+
+  let removeItem key : (unit,string) Tea_task.t = nativeBinding (fun cb -> cb (Ok (Dom.Storage2.removeItem ls key)))
+
+  let removeItemCmd key =
+    Tea_task.attemptOpt (fun _ -> None) (removeItem key)
+
+  let setItem key value : (unit,string) Tea_task.t = nativeBinding (fun cb -> cb (Ok (Dom.Storage2.setItem ls key value)))
+
+  let setItemCmd key value =
+    Tea_task.attemptOpt (fun _ -> None) (setItem key value)
+
+end
