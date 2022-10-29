@@ -1,3 +1,5 @@
+type eventCallback = Dom.event -> unit
+
 type 'msg systemMessage =
   | Render
   | AddRenderMsg of 'msg
@@ -14,7 +16,7 @@ type 'msg eventHandler =
 
 type 'msg eventCache =
   {
-  handler: Web.Event.cb ;
+  handler: eventCallback ;
   cb: (Dom.event -> 'msg option) ref }
 
 type 'msg property =
@@ -132,9 +134,9 @@ let rec renderToHtmlString =
   'msg t -> string) : 'msg t -> string)
 
 let emptyEventHandler = ((((fun _ev -> ())
-  ) : Web.Event.cb) : Web.Event.cb)
+  ) : eventCallback) : eventCallback)
 
-let emptyEventCB _ev = (None : Web.Event.cb option)
+let emptyEventCB _ev = (None : eventCallback option)
 
 let eventHandler (callbacks : 'msg applicationCallbacks ref)
   (cb : (Dom.event -> 'msg option) ref) =
@@ -142,7 +144,7 @@ let eventHandler (callbacks : 'msg applicationCallbacks ref)
        match (!cb) ev with
        | None -> ()
        | ((Some (msg))[@explicit_arity ]) -> (!callbacks).enqueue msg)
-  ) : Web.Event.cb)
+  ) : eventCallback)
 
 let eventHandler_GetCB =
   ((function
