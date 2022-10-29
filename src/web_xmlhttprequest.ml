@@ -21,7 +21,7 @@ class type _xmlhttprequest = object
   method overrideMimeType : string -> unit
   method send : unit -> unit
   method send__string : string Js.null -> unit
-  method send__formdata : Web_formdata.t -> unit
+  method send__formdata : Webapi.FormData.t -> unit
   method send__document : Dom.document -> unit
   (* method send_blob : Web_blob.t -> unit *)
   (* method send_arrayBufferView : Web_arraybuffer_view.t -> unit *)
@@ -62,7 +62,7 @@ type body =
   | EmptyBody
   | EmptyStringBody
   | StringBody of string
-  | FormDataBody of Web_formdata.t
+  | FormDataBody of Webapi.FormData.t
   | FormListBody of (string * string) list
   | DocumentBody of Dom.document
   (* | BlobBody of Web_blob.t *)
@@ -121,8 +121,8 @@ let send (body: body) (x: t) : unit =
   | FormListBody l ->
     let form =
       List.fold_left
-        (fun f (key, value) -> let () = Web_formdata.append key value f in f)
-        (Web_formdata.create ())
+        (fun f (key, value) -> let () = Webapi.FormData.append f key value in f)
+        (Webapi.FormData.make ())
         l in
     x##send__formdata form
   | DocumentBody d -> x##send__document d
