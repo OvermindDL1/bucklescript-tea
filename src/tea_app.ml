@@ -208,14 +208,14 @@ let program =
                                                                    'model,
                                                                    'msg)
                                                                    program ->
-                                                                   Web.Node.t
+                                                                   Dom.node
                                                                     Js.null_undefined
                                                                     ->
                                                                     'flags ->
                                                                     'msg
                                                                     programInterface) :
   ('flags, 'model, 'msg) program ->
-    Web.Node.t Js.null_undefined -> 'flags -> 'msg programInterface)
+    Dom.node Js.null_undefined -> 'flags -> 'msg programInterface)
 
 let standardProgram =
   ((fun { init; update; view; subscriptions } ->
@@ -229,13 +229,13 @@ let standardProgram =
               subscriptions;
               shutdown = (fun _model -> Tea_cmd.none)
             } pnode args : ('flags, 'model, 'msg) standardProgram ->
-                             Web.Node.t Js.null_undefined ->
+                             Dom.node Js.null_undefined ->
                                'flags -> 'msg programInterface) : ('flags,
                                                                     'model,
                                                                     'msg)
                                                                     standardProgram
                                                                     ->
-                                                                    Web.Node.t
+                                                                    Dom.node
                                                                     Js.null_undefined
                                                                     ->
                                                                     'flags ->
@@ -254,12 +254,12 @@ let beginnerProgram =
               view;
               subscriptions = (fun _model -> Tea_sub.none)
             } pnode () : ('model, 'msg) beginnerProgram ->
-                           Web.Node.t Js.null_undefined ->
+                           Dom.node Js.null_undefined ->
                              unit -> 'msg programInterface) : ('model,
                                                                 'msg)
                                                                 beginnerProgram
                                                                 ->
-                                                                Web.Node.t
+                                                                Dom.node
                                                                   Js.null_undefined
                                                                   ->
                                                                   unit ->

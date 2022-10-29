@@ -9,13 +9,13 @@ type 'msg applicationCallbacks =
   on: 'msg systemMessage -> unit }
 
 type 'msg eventHandler =
-  | EventHandlerCallback of string * (Web.Node.event -> 'msg option)
+  | EventHandlerCallback of string * (Dom.event -> 'msg option)
   | EventHandlerMsg of 'msg
 
 type 'msg eventCache =
   {
-  handler: Web.Node.event_cb ;
-  cb: (Web.Node.event -> 'msg option) ref }
+  handler: Web.Event.cb ;
+  cb: (Dom.event -> 'msg option) ref }
 
 type 'msg property =
   | NoProp
@@ -60,7 +60,7 @@ let noProp = ((NoProp : 'msg property) : 'msg property)
 let prop (key : string) (value : string) = (((RawProp (key, value))
   [@implicit_arity ]) : 'msg property)
 
-let onCB (name : string) (key : string) (cb : Web.Node.event -> 'msg option)
+let onCB (name : string) (key : string) (cb : Dom.event -> 'msg option)
   =
   (((Event
        (name, ((EventHandlerCallback (key, cb))[@implicit_arity ]),
@@ -132,26 +132,26 @@ let rec renderToHtmlString =
   'msg t -> string) : 'msg t -> string)
 
 let emptyEventHandler = ((((fun _ev -> ())
-  ) : Web.Node.event_cb) : Web.Node.event_cb)
+  ) : Web.Event.cb) : Web.Event.cb)
 
-let emptyEventCB _ev = (None : Web.Node.event_cb option)
+let emptyEventCB _ev = (None : Web.Event.cb option)
 
 let eventHandler (callbacks : 'msg applicationCallbacks ref)
-  (cb : (Web.Node.event -> 'msg option) ref) =
+  (cb : (Dom.event -> 'msg option) ref) =
   (((fun ev ->
        match (!cb) ev with
        | None -> ()
        | ((Some (msg))[@explicit_arity ]) -> (!callbacks).enqueue msg)
-  ) : Web.Node.event_cb)
+  ) : Web.Event.cb)
 
 let eventHandler_GetCB =
   ((function
     | ((EventHandlerCallback (_, cb))[@implicit_arity ]) -> cb
     | ((EventHandlerMsg (msg))[@explicit_arity ]) ->
         (fun _ev -> ((Some (msg))[@explicit_arity ])) : 'msg eventHandler ->
-                                                          Web.Node.event ->
+                                                          Dom.event ->
                                                             'msg option) :
-  'msg eventHandler -> Web.Node.event -> 'msg option)
+  'msg eventHandler -> Dom.event -> 'msg option)
 
 let compareEventHandlerTypes (left : 'msg eventHandler) =
   (function

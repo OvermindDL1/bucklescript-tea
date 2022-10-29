@@ -1,5 +1,3 @@
-type t = Dom.event
-
-type cb = t -> unit
+type cb = Dom.event -> unit
 
 type options = bool
