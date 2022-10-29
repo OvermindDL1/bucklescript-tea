@@ -8,10 +8,10 @@ module Decoder = struct
   type ('input, 'result) t =
     Decoder of ('input -> ('result, error) result)
     (*
-    | Parser : (Web.Json.t -> ('result, error) result) -> ('result, error) result t
+    | Parser : (Js.Json.t -> ('result, error) result) -> ('result, error) result t
     *)
     (*
-    | Value : (Web.Json.t, error) result t
+    | Value : (Js.Json.t, error) result t
     | Succeed : 'result -> ('result, error) result t
     | Fail : error -> (_, error) result t
     | Null : 'result -> ('result, error) result t
@@ -26,8 +26,7 @@ module Decoder = struct
   let string =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONString s -> Ok s
           | _ -> Error "Non-string value"
       )
@@ -35,8 +34,7 @@ module Decoder = struct
   let int =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONNumber n ->
             if n > (float_of_int min_int) && n < (float_of_int max_int)
             then Ok (int_of_float n)
@@ -47,8 +45,7 @@ module Decoder = struct
   let float =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONNumber n -> Ok n
           | _ -> Error "Non-float-value"
       )
@@ -56,8 +53,7 @@ module Decoder = struct
   let bool =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONTrue -> Ok true
           | JSONFalse -> Ok false
           | _ -> Error "Non-boolean value"
@@ -66,8 +62,7 @@ module Decoder = struct
   let null v =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONNull -> Ok v
           | _ -> Error "Non-null value"
       )
@@ -77,8 +72,7 @@ module Decoder = struct
   let list (Decoder decoder) =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONArray a ->
             ( let parse v =
                 ( match decoder v with
@@ -94,8 +88,7 @@ module Decoder = struct
   let array (Decoder decoder) =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONArray a ->
             ( let parse v =
                 ( match decoder v with
@@ -111,8 +104,7 @@ module Decoder = struct
   let keyValuePairs (Decoder decoder) =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONObject o ->
             ( let keys = Js.Dict.keys o in
               let parse k l =
@@ -132,8 +124,7 @@ module Decoder = struct
   let dict (Decoder decoder) =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONObject o ->
             ( let keys = Js.Dict.keys o in
               let parse k d =
@@ -154,8 +145,7 @@ module Decoder = struct
   let field key (Decoder decoder) =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONObject o ->
             ( match Js.Dict.get o key with
               | None -> Error ("Field Value is undefined: " ^ key)
@@ -173,8 +163,7 @@ module Decoder = struct
   let index idx (Decoder decoder) =
     Decoder
       ( fun value ->
-          let open Web.Json in
-          match classify value with
+          match Js.Json.classify value with
           | JSONArray a ->
             if idx < 0 || idx > (Array.length a)
             then Error ("Array index out of range: " ^ (string_of_int idx))
@@ -504,7 +493,7 @@ module Decoder = struct
 
   let decodeString decoder string =
     try
-      let value = Web.Json.parseExn string in
+      let value = Js.Json.parseExn string in
       decodeValue decoder value
     with
     (* | JsException e -> Error ("Given an invalid JSON: " ^ e) *)
@@ -514,9 +503,7 @@ end
 
 
 module Encoder = struct
-  open Web
-
-  type t = Json.t
+  type t = Js.Json.t
 
   let encode indentLevel value =
     Web.Json.string_of_json ~indent:indentLevel (Js.Undefined.return value)
@@ -524,28 +511,28 @@ module Encoder = struct
 
   (* Encoders *)
 
-  let string (v : string) = Json.of_type Json.String v
+  let string (v : string) = Web.Json.of_type Js.Json.String v
 
-  let int (v : int) = Json.of_type Json.Number (float_of_int v)
+  let int (v : int) = Web.Json.of_type Js.Json.Number (float_of_int v)
 
-  let float (v : float) = Json.of_type Json.Number v
+  let float (v : float) = Web.Json.of_type Js.Json.Number v
 
-  let bool (v : bool) = Json.of_type Json.Boolean v
+  let bool (v : bool) = Web.Json.of_type Js.Json.Boolean v
 
-  let null = Json.of_type Json.Null Json.null
+  let null = Web.Json.of_type Js.Json.Null Web.Json.null
 
   let object_ v =
     let aux o (k, v) =
       let () = Js.Dict.set o k v in
       o in
     let o = List.fold_left aux (Js.Dict.empty ()) v in
-    Json.of_type Json.Object o
+    Web.Json.of_type Js.Json.Object o
 
-  let array (v : 't array) = Json.of_type Json.Array v
+  let array (v : 't array) = Web.Json.of_type Js.Json.Array v
 
-  let list (v : 't list) = Json.of_type Json.Array (Array.of_list v)
+  let list (v : 't list) = Web.Json.of_type Js.Json.Array (Array.of_list v)
 
 end
 
 
-type t = Web.Json.t
+type t = Js.Json.t
