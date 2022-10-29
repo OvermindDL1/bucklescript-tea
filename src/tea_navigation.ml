@@ -25,21 +25,26 @@ let subscribe tagger =
     let notifyHandler location =
       callbacks.enqueue (tagger location) in
     let () = notifier := Some notifyHandler in
-    let handler : Web.Event.cb = fun _event ->
+    let handler = fun _event ->
       notifyUrlChange () in
-    let () = Web.Window.addEventListener "popstate" handler false in
-    fun () -> Web.Window.removeEventListener "popstate" handler false
+    let window = Webapi.Dom.window in
+    let () = Webapi.Dom.Window.addPopStateEventListener window handler in
+    fun () -> Webapi.Dom.Window.removePopStateEventListener window handler
   in Tea_sub.registration "navigation" enableCall
 
 
 
 let replaceState url =
-  let _ = Web.Window.History.replaceState Web.Window.window (Js.Json.parseExn "{}") "" url in
+  let history = Webapi.Dom.history in
+  let state = Webapi.Dom.History.state history in
+  let _ = Webapi.Dom.History.replaceState history state "" url in
   ()
 
 
 let pushState url =
-  let _ = Web.Window.History.pushState Web.Window.window (Js.Json.parseExn "{}") "" url in
+  let history = Webapi.Dom.history in
+  let state = Webapi.Dom.History.state history in
+  let _ = Webapi.Dom.History.pushState history state "" url in
   ()
 
 
@@ -61,7 +66,8 @@ let newUrl url =
 
 let go step =
   Tea_cmd.call (fun _enqueue ->
-    let _ = Web.Window.(History.go window) step in
+    let history = Webapi.Dom.history in
+    let _ = Webapi.Dom.History.go history step in
     let () = notifyUrlChange () in
     ()
   )

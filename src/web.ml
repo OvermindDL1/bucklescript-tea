@@ -6,9 +6,6 @@ module Event = Web_event
 module Node = Web_node
 
 
-module Window = Web_window
-
-
 module Location = Web_location
 
 
