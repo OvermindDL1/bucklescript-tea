@@ -129,7 +129,8 @@ let programLoop update view subscriptions initModel initCmd =
       (fun callbacks ->
          let priorRenderedVdom = ref [] in
          let latestModel = ref initModel in
-         let nextFrameID = ref None in
+         let noFrameID = Some (Obj.magic(-1)) in
+         let nextFrameID : Webapi.rafId option ref = ref None in
          let doRender _delta =
            match !nextFrameID with
            | None -> ()
@@ -147,10 +148,10 @@ let programLoop update view subscriptions initModel initCmd =
                let realtimeRendering = false in
                if realtimeRendering
                then
-                 let () = nextFrameID := ((Some ((-1)))[@explicit_arity ]) in
+                 let () = nextFrameID := noFrameID in
                  doRender 16
                else
-                 (let id = Web.Window.requestAnimationFrame doRender in
+                 (let id = Webapi.requestCancellableAnimationFrame doRender in
                   let () = nextFrameID := ((Some (id))[@explicit_arity ]) in
                   ()) in
          let clearPnode () =
@@ -170,7 +171,7 @@ let programLoop update view subscriptions initModel initCmd =
            let () = clearPnode () in
            let () = Tea_cmd.run callbacks initCmd in
            let () = handleSubscriptionChange (!latestModel) in
-           let () = nextFrameID := ((Some ((-1)))[@explicit_arity ]) in
+           let () = nextFrameID := noFrameID in
            let () = doRender 16 in () in
          let render_string model =
            let vdom = view model in
@@ -199,7 +200,6 @@ let program =
   ((fun { init; update; view; subscriptions; shutdown } ->
       fun pnode ->
         fun flags ->
-          let () = Web.polyfills () in
           let (initModel, initCmd) = init flags in
           let opnode = Js.Nullable.toOption pnode in
           let pumpInterface =

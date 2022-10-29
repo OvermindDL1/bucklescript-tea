@@ -11,9 +11,9 @@ let focus id =
          | Some elem -> Webapi.Dom.HtmlElement.focus elem
        in
        (* One to get out of the current render frame*)
-       let cb _ = ignore (Web.Window.requestAnimationFrame ecb) in
+       let cb _ = ignore (Webapi.requestCancellableAnimationFrame ecb) in
        (* And another to properly focus *)
-       ignore (Web.Window.requestAnimationFrame cb);
+       ignore (Webapi.requestCancellableAnimationFrame cb);
        ())
 
 

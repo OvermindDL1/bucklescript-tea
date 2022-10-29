@@ -25,14 +25,13 @@ let every ?(key="") tagger =
         match !id with
         | None -> ()
         | Some _stillActive ->
-          let () = id := Some (Web.Window.requestAnimationFrame onFrame) in
+          let () = id := Some (Webapi.requestCancellableAnimationFrame onFrame) in
           () in
-    let () = id := Some (Web.Window.requestAnimationFrame onFrame) in
+    let () = id := Some (Webapi.requestCancellableAnimationFrame onFrame) in
     fun () -> match !id with
       | None -> ()
       | Some i ->
-        (* let () = Js.log ("rAF", "disable") in *)
-        let () = Web.Window.cancelAnimationFrame i in
+        let () = Webapi.cancelAnimationFrame i in
         let () = id := None in
         ()
   in Tea_sub.registration key enableCall
