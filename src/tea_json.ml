@@ -505,9 +505,12 @@ end
 module Encoder = struct
   type t = Js.Json.t
 
-  let encode indentLevel value =
-    Web.Json.string_of_json ~indent:indentLevel (Js.Undefined.return value)
-
+  let encode (indentLevel : int) (value : 'a) =
+    if Js.Undefined.testAny value
+    then "undefined"
+    else
+      (try Js.Json.stringifyWithSpace (Obj.magic value) indentLevel
+       with _ -> "")
 
   (* Encoders *)
 
