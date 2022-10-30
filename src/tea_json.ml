@@ -514,26 +514,26 @@ module Encoder = struct
 
   (* Encoders *)
 
-  let string (v : string) = Web.Json.of_type Js.Json.String v
+  let string (v : string) : Js.Json.t = Obj.magic v
 
-  let int (v : int) = Web.Json.of_type Js.Json.Number (float_of_int v)
+  let int (v : int) : Js.Json.t = Obj.magic (float_of_int v)
 
-  let float (v : float) = Web.Json.of_type Js.Json.Number v
+  let float (v : float) : Js.Json.t = Obj.magic v
 
-  let bool (v : bool) = Web.Json.of_type Js.Json.Boolean v
+  let bool (v : bool) : Js.Json.t = Obj.magic v
 
-  let null = Web.Json.of_type Js.Json.Null Web.Json.null
+  let null = Js.Json.null
 
-  let object_ v =
+  let object_ v : Js.Json.t =
     let aux o (k, v) =
       let () = Js.Dict.set o k v in
       o in
     let o = List.fold_left aux (Js.Dict.empty ()) v in
-    Web.Json.of_type Js.Json.Object o
+    Obj.magic o
 
-  let array (v : 't array) = Web.Json.of_type Js.Json.Array v
+  let array (v : 't array) : Js.Json.t = Obj.magic Js.Json.Array v
 
-  let list (v : 't list) = Web.Json.of_type Js.Json.Array (Array.of_list v)
+  let list (v : 't list) : Js.Json.t = Obj.magic (Array.of_list v)
 
 end
 
