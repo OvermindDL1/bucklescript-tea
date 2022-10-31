@@ -169,21 +169,21 @@ let compareEventHandlerTypes (left : 'msg eventHandler) =
         | _ -> false) : 'msg eventHandler -> bool)
 
 let eventHandler_Register (callbacks : 'msg applicationCallbacks ref)
-  (elem : Dom.element) (name : string) (handlerType : 'msg eventHandler) =
+  (elem : Dom.eventTarget) (name : string) (handlerType : 'msg eventHandler) =
   (let cb = ref (eventHandler_GetCB handlerType) in
    let handler = eventHandler callbacks cb in
-   let () = Webapi.Dom.Element.addEventListener elem name handler in
+   let () = Webapi.Dom.EventTarget.addEventListener elem name handler in
    ((Some ({ handler; cb }))[@explicit_arity ]) : 'msg eventCache option)
 
-let eventHandler_Unregister (elem : Dom.element) (name : string) =
+let eventHandler_Unregister (elem : Dom.eventTarget) (name : string) =
   (function
    | None -> None
    | ((Some (cache))[@explicit_arity ]) ->
-       let () = Webapi.Dom.Element.removeEventListener elem name cache.handler in
+       let () = Webapi.Dom.EventTarget.removeEventListener elem name cache.handler in
        None : 'msg eventCache option -> 'msg eventCache option)
 
 let eventHandler_Mutate (callbacks : 'msg applicationCallbacks ref)
-  (elem : Dom.element) (oldName : string) (newName : string)
+  (elem : Dom.eventTarget) (oldName : string) (newName : string)
   (oldHandlerType : 'msg eventHandler) (newHandlerType : 'msg eventHandler)
   (oldCache : 'msg eventCache option ref)
   (newCache : 'msg eventCache option ref) =
@@ -221,7 +221,8 @@ let patchVNodesOnElems_PropertiesApply_Add
        (Js.log ("TODO:  Add Data Unhandled", k, v);
         failwith "TODO:  Add Data Unhandled")
    | ((Event (name, handlerType, cache))[@implicit_arity ]) ->
-       cache := (eventHandler_Register callbacks elem name handlerType)
+       let eventTarget = Webapi.Dom.Element.asEventTarget elem in
+       cache := (eventHandler_Register callbacks eventTarget name handlerType)
    | ((Style (s))[@explicit_arity ]) ->
        (match Webapi.Dom.HtmlElement.ofElement elem with
        | Some(elem) ->
@@ -245,7 +246,8 @@ let patchVNodesOnElems_PropertiesApply_Remove
        (Js.log ("TODO:  Remove Data Unhandled", k, v);
         failwith "TODO:  Remove Data Unhandled")
    | ((Event (name, _, cache))[@implicit_arity ]) ->
-       cache := (eventHandler_Unregister elem name (!cache))
+       let eventTarget = Webapi.Dom.Element.asEventTarget elem in
+       cache := (eventHandler_Unregister eventTarget name (!cache))
    | ((Style (s))[@explicit_arity ]) ->
        (match Webapi.Dom.HtmlElement.ofElement elem with
        | Some(elem) ->
@@ -352,8 +354,9 @@ let rec patchVNodesOnElems_PropertiesApply
         (((Event (newName, newHandlerType, newCache))[@implicit_arity ]) as
            _newProp)::newRest)
          ->
+         let eventTarget = Webapi.Dom.Element.asEventTarget elem in
          let () =
-           eventHandler_Mutate callbacks elem oldName newName oldHandlerType
+           eventHandler_Mutate callbacks eventTarget oldName newName oldHandlerType
              newHandlerType oldCache newCache in
          patchVNodesOnElems_PropertiesApply callbacks elem (idx + 1) oldRest
            newRest

@@ -23,10 +23,10 @@ let registerGlobal name key tagger =
       | Error _ -> None
       | Ok pos -> Some (tagger pos) in
     let handler = EventHandlerCallback (key, fn) in
-    let elem = Webapi.Dom.document |> Webapi.Dom.Document.documentElement in
-    let cache = eventHandler_Register callbacks elem name handler in
+    let eventTarget = Webapi.Dom.document |> Webapi.Dom.Document.asEventTarget in
+    let cache = eventHandler_Register callbacks eventTarget name handler in
     fun () ->
-      let _ = eventHandler_Unregister elem name cache in
+      let _ = eventHandler_Unregister eventTarget name cache in
       ()
   in Tea_sub.registration key enableCall
 
