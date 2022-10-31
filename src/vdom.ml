@@ -229,7 +229,7 @@ let patchVNodesOnElems_PropertiesApply_Add
          let elemStyle = Webapi.Dom.HtmlElement.style elem in
          List.fold_left
            (fun () ->
-              fun (k, v) -> Webapi.Dom.CssStyleDeclaration.setPropertyValue elemStyle k v)
+              fun (k, v) -> Vdom2.setPropertyValue elemStyle k v)
            () s
       | None -> failwith "Expected htmlelement in patchVNodesOnElems_PropertiesApply_Add"))
 

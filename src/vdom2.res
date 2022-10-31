@@ -6,3 +6,6 @@ let insertBefore = (
   ~new_: Dom.node_like<'a>,
   ~before: Dom.node_like<'b>,
 ): Webapi.Dom.Node.t => Webapi.Dom.Node.insertBefore(parent, ~new=new_, ~before)
+
+// Webapi.Dom.CssStyleDeclaration.setPropertyValue calls the wrong function I think - see https://github.com/tinymce/rescript-webapi/pull/114
+@send external setPropertyValue: (Dom.cssStyleDeclaration, string, string) => unit = "setProperty"
