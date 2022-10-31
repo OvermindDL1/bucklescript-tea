@@ -1,4 +1,4 @@
-(* TODO:  Remove this once Bucklescript upgrade to OCaml 4.03+ as that version include result *)
+/* TODO:  Remove this once Bucklescript upgrade to OCaml 4.03+ as that version include result */
 module Result = Tea_result
 
 module Cmd = Tea_cmd
