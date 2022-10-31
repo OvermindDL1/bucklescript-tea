@@ -17,8 +17,6 @@ module Svg = Tea_svg
 
 module Task = Tea_task
 
-module Program = Tea_program
-
 module Time = Tea_time
 
 module Json = Tea_json
