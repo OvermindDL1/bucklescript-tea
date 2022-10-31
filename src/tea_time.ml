@@ -11,19 +11,19 @@ type 'msg myCmd =
   | Delay of t * (unit -> 'msg) *)
 
 
-let every ~key interval tagger =
+let every ~key (interval : float) tagger =
   let open Vdom in
   let enableCall callbacks =
-    let id = (Js.Global.setInterval (fun () -> callbacks.enqueue (tagger (Js.Date.now ())) ) interval) in
+    let id = (Js.Global.setIntervalFloat (fun () -> callbacks.enqueue (tagger (Js.Date.now ()))) interval) in
     fun () -> Js.Global.clearInterval id
   in Tea_sub.registration key enableCall
 
 
-let delay msTime msg =
+let delay (msTime : float) msg =
   Tea_cmd.call
     ( fun callbacks ->
         let _unhandledID =
-          Js.Global.setTimeout
+          Js.Global.setTimeoutFloat
             ( fun () ->
                 let open Vdom in
                 !callbacks.enqueue msg
