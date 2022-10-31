@@ -12,7 +12,7 @@ type responseBody = Web.XMLHttpRequest.responseBody
 type response =
   { url : string
   ; status : response_status
-  ; headers : string Map.Make(String).t
+  ; headers : string Belt.Map.String.t
   ; body : responseBody
   }
 
@@ -92,7 +92,7 @@ let getString url =
     }
 
 let toTask (Request (request, _maybeEvents)) =
-  let module StringMap = Map.Make(String) in
+  let module StringMap = Belt.Map.String in
   let {method'; headers; url; body; expect; timeout; withCredentials } = request in
   let (Expect (typ, responseToResult)) = expect in
   Tea_task.nativeBinding (fun cb ->
@@ -140,7 +140,7 @@ let toTask (Request (request, _maybeEvents)) =
   )
 
 let send resultToMessage (Request (request, maybeEvents)) =
-  let module StringMap = Map.Make(String) in
+  let module StringMap = Belt.Map.String in
   let {method'; headers; url; body; expect; timeout; withCredentials } = request in
   let (Expect (typ, responseToResult)) = expect in
   Tea_cmd.call (fun callbacks ->

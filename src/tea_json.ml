@@ -3,7 +3,7 @@ module Decoder = struct
 
   type error = String.t
 
-  module ObjectDict = Map.Make(String)
+  module ObjectDict = Belt.Map.String
 
   type ('input, 'result) t =
     Decoder of ('input -> ('result, error) result)
@@ -132,7 +132,7 @@ module Decoder = struct
                   | None -> raise (ParseFail ("Key is undefined: " ^ k))
                   | Some v ->
                     match decoder v with
-                    | Ok r -> ObjectDict.add k r d
+                    | Ok r -> ObjectDict.set d k r
                     | Error e -> raise (ParseFail e)
                 ) in
               let emptyDict = ObjectDict.empty in
