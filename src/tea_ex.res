@@ -9,27 +9,30 @@ let render_event = (~key="", msg) => {
 
 module LocalStorage = {
   let nativeBinding = Tea_task.nativeBinding
-  let ls = Dom.Storage.localStorage
 
-  let length: Tea_task.t<int, string> = nativeBinding(cb => cb(Ok(Dom.Storage2.length(ls))))
+  let length: Tea_task.t<int, string> = nativeBinding(cb =>
+    cb(Ok(Dom.Storage2.length(Dom.Storage.localStorage)))
+  )
 
-  let clear: Tea_task.t<unit, string> = nativeBinding(cb => cb(Ok(Dom.Storage2.clear(ls))))
+  let clear: Tea_task.t<unit, string> = nativeBinding(cb =>
+    cb(Ok(Dom.Storage2.clear(Dom.Storage.localStorage)))
+  )
 
   let clearCmd = () => Tea_task.attemptOpt(_ => None, clear)
 
   let key = (idx): Tea_task.t<option<string>, string> =>
-    nativeBinding(cb => cb(Ok(Dom.Storage2.key(ls, idx))))
+    nativeBinding(cb => cb(Ok(Dom.Storage2.key(Dom.Storage.localStorage, idx))))
 
   let getItem = (key): Tea_task.t<option<string>, string> =>
-    nativeBinding(cb => cb(Ok(Dom.Storage2.getItem(ls, key))))
+    nativeBinding(cb => cb(Ok(Dom.Storage2.getItem(Dom.Storage.localStorage, key))))
 
   let removeItem = (key): Tea_task.t<unit, string> =>
-    nativeBinding(cb => cb(Ok(Dom.Storage2.removeItem(ls, key))))
+    nativeBinding(cb => cb(Ok(Dom.Storage2.removeItem(Dom.Storage.localStorage, key))))
 
   let removeItemCmd = key => Tea_task.attemptOpt(_ => None, removeItem(key))
 
   let setItem = (key, value): Tea_task.t<unit, string> =>
-    nativeBinding(cb => cb(Ok(Dom.Storage2.setItem(ls, key, value))))
+    nativeBinding(cb => cb(Ok(Dom.Storage2.setItem(Dom.Storage.localStorage, key, value))))
 
   let setItemCmd = (key, value) => Tea_task.attemptOpt(_ => None, setItem(key, value))
 }
