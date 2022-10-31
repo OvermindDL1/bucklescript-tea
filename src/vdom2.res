@@ -9,3 +9,7 @@ let insertBefore = (
 
 // Webapi.Dom.CssStyleDeclaration.setPropertyValue calls the wrong function I think - see https://github.com/tinymce/rescript-webapi/pull/114
 @send external setPropertyValue: (Dom.cssStyleDeclaration, string, string) => unit = "setProperty"
+
+@set_index external setItem: (Dom.element, 'key, 'value) => unit = ""
+@get_index external getItem: (Dom.element, 'key) => 'value = ""
+let delItem = (elem: Dom.element, key: 'key) => setItem(elem, key, Js.Undefined.empty)

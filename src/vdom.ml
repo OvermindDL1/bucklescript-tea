@@ -208,13 +208,15 @@ let eventHandler_Mutate (callbacks : 'msg applicationCallbacks ref)
               (eventHandler_Register callbacks elem newName newHandlerType) in
           ()) : unit)
 
+
+
 let patchVNodesOnElems_PropertiesApply_Add
   (callbacks : 'msg applicationCallbacks ref) (elem : Dom.element)
   (_idx : int) =
   (function
    | NoProp -> ()
    | ((RawProp (k, v))[@implicit_arity ]) ->
-     Webapi.Dom.Element.setAttribute elem k v
+      Vdom2.setItem elem k v
    | ((Attribute (namespace, k, v))[@implicit_arity ]) ->
        Webapi.Dom.Element.setAttributeNS elem namespace k v
    | ((Data (k, v))[@implicit_arity ]) ->
@@ -239,7 +241,7 @@ let patchVNodesOnElems_PropertiesApply_Remove
   (function
    | NoProp -> ()
    | ((RawProp (k, _v))[@implicit_arity ]) ->
-       Webapi.Dom.Element.removeAttribute elem k
+       Vdom2.delItem elem k
    | ((Attribute (namespace, k, _v))[@implicit_arity ]) ->
        Webapi.Dom.Element.removeAttributeNS elem namespace k
    | ((Data (k, v))[@implicit_arity ]) ->
@@ -274,7 +276,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate
        failwith
          "This should never be called as all entries through NoProp are gated."
    | ((RawProp (k, v))[@implicit_arity ]) ->
-       Webapi.Dom.Element.setAttribute elem k v
+       Vdom2.setItem elem k v
    | ((Attribute (namespace, k, v))[@implicit_arity ]) ->
        Webapi.Dom.Element.setAttributeNS elem namespace k v
    | ((Data (k, v))[@implicit_arity ]) ->
