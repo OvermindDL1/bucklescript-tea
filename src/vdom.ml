@@ -300,11 +300,11 @@ let patchVNodesOnElems_PropertiesApply_Mutate
                          (if ov = nv
                           then ()
                           else
-                            Webapi.Dom.CssStyleDeclaration.setPropertyValue elemStyle nk nv)
+                            Vdom2.setPropertyValue elemStyle nk nv)
                        else
                          (let (_ : string) =
                             Webapi.Dom.CssStyleDeclaration.removeProperty elemStyle ok in
-                          Webapi.Dom.CssStyleDeclaration.setPropertyValue elemStyle nk nv))
+                          Vdom2.setPropertyValue elemStyle nk nv))
                    () oldS s
           | _ ->
               failwith
