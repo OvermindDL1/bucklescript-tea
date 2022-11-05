@@ -1,5 +1,5 @@
 {
-  "name": "bucklescript-tea",
+  "name": "rescript-tea",
   "version": "0.15.0",
   "bsc-flags": ["-bs-cross-module-opt"],
   "package-specs": ["commonjs"],
