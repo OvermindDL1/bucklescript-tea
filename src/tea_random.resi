@@ -6,7 +6,7 @@ let minFloat: float
 
 let maxFloat: float
 
-type t<'typ> = Generator(Random.State.t => 'typ)
+type t<'typ>
 
 let bool: t<bool>
 
@@ -37,5 +37,3 @@ type seed = Seed(Random.State.t)
 let step: (t<'msg>, seed) => ('msg, seed)
 
 let initialSeed: int => seed
-
-
