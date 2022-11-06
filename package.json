@@ -2,7 +2,7 @@
 {
   "name": "rescript-tea",
   "version": "0.15.0",
-  "description": "TEA for Bucklescript",
+  "description": "The Elm Architecture (TEA) for Rescript",
   "main": "index.js",
   "scripts": {
     "clean": "rescript clean",
@@ -19,19 +19,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/overminddl1/bucklescript-tea.git"
+    "url": "git+https://github.com/darklang/rescript-tea.git"
   },
   "keywords": [
     "TEA",
-    "Bucklescript",
-    "OCaml"
+    "Rescript",
+    "MVU"
   ],
   "author": "OvermindDL1",
   "license": "LGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/overminddl1/bucklescript-tea/issues"
+    "url": "https://github.com/darklang/rescript-tea/issues"
   },
-  "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
+  "homepage": "https://github.com/darklang/rescript-tea#readme",
   "devDependencies": {
     "browserify": "^14.0.0",
     "npm-run-all": "4.0.2",
