@@ -1,11 +1,5 @@
 open Vdom
 
-module Cmds = Tea_html_cmds
-
-module Attributes = Tea_svg_attributes
-
-module Events = Tea_svg_events
-
 let svgNamespace = "http://www.w3.org/2000/svg"
 
 /* Nodes */

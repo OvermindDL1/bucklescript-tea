@@ -1,12 +1,4 @@
-module Cmds = Tea_html_cmds
-
-module Attributes = Tea_svg_attributes
-
-module Events = Tea_svg_events
-
 let svgNamespace: string
-
-
 
 let noNode: Vdom.t<'msg>
 
@@ -22,10 +14,12 @@ let node: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let svg: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-
-
+let svg: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let foreignObject: (
   ~key: string=?,
@@ -34,8 +28,12 @@ let foreignObject: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let animate: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let animate: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let animateColor: (
   ~key: string=?,
@@ -58,22 +56,54 @@ let animateTransform: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let mpath: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let mpath: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let set: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let set: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let a: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let defs: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let g: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let a: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let marker: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let defs: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-let g: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-let marker: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-let mask: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let mask: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let missingGlyph: (
   ~key: string=?,
@@ -82,28 +112,54 @@ let missingGlyph: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let pattern: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
-  
-let \"switch": (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let pattern: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let symbol: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let \"switch": (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let symbol: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let desc: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let metadata: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let desc: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let title: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let metadata: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
-
-let title: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-
-
-
-let feBlend: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feBlend: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let feColorMatrix: (
   ~key: string=?,
@@ -147,22 +203,40 @@ let feDisplacementMap: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let feFlood: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feFlood: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let feFuncA: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let feFuncA: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feFuncB: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let feFuncB: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feFuncG: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let feFuncG: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
-
-
-let feFuncR: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feFuncR: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let feGaussianBlur: (
   ~key: string=?,
@@ -171,11 +245,19 @@ let feGaussianBlur: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let feImage: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feImage: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let feMerge: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feMerge: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let feMergeNode: (
   ~key: string=?,
@@ -191,8 +273,12 @@ let feMorphology: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let feOffset: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let feOffset: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let feSpecularLighting: (
   ~key: string=?,
@@ -201,7 +287,12 @@ let feSpecularLighting: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let feTile: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let feTile: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let feTurbulence: (
   ~key: string=?,
@@ -210,13 +301,19 @@ let feTurbulence: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
+let font: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-
-
-let font: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-let fontFace: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let fontFace: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let fontFaceFormat: (
   ~key: string=?,
@@ -246,12 +343,19 @@ let fontFaceUri: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let hkern: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let hkern: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let vkern: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-
-
+let vkern: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let linearGradient: (
   ~key: string=?,
@@ -267,35 +371,75 @@ let radialGradient: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let stop: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let stop: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let circle: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let ellipse: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
+let svgimage: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let circle: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let line: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let ellipse: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let path: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let svgimage: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let polygon: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let line: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let polyline: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let path: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let rect: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let polygon: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
-
-let polyline: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
-
-let rect: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-let use: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
-
-
-
+let use: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let feDistantLight: (
   ~key: string=?,
@@ -318,11 +462,12 @@ let feSpotLight: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-
-
-
-let altGlyph: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let altGlyph: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let altGlyphDef: (
   ~key: string=?,
@@ -338,25 +483,54 @@ let altGlyphItem: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let glyph: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let glyph: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let glyphRef: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let glyphRef: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let textPath: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let textPath: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let text': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let text': (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let tref: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let tref: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let tspan: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let tspan: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-
-
-
-let clipPath: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
-  'msg,>
+let clipPath: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
 let svgcolorProfile: (
   ~key: string=?,
@@ -365,12 +539,37 @@ let svgcolorProfile: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let cursor: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let cursor: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let filter: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let filter: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let script: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let script: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let style: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let style: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
 
-let view: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let view: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'msg>,
+  list<Vdom.t<'msg>>,
+) => Vdom.t<'msg>
