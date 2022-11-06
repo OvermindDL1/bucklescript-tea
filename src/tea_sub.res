@@ -17,15 +17,18 @@ let none = NoSub
 
 let batch = subs => Batch(subs)
 
-let registration = (key, enableCall) => @implicit_arity
-Registration(key, callbacks => enableCall(callbacks.contents), ref(None))
+let registration = (key, enableCall) => Registration(
+  key,
+  callbacks => enableCall(callbacks.contents),
+  ref(None),
+)
 
 let map = (msgMapper, sub) => {
   let func = callbacks => Vdom.wrapCallbacks(msgMapper, callbacks)
-  @implicit_arity Mapper(func, sub)
+  Mapper(func, sub)
 }
 
-let mapFunc = (func, sub) => @implicit_arity Mapper(func, sub)
+let mapFunc = (func, sub) => Mapper(func, sub)
 
 let rec run:
   type msgOld msgNew. (
@@ -42,10 +45,10 @@ let rec run:
         | NoSub => ()
         | Batch(list{}) => ()
         | Batch(subs) => List.iter(enable(callbacks), subs)
-        | @implicit_arity Mapper(mapper, sub) =>
+        | Mapper(mapper, sub) =>
           let subCallbacks = mapper(callbacks)
           enable(subCallbacks, sub)
-        | @implicit_arity Registration(_key, enCB, diCB) => diCB := Some(enCB(callbacks))
+        | Registration(_key, enCB, diCB) => diCB := Some(enCB(callbacks))
         }
     let rec disable:
       type msg. (ref<Vdom.applicationCallbacks<msg>>, t<msg>) => unit =
@@ -54,10 +57,10 @@ let rec run:
         | NoSub => ()
         | Batch(list{}) => ()
         | Batch(subs) => List.iter(disable(callbacks), subs)
-        | @implicit_arity Mapper(mapper, sub) =>
+        | Mapper(mapper, sub) =>
           let subCallbacks = mapper(callbacks)
           disable(subCallbacks, sub)
-        | @implicit_arity Registration(_key, _enCB, diCB) =>
+        | Registration(_key, _enCB, diCB) =>
           switch diCB.contents {
           | None => ()
           | Some(cb) =>
@@ -69,16 +72,11 @@ let rec run:
     @ocaml.warning("-4")
     switch (oldSub, newSub) {
     | (NoSub, NoSub) => newSub
-    | (
-        @implicit_arity Registration(oldKey, _oldEnCB, oldDiCB),
-        @implicit_arity Registration(newKey, _newEnCB, newDiCB),
-      ) if oldKey == newKey =>
+    | (Registration(oldKey, _oldEnCB, oldDiCB), Registration(newKey, _newEnCB, newDiCB))
+      if oldKey == newKey =>
       let () = newDiCB := oldDiCB.contents
       newSub
-    | (
-        @implicit_arity Mapper(oldMapper, oldSubSub),
-        @implicit_arity Mapper(newMapper, newSubSub),
-      ) =>
+    | (Mapper(oldMapper, oldSubSub), Mapper(newMapper, newSubSub)) =>
       let olderCallbacks = oldMapper(oldCallbacks)
       let newerCallbacks = newMapper(newCallbacks)
       let _newerSubSub = run(olderCallbacks, newerCallbacks, oldSubSub, newSubSub)
