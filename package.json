@@ -39,6 +39,6 @@
     "watchify": "^4.0.0"
   },
   "dependencies": {
-    "rescript-webapi": "^0.6.1"
+    "rescript-webapi": "^0.7.0"
   }
 }

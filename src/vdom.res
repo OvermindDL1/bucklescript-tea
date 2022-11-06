@@ -253,7 +253,11 @@ let patchVNodesOnElems_PropertiesApply_Add = (
     switch Webapi.Dom.HtmlElement.ofElement(elem) {
     | Some(elem) =>
       let elemStyle = Webapi.Dom.HtmlElement.style(elem)
-      List.fold_left(((), (k, v)) => Vdom2.setPropertyValue(elemStyle, k, v), (), s)
+      List.fold_left(
+        ((), (k, v)) => Webapi.Dom.CssStyleDeclaration.setPropertyValue(elemStyle, k, v),
+        (),
+        s,
+      )
     | None => failwith("Expected htmlelement in patchVNodesOnElems_PropertiesApply_Add")
     }
   }
@@ -327,11 +331,11 @@ let patchVNodesOnElems_PropertiesApply_Mutate = (
             if ov == nv {
               ()
             } else {
-              Vdom2.setPropertyValue(elemStyle, nk, nv)
+              Webapi.Dom.CssStyleDeclaration.setPropertyValue(elemStyle, nk, nv)
             }
           } else {
             let _: string = Webapi.Dom.CssStyleDeclaration.removeProperty(elemStyle, ok)
-            Vdom2.setPropertyValue(elemStyle, nk, nv)
+            Webapi.Dom.CssStyleDeclaration.setPropertyValue(elemStyle, nk, nv)
           }
         , (), oldS, s)
       | _ =>
