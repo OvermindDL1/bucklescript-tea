@@ -51,35 +51,56 @@ let canvas: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t
 let math: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let form: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let input': (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let textarea: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let textarea: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let button: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let select: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let option': (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
-let optgroup: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let option': (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
+let optgroup: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let label: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let fieldset: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let fieldset: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let legend: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let section: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let section: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let nav: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let article: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let article: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let aside: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let header: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let footer: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let address: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let address: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let main: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let body: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let figure: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
@@ -90,12 +111,18 @@ let figcaption: (
   list<Vdom.t<'a>>,
 ) => Vdom.t<'a>
 let table: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let caption: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
-let colgroup: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let caption: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
+let colgroup: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let col: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let tbody: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let thead: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
@@ -103,23 +130,32 @@ let tfoot: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<
 let tr: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let th: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let td: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let datalist: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let datalist: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let keygen: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let output: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let progress: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let progress: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let meter: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let audio: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let video: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let source: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let track: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let embed: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let object': (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let object': (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let param: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let ins: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let del: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
@@ -140,15 +176,24 @@ let rp: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>
 let bdi: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let bdo: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let wbr: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
-let details: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
-let summary: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
-let menuitem: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<
-  'a,
->
+let details: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
+let summary: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
+let menuitem: (
+  ~key: string=?,
+  ~unique: string=?,
+  Vdom.properties<'a>,
+  list<Vdom.t<'a>>,
+) => Vdom.t<'a>
 let menu: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, list<Vdom.t<'a>>) => Vdom.t<'a>
 let meta: (~key: string=?, ~unique: string=?, Vdom.properties<'a>) => Vdom.t<'a>
 let style: (~key: string=?, ~unique: string=?, Vdom.properties<'a>, string) => Vdom.t<'a>
@@ -255,19 +300,19 @@ module Attributes: {
   let manifest: string => Vdom.property<'a>
 }
 module Events: {
-  let onCB: (string, string, Web.Node.event => option<'a>) => Vdom.property<'a>
+  let onCB: (string, string, Dom.event => option<'a>) => Vdom.property<'a>
   let onMsg: (string, 'a) => Vdom.property<'a>
   let on: (~key: string, string, Tea_json.Decoder.t<'a, 'b>) => Vdom.property<'b>
   let onWithOptions: (
-  ~key: string,
-  string,
-  Tea_html.options,
-  Tea_json.Decoder.t<'a, 'b>,
-) => Vdom.property<'b>
+    ~key: string,
+    string,
+    Tea_html.options,
+    Tea_json.Decoder.t<'a, 'b>,
+  ) => Vdom.property<'b>
   let defaultOptions: Tea_html.options
-  let targetValue: Tea_json.Decoder.t<Web.Json.t, string>
-  let targetChecked: Tea_json.Decoder.t<Web.Json.t, bool>
-  let keyCode: Tea_json.Decoder.t<Web.Json.t, int>
+  let targetValue: Tea_json.Decoder.t<Js.Json.t, string>
+  let targetChecked: Tea_json.Decoder.t<Js.Json.t, bool>
+  let keyCode: Tea_json.Decoder.t<Js.Json.t, int>
   let preventDefaultOn: (~key: string=?, string, Tea_json.Decoder.t<'a, 'b>) => Vdom.property<'b>
   let onClick: 'a => Vdom.property<'a>
   let onDoubleClick: 'a => Vdom.property<'a>

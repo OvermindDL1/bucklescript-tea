@@ -1,7 +1,5 @@
 open Vdom
 
-module Cmds = Tea_html_cmds
-
 let map = Tea_app.map
 
 /* Nodes */
