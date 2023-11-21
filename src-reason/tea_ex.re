@@ -1,5 +1,3 @@
-/* Everything here is not in Elm and is purely used as an extension and may vanish at any time if a better API comes out. */
-
 let render_event = (~key="", msg) => {
   open Vdom;
   let enableCall = callbacks => {
@@ -9,10 +7,19 @@ let render_event = (~key="", msg) => {
   Tea_sub.registration(key, enableCall);
 };
 
+let window_resize_event = (~key="", msg) => {
+  let enableCall = callbacks_base => {
+    let callbacks = ref(callbacks_base);
+    let handler = Vdom.eventHandler(callbacks, ref(_ev => Some(msg)));
+    let () = Web_window.addEventListener("resize", handler, false);
+    () => Web_window.removeEventListener("resize", handler, false);
+  };
+  Tea_sub.registration(key, enableCall);
+};
+
 module LocalStorage = {
   open Tea_task;
   open Tea_result;
-
   let length =
     nativeBinding(cb =>
       switch (Web.Window.LocalStorage.length(Web.Window.window)) {
@@ -20,7 +27,6 @@ module LocalStorage = {
       | Some(value) => cb(Ok(value))
       }
     );
-
   let clear =
     nativeBinding(cb =>
       switch (Web.Window.LocalStorage.clear(Web.Window.window)) {
@@ -29,7 +35,6 @@ module LocalStorage = {
       }
     );
   let clearCmd = () => Tea_task.attemptOpt(_ => None, clear);
-
   let key = idx =>
     nativeBinding(cb =>
       switch (Web.Window.LocalStorage.key(Web.Window.window, idx)) {
@@ -37,7 +42,6 @@ module LocalStorage = {
       | Some(value) => cb(Ok(value))
       }
     );
-
   let getItem = key =>
     nativeBinding(cb =>
       switch (Web.Window.LocalStorage.getItem(Web.Window.window, key)) {
@@ -45,7 +49,6 @@ module LocalStorage = {
       | Some(value) => cb(Ok(value))
       }
     );
-
   let removeItem = key =>
     nativeBinding(cb =>
       switch (Web.Window.LocalStorage.removeItem(Web.Window.window, key)) {
@@ -54,7 +57,6 @@ module LocalStorage = {
       }
     );
   let removeItemCmd = key => Tea_task.attemptOpt(_ => None, removeItem(key));
-
   let setItem = (key, value) =>
     nativeBinding(cb =>
       switch (Web.Window.LocalStorage.setItem(Web.Window.window, key, value)) {
