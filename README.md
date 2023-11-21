@@ -159,3 +159,10 @@ See its announcement article at:  https://medium.com/@paulbiggar/philip2-an-elm-
 
 And its porting guide at:  https://github.com/darklang/philip2#how-to-port-your-project
 
+#### [tcoopman/dream-melange-tea-tailwind](https://github.com/tcoopman/dream-melange-tea-tailwind)
+
+This example works with [melange](https://github.com/melange-re/melange) and adds tailwindcss
+
+* syntax: OCaml
+* build-system: [esbuild](https://esbuild.github.io)
+* server: [dream](https://github.com/aantron/dream)
